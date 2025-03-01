@@ -50,6 +50,8 @@ public class RobotContainer {
   Intake m_intake = new Intake();
   Climber m_climber = new Climber();
 
+  double driveSpeedFactor = 1.0;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -71,9 +73,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
 
@@ -85,7 +87,7 @@ public class RobotContainer {
 
     m_climber.setDefaultCommand(
       new RunCommand(
-        () -> m_climber.setSpeed(m_operatorController.getRightY()),
+        () -> m_climber.setSpeed(-m_operatorController.getRightY()),
         m_climber
         )
     );
@@ -118,6 +120,14 @@ public class RobotContainer {
       .a()
       .whileTrue(new DriveRobotFromLimelight(m_robotDrive)
       ); 
+
+    m_driverController
+      .leftTrigger()
+      .whileTrue(new RunCommand( () -> driveSpeedFactor = 0.3));
+
+    m_driverController
+      .leftTrigger()
+      .whileFalse(new RunCommand(() -> driveSpeedFactor = 1.0));
   }
 
   /**
