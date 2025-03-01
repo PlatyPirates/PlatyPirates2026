@@ -15,13 +15,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class Climber extends SubsystemBase {
-    private final SparkMax m_climberMotorSparkMax;
+    private final SparkMax m_climberMotorChainSparkMax;
+    private final SparkMax m_climberMotorRopeSparkMax;
 
     // declare encoder
-    private Encoder climberEncoder;
+    private Encoder climberEncoderChain;
 
     public Climber(){
-        m_climberMotorSparkMax = new SparkMax(DriveConstants.kClimberMotorCanId, MotorType.kBrushless);
+        m_climberMotorChainSparkMax = new SparkMax(DriveConstants.kClimberMotorChainCanId, MotorType.kBrushless);
+
+        m_climberMotorRopeSparkMax = new SparkMax(DriveConstants.kClimberMotorRopeCanId, MotorType.kBrushless);
 
         SoftLimitConfig softLimit = new SoftLimitConfig();
         softLimit.forwardSoftLimitEnabled(false);
@@ -29,14 +32,19 @@ public class Climber extends SubsystemBase {
         softLimit.reverseSoftLimitEnabled(false);
         softLimit.reverseSoftLimit(-90.0);
         SparkBaseConfig config = new SparkMaxConfig();
+
         config.apply(softLimit);
-        config.openLoopRampRate(1); // takes 1s for the motor to go full throttle to reduce dynamic loads
-        m_climberMotorSparkMax.configure(config, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+        config.openLoopRampRate(0.25); // takes 0.25s for the motor to go full throttle to reduce dynamic loads
+        m_climberMotorChainSparkMax.configure(config, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+
+        config.apply(softLimit);
+        config.openLoopRampRate(0.25); // takes 0.25s for the motor to go full throttle to reduce dynamic loads
+        m_climberMotorRopeSparkMax.configure(config, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 
         // DIO ports are 0 and 1, should probably put these in constants
-        climberEncoder = new Encoder(0,1);
+        climberEncoderChain = new Encoder(0,1);
     }
-    public void setSpeed(double speed){
-        m_climberMotorSparkMax.set(speed);
+    public void setSpeed(double speedChain, double speedRope){
+        m_climberMotorChainSparkMax.set(speedChain);
     }
 }

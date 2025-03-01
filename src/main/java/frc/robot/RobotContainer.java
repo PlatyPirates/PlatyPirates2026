@@ -81,13 +81,13 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
         new RunCommand(
-            () -> m_intake.setSpeed(m_operatorController.getLeftY()),
+            () -> m_intake.setSpeed(0),
             m_intake)
     );
 
     m_climber.setDefaultCommand(
       new RunCommand(
-        () -> m_climber.setSpeed(-m_operatorController.getRightY()),
+        () -> m_climber.setSpeed(-m_operatorController.getRightY(), m_operatorController.getLeftY()),
         m_climber
         )
     );
