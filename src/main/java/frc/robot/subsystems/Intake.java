@@ -13,6 +13,13 @@ public class Intake extends SubsystemBase {
         m_intakeSparkMax = new SparkMax(DriveConstants.kIntakeCanId, MotorType.kBrushless);
     }
     public void setSpeed(double speed) {
-        m_intakeSparkMax.set(speed);
+        double currentLimit = 100.0;
+        if(m_intakeSparkMax.getOutputCurrent() < currentLimit){
+            m_intakeSparkMax.set(speed);
+        }
+    }
+
+    public double getOutputCurrent(){
+        return m_intakeSparkMax.getOutputCurrent();
     }
 }
