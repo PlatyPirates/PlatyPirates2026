@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -76,6 +77,16 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+
+    SmartDashboard.putBoolean("Front Left Steering", !m_frontLeft.steeringError());
+    SmartDashboard.putBoolean("Front Right Steering", !m_frontRight.steeringError());
+    SmartDashboard.putBoolean("Back Left Steering", !m_rearLeft.steeringError());
+    SmartDashboard.putBoolean("Back Right Steering", !m_rearRight.steeringError());
+
+    SmartDashboard.putBoolean("Front Left Driving", !m_frontLeft.drivingError());
+    SmartDashboard.putBoolean("Front Right Driving", !m_frontRight.drivingError());
+    SmartDashboard.putBoolean("Back Left Driving", !m_rearLeft.drivingError());
+    SmartDashboard.putBoolean("Back Right Driving", !m_rearRight.drivingError());
   }
 
   /**
@@ -169,6 +180,11 @@ public class DriveSubsystem extends SubsystemBase {
   public void zeroHeading() {
     m_gyro.reset();
   }
+
+  public void setHeading(double heading){ //Heading is in degrees
+    m_gyro.setYaw(heading);
+  }
+
 
   /**
    * Returns the heading of the robot.

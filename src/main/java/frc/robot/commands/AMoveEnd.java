@@ -31,7 +31,7 @@ public class AMoveEnd extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute(){
-        _drive.drive(0.5, 0.0, 0.0, true);
+        _drive.drive(-0.5, 0.0, 0.0, true);
     }
     // Called once the command ends or is interrupted.
     @Override

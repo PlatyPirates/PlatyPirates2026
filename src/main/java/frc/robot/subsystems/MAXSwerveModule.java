@@ -73,6 +73,14 @@ public class MAXSwerveModule {
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
 
+  public boolean drivingError(){
+    return m_drivingSpark.hasActiveFault();
+  }
+
+  public boolean steeringError(){
+    return m_turningSpark.hasActiveFault();
+  }
+
   /**
    * Returns the current position of the module.
    *
