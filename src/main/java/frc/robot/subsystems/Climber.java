@@ -44,7 +44,12 @@ public class Climber extends SubsystemBase {
         // DIO ports are 0 and 1, should probably put these in constants
         climberEncoderChain = new Encoder(0,1);
     }
-    public void setSpeed(double speedChain, double speedRope){
+    public void setChainSpeed(double speedChain){
         m_climberMotorChainSparkMax.set(speedChain);
     }
+
+    public void setMotorSpeed(double motorSpeed){
+        m_climberMotorRopeSparkMax.set(motorSpeed);
+    }
+
 }
