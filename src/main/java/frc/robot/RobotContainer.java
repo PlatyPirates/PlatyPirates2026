@@ -21,6 +21,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AMoveEnd;
+import frc.robot.commands.AMoveLowCoral;
 import frc.robot.commands.DriveRobotFromLimelight;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
@@ -51,6 +52,7 @@ public class RobotContainer {
   Climber m_climber = new Climber();
 
   double driveSpeedFactor = 1.0;
+  boolean fieldRelative = true;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -61,7 +63,9 @@ public class RobotContainer {
 
     autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
     autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive));
+    autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_intake));
     autoChooser.addOption("Do Nothing",
+
     new RunCommand(
       ()-> m_robotDrive.drive(0.0,0.0,0.0,true), m_robotDrive)
   );
@@ -76,18 +80,12 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                true),
+                fieldRelative),
             m_robotDrive));
-
-    m_intake.setDefaultCommand(
-        new RunCommand(
-            () -> m_intake.setSpeed(0),
-            m_intake)
-    );
 
     m_climber.setDefaultCommand(
       new RunCommand(
-        () -> m_climber.setSpeed(-m_operatorController.getRightY(), m_operatorController.getLeftY()),
+        () -> m_climber.setChainSpeed(-m_operatorController.getRightY()*0.15),
         m_climber
         )
     );
@@ -105,7 +103,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     m_driverController
-      .rightBumper()
+      .b()
       .whileTrue(new RunCommand(
         () -> m_robotDrive.setX(),
             m_robotDrive));
@@ -128,6 +126,69 @@ public class RobotContainer {
     m_driverController
       .leftTrigger()
       .whileFalse(new RunCommand(() -> driveSpeedFactor = 1.0));
+
+    m_operatorController
+      .leftBumper()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_climber.setMotorSpeed(1.0);
+        }));
+
+    m_operatorController
+      .leftBumper()
+      .whileFalse(new RunCommand(
+        () -> {
+          m_climber.setMotorSpeed(0.0);
+        }));
+
+    m_operatorController
+      .start()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_climber.setMotorSpeed(-1.0);
+        }));
+
+    m_operatorController
+      .start()
+      .whileFalse(new RunCommand(
+        () -> {
+          m_climber.setMotorSpeed(0.0);
+        }));
+
+    m_driverController
+      .rightTrigger()
+      .onTrue(new RunCommand(
+        () -> {
+          fieldRelative = !fieldRelative;
+        }));
+
+    m_operatorController
+      .povUp()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_intake.setSpeed(0.2);
+        }));
+
+    m_operatorController
+      .povDown()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_intake.setSpeed(-0.5);
+        }));
+
+    m_operatorController
+      .povUp()
+      .onFalse(new RunCommand(
+        () -> {
+          m_intake.setSpeed(0.0);
+        }));
+
+    m_operatorController
+      .povDown()
+      .onFalse(new RunCommand(
+        () -> {
+          m_intake.setSpeed(0.0);
+        }));
   }
 
   /**
@@ -176,5 +237,9 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
     */
+  }
+
+  public double getIntakeCurrent(){
+    return m_intake.getOutputCurrent();
   }
 }
