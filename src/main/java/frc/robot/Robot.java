@@ -63,6 +63,19 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("Shooter Current", m_robotContainer.getIntakeCurrent());
+    //Displays horizontal offset angle, vertical offset angle, target area, target pose in camera space
+
+  //   SmartDashboard.putNumber("TX (horizontal offset angle)", LimelightHelpers.getTX(""));
+  //   SmartDashboard.putNumber("TY (vertical offset angle)", LimelightHelpers.getTY(""));
+  //   SmartDashboard.putNumber("TX (no crosshair)", LimelightHelpers.getTXNC(""));
+  //   SmartDashboard.putNumber("TY (no crosshair)", LimelightHelpers.getTXNC(""));
+  //   SmartDashboard.putNumber("TA (target area)", LimelightHelpers.getTA(""));
+  //   SmartDashboard.putString("Target Pose - Camera Space", LimelightHelpers.getTargetPose_CameraSpace("") + "");
+  //  SmartDashboard.putNumber("TS (target skew in degrees)", LimelightHelpers.getT2DArray("")[15]);
+
+      //We can use getBotPose_wpi(our alliance color) to do smart field-oriented, I think
+
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

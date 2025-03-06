@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -117,7 +118,14 @@ public class RobotContainer {
      m_driverController
       .a()
       .whileTrue(new DriveRobotFromLimelight(m_robotDrive)
-      ); 
+      );
+    m_driverController
+      .a()
+      .onTrue(new RunCommand( () -> {
+        if(LimelightHelpers.getTV("limelight")){
+          DriveRobotFromLimelight.aprilTagId = Math.toIntExact(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getInteger(0));
+        }
+      }));
 
     m_driverController
       .leftTrigger()

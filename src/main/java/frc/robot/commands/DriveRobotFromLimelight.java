@@ -7,9 +7,17 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.MAXSwerveModule;
 import frc.robot.subsystems.DriveSubsystem;
 
+import java.io.IOException;
+
+import edu.wpi.first.apriltag.*;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class DriveRobotFromLimelight extends Command {
 
     private DriveSubsystem _DriveSubsystem;
+    public static int aprilTagId = 0;
 
     public DriveRobotFromLimelight(DriveSubsystem DriveSubsystem) {
         _DriveSubsystem = DriveSubsystem;
@@ -23,17 +31,25 @@ public class DriveRobotFromLimelight extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        if(aprilTagId > 0){
+            AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+            Pose3d aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
+            SmartDashboard.putNumber("April Tag Rotation", Math.toDegrees(aprilTagPose.getRotation().getZ()));
 
-        double kP = .035;
-        double targetingAngularVelocity = LimelightHelpers.getTX("")*kP;
-        targetingAngularVelocity *= -1.0*DriveConstants.kMaxAngularSpeed;
-
-        boolean hasTarget = LimelightHelpers.getTV("");
-        if (hasTarget && (LimelightHelpers.getTX("") != 0)) {
-             _DriveSubsystem.drive(0.03*LimelightHelpers.getTX(""), 0, targetingAngularVelocity, true);
-        } else if(hasTarget && (LimelightHelpers.getTX("") == 0)){
-            _DriveSubsystem.drive(0, 0, 0, true);
+            _DriveSubsystem.driveInSegments(aprilTagPose);
+        } else {
+            System.err.println("No AprilTag detected.");
         }
+        // double kP = .035;
+        // double targetingAngularVelocity = LimelightHelpers.getTX("")*kP;
+        // targetingAngularVelocity *= -1.0*DriveConstants.kMaxAngularSpeed;
+
+        // boolean hasTarget = LimelightHelpers.getTV("");
+        // if (hasTarget && (LimelightHelpers.getTX("") != 0)) {
+        //      _DriveSubsystem.drive(0.03*LimelightHelpers.getTX(""), 0, targetingAngularVelocity, true);
+        // } else if(hasTarget && (LimelightHelpers.getTX("") == 0)){
+        //     _DriveSubsystem.drive(0, 0, 0, true);
+        // }
     }
        
     
