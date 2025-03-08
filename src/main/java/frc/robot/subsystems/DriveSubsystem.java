@@ -94,6 +94,8 @@ public class DriveSubsystem extends SubsystemBase {
     updateOdometry();
 
     SmartDashboard.putNumber("Pose Estimator: X Translation", m_poseEstimator.getEstimatedPosition().getTranslation().getX());
+    SmartDashboard.putNumber("Pose Estimator: Y Translation", m_poseEstimator.getEstimatedPosition().getTranslation().getY());
+    SmartDashboard.putNumber("Pose Estimator: Robot Heading", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees());
 
     SmartDashboard.putBoolean("Front Left Steering", !m_frontLeft.steeringError());
     SmartDashboard.putBoolean("Front Right Steering", !m_frontRight.steeringError());
@@ -133,7 +135,7 @@ public class DriveSubsystem extends SubsystemBase {
     {
       doRejectUpdate = true;
     }
-    if(mt2.tagCount == 0)
+    if(mt2 == null || mt2.tagCount == 0)
     {
       doRejectUpdate = true;
     }
