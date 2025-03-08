@@ -91,23 +91,8 @@ public class DriveSubsystem extends SubsystemBase {
     //         m_rearLeft.getPosition(),
     //         m_rearRight.getPosition()
     //     });
-    m_poseEstimator.update(Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        });
-    if(LimelightHelpers.getTargetCount("limelight") > 0){
-      LimelightResults result = LimelightHelpers.getLatestResults("limelight");
+    updateOdometry();
 
-      Pose3d visionMeasurement = result.getBotPose3d();
-      m_poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), Timer.getFPGATimestamp());
-      SmartDashboard.putNumber("Vision Measurement: Measure X", visionMeasurement.getMeasureX().baseUnitMagnitude());
-      SmartDashboard.putNumber("Vision Measurement: X", visionMeasurement.getX());
-      SmartDashboard.putNumber("Translation: X", visionMeasurement.getTranslation().getX());
-
-    }
     SmartDashboard.putNumber("Pose Estimator: X Translation", m_poseEstimator.getEstimatedPosition().getTranslation().getX());
 
     SmartDashboard.putBoolean("Front Left Steering", !m_frontLeft.steeringError());
@@ -128,6 +113,37 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Pose2d getPose() {
     return m_poseEstimator.getEstimatedPosition();
+  }
+
+  public void updateOdometry() { //From Limelight example code
+    //Using MegaTag2
+    m_poseEstimator.update(
+        m_gyro.getRotation2d(),
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
+        });
+
+    boolean doRejectUpdate = false;
+    LimelightHelpers.SetRobotOrientation("limelight", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    if(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+    {
+      doRejectUpdate = true;
+    }
+    if(mt2.tagCount == 0)
+    {
+      doRejectUpdate = true;
+    }
+    if(!doRejectUpdate)
+    {
+      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+      m_poseEstimator.addVisionMeasurement(
+          mt2.pose,
+          mt2.timestampSeconds);
+    }
   }
 
   /**

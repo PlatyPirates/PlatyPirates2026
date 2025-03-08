@@ -62,6 +62,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Robot Heading", m_robotContainer.m_robotDrive.getHeading());
     SmartDashboard.putNumber("Shooter Current", m_robotContainer.getIntakeCurrent());
     //Displays horizontal offset angle, vertical offset angle, target area, target pose in camera space
 
