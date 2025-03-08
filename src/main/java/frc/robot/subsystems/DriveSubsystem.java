@@ -101,15 +101,14 @@ public class DriveSubsystem extends SubsystemBase {
     if(LimelightHelpers.getTargetCount("limelight") > 0){
       LimelightResults result = LimelightHelpers.getLatestResults("limelight");
 
-      Pose3d visionMeasurement;
-      if (DriverStation.getAlliance().toString().equals("Blue")) {
-        visionMeasurement = result.getBotPose3d_wpiBlue();
-      } else {
-        visionMeasurement = result.getBotPose3d_wpiRed();
-      }
+      Pose3d visionMeasurement = result.getBotPose3d();
       m_poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), Timer.getFPGATimestamp());
+      SmartDashboard.putNumber("Vision Measurement: Measure X", visionMeasurement.getMeasureX().baseUnitMagnitude());
+      SmartDashboard.putNumber("Vision Measurement: X", visionMeasurement.getX());
+      SmartDashboard.putNumber("Translation: X", visionMeasurement.getTranslation().getX());
+
     }
-    
+    SmartDashboard.putNumber("Pose Estimator: X Translation", m_poseEstimator.getEstimatedPosition().getTranslation().getX());
 
     SmartDashboard.putBoolean("Front Left Steering", !m_frontLeft.steeringError());
     SmartDashboard.putBoolean("Front Right Steering", !m_frontRight.steeringError());
@@ -178,7 +177,16 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void driveInSegments(Pose3d pose){
-    double angle = 180 - Math.toDegrees(pose.getRotation().getZ());
+    double angle;
+    double w = Math.toDegrees(2*Math.asin(pose.getRotation().getQuaternion().getW()));
+    double z = Math.toDegrees(2*Math.asin(pose.getRotation().getQuaternion().getZ()));
+
+    if(DriverStation.getAlliance().toString().equals("Red")){
+      angle = z*(w/-w);
+    } else {
+      angle = w;
+    }
+    
     if(Math.abs(getHeading()-angle) > 1.0){
       turnToHeading(angle);
     } else {

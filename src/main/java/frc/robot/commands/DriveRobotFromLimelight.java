@@ -35,7 +35,6 @@ public class DriveRobotFromLimelight extends Command {
             AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
             Pose3d aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
             SmartDashboard.putNumber("April Tag Rotation", Math.toDegrees(aprilTagPose.getRotation().getZ()));
-
             _DriveSubsystem.driveInSegments(aprilTagPose);
         } else {
             System.err.println("No AprilTag detected.");
