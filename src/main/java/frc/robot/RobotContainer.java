@@ -53,7 +53,7 @@ public class RobotContainer {
   Climber m_climber = new Climber();
 
   double driveSpeedFactor = 1.0;
-  boolean fieldRelative = true;
+  public boolean fieldRelative = true;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -77,11 +77,14 @@ public class RobotContainer {
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
-            () -> m_robotDrive.drive(
+            () -> {m_robotDrive.drive(
                 -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                fieldRelative),
+                fieldRelative);
+
+                Robot.setLEDs(119, 15, 5);
+              },
             m_robotDrive));
 
     m_climber.setDefaultCommand(
@@ -119,13 +122,6 @@ public class RobotContainer {
       .a()
       .whileTrue(new DriveRobotFromLimelight(m_robotDrive)
       );
-    m_driverController
-      .a()
-      .onTrue(new RunCommand( () -> {
-        if(LimelightHelpers.getTV("limelight")){
-          DriveRobotFromLimelight.aprilTagId = Math.toIntExact(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getInteger(0));
-        }
-      }));
 
     m_driverController
       .leftTrigger()
@@ -165,10 +161,17 @@ public class RobotContainer {
 
     m_driverController
       .rightTrigger()
-      .onTrue(new RunCommand(
-        () -> {
-          fieldRelative = !fieldRelative;
-        }));
+      .whileTrue(
+        new RunCommand(
+            () -> {m_robotDrive.drive(
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                false);
+
+                Robot.setLEDs(255, 255, 255);
+              },
+            m_robotDrive));
 
     m_operatorController
       .povUp()

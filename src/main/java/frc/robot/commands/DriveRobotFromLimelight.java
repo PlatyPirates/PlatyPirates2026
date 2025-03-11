@@ -18,6 +18,8 @@ public class DriveRobotFromLimelight extends Command {
 
     private DriveSubsystem _DriveSubsystem;
     public static int aprilTagId = 0;
+    private AprilTagFieldLayout aprilTagFieldLayout;
+    private Pose3d aprilTagPose;
 
     public DriveRobotFromLimelight(DriveSubsystem DriveSubsystem) {
         _DriveSubsystem = DriveSubsystem;
@@ -25,17 +27,19 @@ public class DriveRobotFromLimelight extends Command {
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {    
+    public void initialize() {
+        if(LimelightHelpers.getTV("limelight")){
+            aprilTagId = Math.toIntExact(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getInteger(0));
+            aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+            aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
+        }
     }
     
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         if(aprilTagId > 0){
-            AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-            Pose3d aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
-            SmartDashboard.putNumber("April Tag Rotation", Math.toDegrees(aprilTagPose.getRotation().getZ()));
-            _DriveSubsystem.driveInSegments(aprilTagPose);
+           _DriveSubsystem.driveInSegments(aprilTagPose);
         } else {
             System.err.println("No AprilTag detected.");
         }
@@ -62,6 +66,7 @@ public class DriveRobotFromLimelight extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        System.out.println("FINISHED");
+        return _DriveSubsystem.angleAligned();
     }
 }

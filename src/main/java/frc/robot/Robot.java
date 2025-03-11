@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.AddressableLED;
@@ -21,8 +22,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
-  private AddressableLED m_led;
-  private AddressableLEDBuffer m_ledBuffer;
+  private static AddressableLED m_led;
+  private static AddressableLEDBuffer m_ledBuffer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -35,17 +36,21 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_led = new AddressableLED(0);
 
-    m_ledBuffer = new AddressableLEDBuffer(60); // Our full LED strip length
+    m_ledBuffer = new AddressableLEDBuffer(76); // Our full LED strip length
     m_led.setLength(m_ledBuffer.getLength());
 
+    setLEDs(119, 15, 5);
+
+    m_robotContainer.m_robotDrive.setHeading(180.0);
+  }
+
+  public static void setLEDs(int red, int green, int blue){
     for (int i = 0; i < m_ledBuffer.getLength(); i++) {
       // Sets the specified LED to the RGB values for red
-      m_ledBuffer.setRGB(i, 119,15,5);
+      m_ledBuffer.setRGB(i, red, green, blue);
     }
     m_led.setData(m_ledBuffer);
     m_led.start();
-
-    m_robotContainer.m_robotDrive.setHeading(180.0);
   }
 
   /**
@@ -65,7 +70,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Robot Heading", m_robotContainer.m_robotDrive.getHeading());
     SmartDashboard.putNumber("Shooter Current", m_robotContainer.getIntakeCurrent());
     //Displays horizontal offset angle, vertical offset angle, target area, target pose in camera space
-
+    SmartDashboard.putBoolean("field relative", m_robotContainer.fieldRelative);
   //   SmartDashboard.putNumber("TX (horizontal offset angle)", LimelightHelpers.getTX(""));
   //   SmartDashboard.putNumber("TY (vertical offset angle)", LimelightHelpers.getTY(""));
   //   SmartDashboard.putNumber("TX (no crosshair)", LimelightHelpers.getTXNC(""));

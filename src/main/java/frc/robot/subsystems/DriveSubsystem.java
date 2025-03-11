@@ -28,6 +28,7 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -61,6 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
     getHeadingRotation2d(), 
     getModulePositions(), 
     new Pose2d());
+  public static double aprilTagAngle = 0.0;
   // Odometry class for tracking robot pose
   // SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
   //     DriveConstants.kDriveKinematics,
@@ -194,21 +196,28 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public boolean angleAligned() {
+    return(Math.abs(getHeading() - aprilTagAngle) < 1.0);
+  }
+
+  public boolean translationAligned() {
+    return true;
+  }
+
   public void driveInSegments(Pose3d pose){
-    double angle;
     double w = Math.toDegrees(2*Math.asin(pose.getRotation().getQuaternion().getW()));
     double z = Math.toDegrees(2*Math.asin(pose.getRotation().getQuaternion().getZ()));
 
     if(DriverStation.getAlliance().toString().equals("Red")){
-      angle = z*(w/-w);
+      aprilTagAngle = -z*(w/-w);
     } else {
-      angle = w;
+      aprilTagAngle = -w;
     }
-    
-    if(Math.abs(getHeading()-angle) > 1.0){
-      turnToHeading(angle);
+    if (angleAligned() && translationAligned()) {
+      Robot.setLEDs(255, 0, 255);
     } else {
-      System.out.println("ALIGNED????????");
+      Robot.setLEDs(255, 0, 0);
+      turnToHeading(aprilTagAngle);
     }
   }
 
@@ -220,6 +229,9 @@ public class DriveSubsystem extends SubsystemBase {
     double tolerance  = 1.0;
     double turnSpeed;
     double error = heading - getHeading();
+    SmartDashboard.putNumber("Turning to heading", heading);
+    SmartDashboard.putNumber("Currently at heading", getHeading());
+    SmartDashboard.putNumber("Pose estimator rot deg", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees());
 
     if(error > 180) {
       error -= 360;

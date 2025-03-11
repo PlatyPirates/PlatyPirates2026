@@ -4,11 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.Intake;
 
-public class DriveMotorFromLimelight extends Command {
+public class MotorFromLimelight extends Command {
 
     private Intake _intake;
 
-    public DriveMotorFromLimelight(Intake intake) {
+    public MotorFromLimelight(Intake intake) {
         _intake = intake;
     }
 
