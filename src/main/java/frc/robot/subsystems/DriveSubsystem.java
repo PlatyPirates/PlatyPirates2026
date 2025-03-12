@@ -62,7 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
     getHeadingRotation2d(), 
     getModulePositions(), 
     new Pose2d());
-  public static double aprilTagAngle = 0.0;
+
   // Odometry class for tracking robot pose
   // SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
   //     DriveConstants.kDriveKinematics,
@@ -196,33 +196,42 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  public boolean angleAligned() {
+  public boolean angleAligned(double aprilTagAngle) {
     return(Math.abs(getHeading() - aprilTagAngle) < 1.0);
   }
 
-  public boolean translationAligned() {
-    return true;
+  public double getX(){
+    return m_poseEstimator.getEstimatedPosition().getTranslation().getX();
   }
 
-  public void driveInSegments(Pose3d pose){
-    double w = Math.toDegrees(2*Math.asin(pose.getRotation().getQuaternion().getW()));
-    double z = Math.toDegrees(2*Math.asin(pose.getRotation().getQuaternion().getZ()));
+  public double getY(){
+    return m_poseEstimator.getEstimatedPosition().getTranslation().getY();
+  }
 
-    if(DriverStation.getAlliance().toString().equals("Red")){
-      aprilTagAngle = -z*(w/-w);
-    } else {
-      aprilTagAngle = -w;
-    }
-    if (angleAligned() && translationAligned()) {
-      Robot.setLEDs(255, 0, 255);
-    } else {
-      Robot.setLEDs(255, 0, 0);
-      turnToHeading(aprilTagAngle);
-    }
+  public boolean translationAligned(Pose3d aprilTagPose, double xOffset, double yOffset) {
+    return(Math.abs(getX() - aprilTagPose.getX()) < 0.1) && (Math.abs(getY() - aprilTagPose.getY()) < 0.1);
   }
 
   public void moveToCoordinates(double x, double y){
+    double tolerance  = 0.1;
+    double xSpeed = 0, ySpeed = 0;
+    double xError = x - getX();
+    double yError = y - getY();
+
+    SmartDashboard.putNumber("xError", xError);
+    SmartDashboard.putNumber("yError", yError);
+
     
+    if(Math.abs(xError) > tolerance){
+      xSpeed = Math.signum(xError) * Constants.DriveConstants.ksPercent + Constants.DriveConstants.kpPercent * xError;
+    }
+
+    if(Math.abs(yError) > tolerance){
+      ySpeed = Math.signum(yError) * Constants.DriveConstants.ksPercent + Constants.DriveConstants.kpPercent * yError;
+    }
+
+    drive(xSpeed, ySpeed, 0, true);
+
   }
 
   public void turnToHeading(double heading){
