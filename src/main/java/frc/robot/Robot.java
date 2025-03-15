@@ -34,23 +34,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_led = new AddressableLED(0);
 
-    m_ledBuffer = new AddressableLEDBuffer(76); // Our full LED strip length
-    m_led.setLength(m_ledBuffer.getLength());
+    m_robotContainer.m_underglow.setSolid(119, 15, 5);
 
-    setLEDs(119, 15, 5);
-
-    m_robotContainer.m_robotDrive.setHeading(180.0);
-  }
-
-  public static void setLEDs(int red, int green, int blue){
-    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      // Sets the specified LED to the RGB values for red
-      m_ledBuffer.setRGB(i, red, green, blue);
-    }
-    m_led.setData(m_ledBuffer);
-    m_led.start();
+    m_robotContainer.m_robotDrive.resetHeading();
   }
 
   /**
@@ -66,22 +53,10 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("Robot Heading", m_robotContainer.m_robotDrive.getHeading());
-    SmartDashboard.putNumber("Shooter Current", m_robotContainer.getIntakeCurrent());
-    //Displays horizontal offset angle, vertical offset angle, target area, target pose in camera space
-    SmartDashboard.putBoolean("field relative", m_robotContainer.fieldRelative);
-  //   SmartDashboard.putNumber("TX (horizontal offset angle)", LimelightHelpers.getTX(""));
-  //   SmartDashboard.putNumber("TY (vertical offset angle)", LimelightHelpers.getTY(""));
-  //   SmartDashboard.putNumber("TX (no crosshair)", LimelightHelpers.getTXNC(""));
-  //   SmartDashboard.putNumber("TY (no crosshair)", LimelightHelpers.getTXNC(""));
-  //   SmartDashboard.putNumber("TA (target area)", LimelightHelpers.getTA(""));
-  //   SmartDashboard.putString("Target Pose - Camera Space", LimelightHelpers.getTargetPose_CameraSpace("") + "");
-  //  SmartDashboard.putNumber("TS (target skew in degrees)", LimelightHelpers.getT2DArray("")[15]);
-
-      //We can use getBotPose_wpi(our alliance color) to do smart field-oriented, I think
-
-
+    SmartDashboard.putNumber("Estimated Heading", m_robotContainer.m_robotDrive.getEstimatedHeading());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

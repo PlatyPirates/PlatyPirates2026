@@ -24,7 +24,6 @@ public class MotorFromLimelight extends Command {
         if (hasTarget) {
             double new_speed = LimelightHelpers.getTX("") * 0.03;
             _intake.setSpeed(new_speed);
-            System.out.println("See target, new speed is " + new_speed);
         }
         else {
             _intake.setSpeed(0);

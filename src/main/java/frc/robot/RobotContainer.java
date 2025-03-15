@@ -27,6 +27,7 @@ import frc.robot.commands.DriveRobotFromLimelight;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -52,6 +53,8 @@ public class RobotContainer {
   Intake m_intake = new Intake();
   Climber m_climber = new Climber();
 
+  LEDs m_underglow = new LEDs(76);
+
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
 
@@ -63,7 +66,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
-    autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive));
+    autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive, m_underglow));
     autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_intake));
     autoChooser.addOption("Do Nothing",
 
@@ -83,9 +86,9 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 fieldRelative);
 
-                Robot.setLEDs(119, 15, 5);
+                m_underglow.setSolid(119, 15, 5);
               },
-            m_robotDrive));
+            m_robotDrive, m_underglow));
 
     m_climber.setDefaultCommand(
       new RunCommand(
@@ -115,21 +118,37 @@ public class RobotContainer {
     m_driverController
       .leftBumper()
       .whileTrue(new RunCommand(
-        () -> m_robotDrive.zeroHeading(),
+        () -> m_robotDrive.resetHeading(),
         m_robotDrive));
 
      m_driverController
       .a()
-      .whileTrue(new DriveRobotFromLimelight(m_robotDrive)
+      .whileTrue(new DriveRobotFromLimelight(m_robotDrive, m_underglow)
       );
 
     m_driverController
       .leftTrigger()
-      .whileTrue(new RunCommand( () -> driveSpeedFactor = 0.3));
+      .whileTrue(new RunCommand( () -> {driveSpeedFactor = 0.3;
+      }));
+    m_driverController
+      .leftTrigger()
+      .onTrue(new RunCommand(() -> {
+        m_underglow.setFlash(255, 255, 0);
+      }, m_underglow));
 
     m_driverController
       .leftTrigger()
       .whileFalse(new RunCommand(() -> driveSpeedFactor = 1.0));
+    
+    m_driverController
+      .povLeft()
+      .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignLeft();}
+      ));
+
+    m_driverController
+      .povRight()
+      .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignRight();}
+      ));
 
     m_operatorController
       .leftBumper()
@@ -168,10 +187,14 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 false);
-
-                Robot.setLEDs(255, 255, 255);
               },
             m_robotDrive));
+
+    m_driverController
+      .rightTrigger()
+      .onTrue(new RunCommand(() -> {
+        m_underglow.setFlash(255, 255, 255);
+      }, m_underglow));
 
     m_operatorController
       .povUp()

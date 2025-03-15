@@ -26,6 +26,7 @@ public class AMoveEnd extends Command {
     @Override
     public void initialize(){
         startTime = Timer.getFPGATimestamp();
+       _drive.setHeading(180.0);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

@@ -5,6 +5,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.MAXSwerveModule;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -14,17 +15,20 @@ import edu.wpi.first.apriltag.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveRobotFromLimelight extends Command {
 
     private DriveSubsystem _DriveSubsystem;
+    private LEDs _LEDs;
     public static int aprilTagId = 0;
-    private AprilTagFieldLayout aprilTagFieldLayout;
-    private Pose3d aprilTagPose;
-    private double aprilTagAngle;
-    private double xOffset = 0.4;
-    private double yOffset = 0.0;
+    private static AprilTagFieldLayout aprilTagFieldLayout;
+    private static Pose3d aprilTagPose;
+    private static double aprilTagAngle;
+    private static double xOffset = -0.5;
+    private static double yOffset = 0.0; //0.46
+    private static double xOffsetMod, yOffsetMod;
 
     enum State {
         ALIGN_ANGLE,
@@ -34,19 +38,25 @@ public class DriveRobotFromLimelight extends Command {
 
     private static State state = State.ALIGN_ANGLE;
 
-    public DriveRobotFromLimelight(DriveSubsystem DriveSubsystem) {
+    public DriveRobotFromLimelight(DriveSubsystem DriveSubsystem, LEDs underglow) {
         _DriveSubsystem = DriveSubsystem;
         addRequirements(DriveSubsystem);
+        aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     }
 
     public void alignWithAprilTag(){
+        boolean angleAligned = _DriveSubsystem.angleAligned(aprilTagAngle);
+        boolean translationAligned = _DriveSubsystem.translationAligned(aprilTagPose, xOffsetMod, yOffsetMod);
+        SmartDashboard.putBoolean("Angle Aligned", angleAligned);
+        SmartDashboard.putBoolean("Translation Aligned", translationAligned);
+
         switch(state){
             case ALIGN_ANGLE:
-                Robot.setLEDs(255, 0, 0);
+                _LEDs.setSolid(255, 0, 0);
                 _DriveSubsystem.turnToHeading(aprilTagAngle);
 
-                if(_DriveSubsystem.angleAligned(aprilTagAngle)){
-                    if(_DriveSubsystem.translationAligned(aprilTagPose, xOffset, yOffset)){
+                if(angleAligned){
+                    if(translationAligned){
                         state = State.FINISHED;
                     } else {
                         state = State.ALIGN_TRANSLATION;
@@ -54,17 +64,31 @@ public class DriveRobotFromLimelight extends Command {
                 }
                 break;
             case ALIGN_TRANSLATION:
-                Robot.setLEDs(255, 0, 255);
-                _DriveSubsystem.moveToCoordinates(aprilTagPose.getX() + xOffset, aprilTagPose.getY() + yOffset);
+                _LEDs.setSolid(255, 0, 255);
+                _DriveSubsystem.moveToCoordinates(aprilTagPose.getX() + xOffsetMod, aprilTagPose.getY() + yOffsetMod);
 
-                if(_DriveSubsystem.translationAligned(aprilTagPose, xOffset, yOffset)){
+                if(translationAligned){
                     state = State.ALIGN_ANGLE;
                 }
                 break;
             case FINISHED:
-                Robot.setLEDs(0, 255, 0);
+                _LEDs.setSolid(0, 255, 0);
+                _DriveSubsystem.drive(0.075, 0, 0, false);
                 break;
         }
+    }
+
+    public static void alignLeft(){
+        double yTemp = yOffset + 0.15;
+        xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yTemp*Math.sin(Math.toRadians(aprilTagAngle));
+        yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
+
+    }
+
+    public static void alignRight(){
+        double yTemp = yOffset - 0.17;
+        xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yTemp*Math.sin(Math.toRadians(aprilTagAngle));
+        yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
     }
 
     // Called when the command is initially scheduled.
@@ -72,7 +96,6 @@ public class DriveRobotFromLimelight extends Command {
     public void initialize() {
         if(LimelightHelpers.getTV("limelight")){
             aprilTagId = Math.toIntExact(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getInteger(0));
-            aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
             aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
 
             double w = Math.toDegrees(2*Math.asin(aprilTagPose.getRotation().getQuaternion().getW()));
@@ -83,6 +106,8 @@ public class DriveRobotFromLimelight extends Command {
             } else {
                 aprilTagAngle = -w;
             }
+            xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yOffset*Math.sin(Math.toRadians(aprilTagAngle));
+            yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yOffset*Math.cos(Math.toRadians(aprilTagAngle));
         }
 
         state = State.ALIGN_ANGLE;
@@ -96,16 +121,6 @@ public class DriveRobotFromLimelight extends Command {
         } else {
             System.err.println("No AprilTag detected.");
         }
-        // double kP = .035;
-        // double targetingAngularVelocity = LimelightHelpers.getTX("")*kP;
-        // targetingAngularVelocity *= -1.0*DriveConstants.kMaxAngularSpeed;
-
-        // boolean hasTarget = LimelightHelpers.getTV("");
-        // if (hasTarget && (LimelightHelpers.getTX("") != 0)) {
-        //      _DriveSubsystem.drive(0.03*LimelightHelpers.getTX(""), 0, targetingAngularVelocity, true);
-        // } else if(hasTarget && (LimelightHelpers.getTX("") == 0)){
-        //     _DriveSubsystem.drive(0, 0, 0, true);
-        // }
     }
        
     
@@ -119,6 +134,6 @@ public class DriveRobotFromLimelight extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return state == State.FINISHED;
+        return false;
     }
 }

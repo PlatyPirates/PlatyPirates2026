@@ -59,9 +59,11 @@ public class DriveSubsystem extends SubsystemBase {
   private final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanId);
   private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
     Constants.DriveConstants.kDriveKinematics, 
-    getHeadingRotation2d(), 
+    Rotation2d.fromDegrees(getHeading()), 
     getModulePositions(), 
     new Pose2d());
+
+  private double angleTolerance = 0.5;
 
   // Odometry class for tracking robot pose
   // SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -122,7 +124,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void updateOdometry() { //From Limelight example code
     //Using MegaTag2
     m_poseEstimator.update(
-        m_gyro.getRotation2d(),
+        Rotation2d.fromDegrees(getHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -131,22 +133,37 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
     boolean doRejectUpdate = false;
-    LimelightHelpers.SetRobotOrientation("limelight", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-    if(Math.abs(m_gyro.getAngularVelocityZWorld().getValueAsDouble()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-    {
-      doRejectUpdate = true;
-    }
-    if(mt2 == null || mt2.tagCount == 0)
-    {
-      doRejectUpdate = true;
-    }
-    if(!doRejectUpdate)
-    {
-      m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-      m_poseEstimator.addVisionMeasurement(
-          mt2.pose,
-          mt2.timestampSeconds);
+
+    LimelightHelpers.SetRobotOrientation("limelight", getEstimatedHeading(), 0, 0, 0, 0, 0);
+    //LimelightHelpers.SetRobotOrientation("limelight", getHeading(), 0, 0, 0, 0, 0);
+    
+    LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+    try{
+      if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+      {
+        if(mt1.rawFiducials[0].ambiguity > .7)
+        {
+          doRejectUpdate = true;
+        }
+        if(mt1.rawFiducials[0].distToCamera > 3)
+        {
+          doRejectUpdate = true;
+        }
+      }
+      if(mt1.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+
+      if(!doRejectUpdate)
+      {
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+        m_poseEstimator.addVisionMeasurement(
+            mt1.pose,
+            mt1.timestampSeconds);
+      }
+    } catch (NullPointerException e){
+      System.err.println("Waiting on Limelight to boot...");
     }
   }
 
@@ -197,7 +214,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public boolean angleAligned(double aprilTagAngle) {
-    return(Math.abs(getHeading() - aprilTagAngle) < 1.0);
+    return(Math.abs(getEstimatedHeading() - aprilTagAngle) < angleTolerance);
   }
 
   public double getX(){
@@ -209,38 +226,41 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public boolean translationAligned(Pose3d aprilTagPose, double xOffset, double yOffset) {
-    return(Math.abs(getX() - aprilTagPose.getX()) < 0.1) && (Math.abs(getY() - aprilTagPose.getY()) < 0.1);
+    return(Math.abs(aprilTagPose.getX() + xOffset - getX()) < 0.01) && (Math.abs(aprilTagPose.getY() + yOffset - getY()) < 0.01);
   }
 
   public void moveToCoordinates(double x, double y){
-    double tolerance  = 0.1;
+    double tolerance  = 0.01;
     double xSpeed = 0, ySpeed = 0;
     double xError = x - getX();
     double yError = y - getY();
-
-    SmartDashboard.putNumber("xError", xError);
-    SmartDashboard.putNumber("yError", yError);
-
+    double ksPercent = 0.035;
+    double kpPercent = 0.070;
     
     if(Math.abs(xError) > tolerance){
-      xSpeed = Math.signum(xError) * Constants.DriveConstants.ksPercent + Constants.DriveConstants.kpPercent * xError;
+      xSpeed = Math.signum(xError) * ksPercent + kpPercent * xError;
     }
 
     if(Math.abs(yError) > tolerance){
-      ySpeed = Math.signum(yError) * Constants.DriveConstants.ksPercent + Constants.DriveConstants.kpPercent * yError;
+      ySpeed = Math.signum(yError) * ksPercent + kpPercent * yError;
     }
+
+    
+    SmartDashboard.putNumber("xError", xSpeed);
+    SmartDashboard.putNumber("yError", ySpeed);
 
     drive(xSpeed, ySpeed, 0, true);
 
   }
 
+  public void resetHeading(){
+    setHeading(0.0);
+    m_poseEstimator.resetRotation(new Rotation2d(0.0));
+  }
+
   public void turnToHeading(double heading){
-    double tolerance  = 1.0;
     double turnSpeed;
-    double error = heading - getHeading();
-    SmartDashboard.putNumber("Turning to heading", heading);
-    SmartDashboard.putNumber("Currently at heading", getHeading());
-    SmartDashboard.putNumber("Pose estimator rot deg", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees());
+    double error = heading - getEstimatedHeading();
 
     if(error > 180) {
       error -= 360;
@@ -249,7 +269,7 @@ public class DriveSubsystem extends SubsystemBase {
       error += 360;
     }
     
-    if(Math.abs(error) > tolerance){
+    if(Math.abs(error) > angleTolerance){
       turnSpeed = Math.signum(error) * Constants.DriveConstants.ksPercent + Constants.DriveConstants.kpPercent * error;
     }
     else{
@@ -312,8 +332,12 @@ public class DriveSubsystem extends SubsystemBase {
     return m_gyro.getYaw().getValueAsDouble();
   }
 
+  public double getEstimatedHeading(){
+    return m_poseEstimator.getEstimatedPosition().getRotation().getDegrees();
+  }
+
   public Rotation2d getHeadingRotation2d(){
-    return Rotation2d.fromDegrees(getHeading());
+    return Rotation2d.fromDegrees(getEstimatedHeading());
   }
 
   /**
