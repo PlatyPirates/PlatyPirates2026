@@ -24,9 +24,10 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AMoveEnd;
 import frc.robot.commands.AMoveLowCoral;
 import frc.robot.commands.DriveRobotFromLimelight;
+import frc.robot.commands.LoadCoral;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.LEDs;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -34,6 +35,9 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+import com.revrobotics.*;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -50,10 +54,11 @@ public class RobotContainer {
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
-  Intake m_intake = new Intake();
+  Shooter m_shooter = new Shooter();
   Climber m_climber = new Climber();
 
   LEDs m_underglow = new LEDs(76);
+
 
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
@@ -67,12 +72,12 @@ public class RobotContainer {
 
     autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
     autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive, m_underglow));
-    autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_intake));
+    autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_shooter));
     autoChooser.addOption("Do Nothing",
 
     new RunCommand(
       ()-> m_robotDrive.drive(0.0,0.0,0.0,true), m_robotDrive)
-  );
+    );
   
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
@@ -136,7 +141,6 @@ public class RobotContainer {
     m_driverController
       .leftTrigger()
       .whileTrue(new RunCommand(() -> {
-        System.out.println("called");
         m_underglow.setFlash(255, 255, 0);
       }, m_underglow));
 
@@ -187,9 +191,9 @@ public class RobotContainer {
       .whileTrue(
         new RunCommand(
             () -> {m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getLeftY(),3)*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getLeftX(), 3)*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getRightX(), 3)*driveSpeedFactor, OIConstants.kDriveDeadband),
                 false);
               },
             m_robotDrive));
@@ -204,29 +208,32 @@ public class RobotContainer {
       .povUp()
       .whileTrue(new RunCommand(
         () -> {
-          m_intake.setSpeed(0.2);
-        }));
+          m_shooter.setSpeed(0.2);
+        }, m_underglow));
 
     m_operatorController
       .povDown()
       .whileTrue(new RunCommand(
         () -> {
-          m_intake.setSpeed(-0.5);
+          m_shooter.setSpeed(-0.5);
         }));
 
     m_operatorController
       .povUp()
       .onFalse(new RunCommand(
         () -> {
-          m_intake.setSpeed(0.0);
+          m_shooter.setSpeed(0.0);
         }));
 
     m_operatorController
       .povDown()
       .onFalse(new RunCommand(
         () -> {
-          m_intake.setSpeed(0.0);
+          m_shooter.setSpeed(0.0);
         }));
+    m_operatorController
+      .povRight()
+      .whileTrue(new LoadCoral(m_shooter, m_underglow));
   }
 
   /**
@@ -277,7 +284,4 @@ public class RobotContainer {
     */
   }
 
-  public double getIntakeCurrent(){
-    return m_intake.getOutputCurrent();
-  }
 }
