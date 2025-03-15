@@ -85,16 +85,19 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 fieldRelative);
-
-                m_underglow.setSolid(119, 15, 5);
               },
-            m_robotDrive, m_underglow));
+            m_robotDrive));
 
     m_climber.setDefaultCommand(
       new RunCommand(
         () -> m_climber.setChainSpeed(-m_operatorController.getRightY()*0.15),
         m_climber
         )
+    );
+    m_underglow.setDefaultCommand(
+      new RunCommand(() -> {
+        m_underglow.setSolid(119, 15, 5);
+      }, m_underglow)
     );
   }
 
@@ -132,7 +135,8 @@ public class RobotContainer {
       }));
     m_driverController
       .leftTrigger()
-      .onTrue(new RunCommand(() -> {
+      .whileTrue(new RunCommand(() -> {
+        System.out.println("called");
         m_underglow.setFlash(255, 255, 0);
       }, m_underglow));
 
@@ -192,7 +196,7 @@ public class RobotContainer {
 
     m_driverController
       .rightTrigger()
-      .onTrue(new RunCommand(() -> {
+      .whileTrue(new RunCommand(() -> {
         m_underglow.setFlash(255, 255, 255);
       }, m_underglow));
 

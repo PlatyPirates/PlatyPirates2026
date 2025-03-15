@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.m_underglow.setSolid(119, 15, 5);
 
-    m_robotContainer.m_robotDrive.resetHeading();
+    m_robotContainer.m_robotDrive.zeroHeading();
   }
 
   /**

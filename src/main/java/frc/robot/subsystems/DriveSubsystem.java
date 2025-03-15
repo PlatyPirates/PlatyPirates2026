@@ -30,6 +30,9 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.ArrayList;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -59,7 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanId);
   private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
     Constants.DriveConstants.kDriveKinematics, 
-    Rotation2d.fromDegrees(getHeading()), 
+    Rotation2d.fromDegrees(0), 
     getModulePositions(), 
     new Pose2d());
 
@@ -135,7 +138,6 @@ public class DriveSubsystem extends SubsystemBase {
     boolean doRejectUpdate = false;
 
     LimelightHelpers.SetRobotOrientation("limelight", getEstimatedHeading(), 0, 0, 0, 0, 0);
-    //LimelightHelpers.SetRobotOrientation("limelight", getHeading(), 0, 0, 0, 0, 0);
     
     LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
     try{
@@ -203,7 +205,7 @@ public class DriveSubsystem extends SubsystemBase {
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()))
+                m_poseEstimator.getEstimatedPosition().getRotation())
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -254,7 +256,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void resetHeading(){
-    setHeading(0.0);
+    zeroHeading();
     m_poseEstimator.resetRotation(new Rotation2d(0.0));
   }
 

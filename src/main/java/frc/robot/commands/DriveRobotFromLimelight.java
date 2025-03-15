@@ -40,7 +40,8 @@ public class DriveRobotFromLimelight extends Command {
 
     public DriveRobotFromLimelight(DriveSubsystem DriveSubsystem, LEDs underglow) {
         _DriveSubsystem = DriveSubsystem;
-        addRequirements(DriveSubsystem);
+        _LEDs = underglow;
+        addRequirements(DriveSubsystem, underglow);
         aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     }
 

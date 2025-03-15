@@ -32,6 +32,7 @@ public class LEDs extends SubsystemBase{
         color2 = null;
         color1 = new Color(red, green, blue);
         solid = true;
+        setLEDs(red, green, blue);
     }
     public void setFlash(int red, int green, int blue){
         Color newColor = new Color(red, green, blue);
@@ -40,6 +41,7 @@ public class LEDs extends SubsystemBase{
                 color2 = newColor;
             } else {
                 color1 = newColor;
+                setLEDs(red, green, blue);
             }
         }
         solid = false;
