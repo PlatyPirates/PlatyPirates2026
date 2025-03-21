@@ -21,14 +21,8 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AMoveEnd;
-import frc.robot.commands.AMoveLowCoral;
-import frc.robot.commands.DriveRobotFromLimelight;
-import frc.robot.commands.LoadCoral;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.LEDs;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -56,6 +50,8 @@ public class RobotContainer {
 
   Shooter m_shooter = new Shooter();
   Climber m_climber = new Climber();
+  Elevator m_elevator = new Elevator();
+  Intake m_intake = new Intake();
 
   LEDs m_underglow = new LEDs(76);
 
@@ -95,7 +91,9 @@ public class RobotContainer {
 
     m_climber.setDefaultCommand(
       new RunCommand(
-        () -> m_climber.setChainSpeed(-m_operatorController.getRightY()*0.15),
+        () -> {m_climber.setChainSpeed(-m_operatorController.getRightY()*0.15);
+          m_climber.setMotorSpeed(0.0);
+        },
         m_climber
         )
     );
@@ -104,6 +102,21 @@ public class RobotContainer {
         m_underglow.setSolid(119, 15, 5);
       }, m_underglow)
     );
+
+    m_elevator.setDefaultCommand(
+        new RunCommand(
+        () -> {m_elevator.setSpeed(-m_operatorController.getLeftY());
+        m_elevator.setActuatorSpeed(0.0);
+        }
+      , m_elevator));
+
+    m_shooter.setDefaultCommand(new RunCommand(() -> {
+      m_shooter.setSpeed(0.0);
+    }, m_shooter));
+
+    m_intake.setDefaultCommand(new RunCommand( () -> {
+      m_intake.setSpeed(0.0);
+    }, m_intake));
   }
 
   /**
@@ -120,8 +133,7 @@ public class RobotContainer {
     m_driverController
       .b()
       .whileTrue(new RunCommand(
-        () -> m_robotDrive.setX(),
-            m_robotDrive));
+        () -> m_robotDrive.setX(), m_robotDrive));
 
     m_driverController
       .leftBumper()
@@ -164,13 +176,7 @@ public class RobotContainer {
         () -> {
           m_climber.setMotorSpeed(1.0);
         }));
-
-    m_operatorController
-      .leftBumper()
-      .whileFalse(new RunCommand(
-        () -> {
-          m_climber.setMotorSpeed(0.0);
-        }));
+        
 
     m_operatorController
       .start()
@@ -179,13 +185,13 @@ public class RobotContainer {
           m_climber.setMotorSpeed(-1.0);
         }));
 
-    m_operatorController
+    m_operatorController //TODO test without this? why do we need it?
       .start()
       .whileFalse(new RunCommand(
         () -> {
           m_climber.setMotorSpeed(0.0);
         }));
-
+    
     m_driverController
       .rightTrigger()
       .whileTrue(
@@ -205,35 +211,51 @@ public class RobotContainer {
       }, m_underglow));
 
     m_operatorController
-      .povUp()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_shooter.setSpeed(0.2);
-        }, m_underglow));
-
-    m_operatorController
-      .povDown()
+      .y()
       .whileTrue(new RunCommand(
         () -> {
           m_shooter.setSpeed(-0.5);
+        }, m_underglow));
+
+    m_operatorController
+      .a()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_shooter.setSpeed(0.5);
         }));
 
     m_operatorController
-      .povUp()
+      .y()
       .onFalse(new RunCommand(
         () -> {
           m_shooter.setSpeed(0.0);
         }));
 
     m_operatorController
+      .a()
+      .onFalse(new RunCommand(
+        () -> {
+          m_shooter.setSpeed(0.0);
+        }));
+    m_operatorController
+      .b()
+      .whileTrue(new LoadCoral(m_shooter, m_underglow, m_intake));
+
+    m_driverController
       .povDown()
-      .onFalse(new RunCommand(
-        () -> {
-          m_shooter.setSpeed(0.0);
-        }));
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.setActuatorSpeed(1.0); }, m_elevator));
+
+    m_driverController
+      .povUp()
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.setActuatorSpeed(-1.0); }, m_elevator));
+    
     m_operatorController
-      .povRight()
-      .whileTrue(new LoadCoral(m_shooter, m_underglow));
+      .povLeft()
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.l2();
+      }, m_elevator));
   }
 
   /**

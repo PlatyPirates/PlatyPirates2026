@@ -5,6 +5,7 @@ import frc.robot.subsystems.*;
 public class LoadCoral extends Command{
     //private Intake _Intake
     private Shooter _Shooter;
+    private Intake _Intake;
     private LEDs _LEDs;
 
     enum State {
@@ -15,8 +16,9 @@ public class LoadCoral extends Command{
 
     private static State state = State.INTAKING;
 
-    public LoadCoral(Shooter shooter, LEDs leds){
+    public LoadCoral(Shooter shooter, LEDs leds, Intake intake){
         _Shooter = shooter;
+        _Intake = intake;
         _LEDs = leds;
         addRequirements(shooter);
         addRequirements(leds);
@@ -31,16 +33,17 @@ public class LoadCoral extends Command{
     public void execute(){
         switch(state){
             case INTAKING:
-                //run the intake
                 _LEDs.setSolid(255, 255, 0);
                 if(_Shooter.distanceTriggered()){
                     state = State.LOADING;
                 }
                 break;
             case LOADING:
-                //run the shooter
+                _Shooter.setSpeed(-0.1);
+                _Intake.setSpeed(1.0);
                 _LEDs.setSolid(255, 0, 255);
                 if(!_Shooter.distanceTriggered()){
+                    _Shooter.setSpeed(0.0);
                     state = State.FINISHED;
                 }
                 break;

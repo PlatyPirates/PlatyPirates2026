@@ -105,8 +105,10 @@ public class DriveRobotFromLimelight extends Command {
             if(DriverStation.getAlliance().toString().equals("Red")){
                 aprilTagAngle = -z*(w/-w);
             } else {
-                aprilTagAngle = -w;
+                aprilTagAngle = -w + 180;
             }
+
+            System.out.println(aprilTagAngle);
             xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yOffset*Math.sin(Math.toRadians(aprilTagAngle));
             yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yOffset*Math.cos(Math.toRadians(aprilTagAngle));
         }

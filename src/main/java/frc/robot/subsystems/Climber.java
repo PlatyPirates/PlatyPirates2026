@@ -10,6 +10,8 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -17,6 +19,7 @@ import frc.robot.Constants.DriveConstants;
 public class Climber extends SubsystemBase {
     private final SparkMax m_climberMotorChainSparkMax;
     private final SparkMax m_climberMotorRopeSparkMax;
+    private final DigitalInput m_limitSwitch;
 
     // declare encoder
     private Encoder climberEncoderChain;
@@ -25,6 +28,8 @@ public class Climber extends SubsystemBase {
         m_climberMotorChainSparkMax = new SparkMax(DriveConstants.kClimberMotorChainCanId, MotorType.kBrushless);
 
         m_climberMotorRopeSparkMax = new SparkMax(DriveConstants.kClimberMotorRopeCanId, MotorType.kBrushless);
+
+        m_limitSwitch = new DigitalInput(2);
 
         SoftLimitConfig softLimit = new SoftLimitConfig();
         softLimit.forwardSoftLimitEnabled(false);
@@ -45,11 +50,23 @@ public class Climber extends SubsystemBase {
         climberEncoderChain = new Encoder(0,1);
     }
     public void setChainSpeed(double speedChain){
-        m_climberMotorChainSparkMax.set(speedChain);
+        if(speedChain < 0){
+            if(!isLimited()){
+                m_climberMotorChainSparkMax.set(speedChain);
+            } else {
+                m_climberMotorChainSparkMax.set(0.0);
+            }
+        } else {
+            m_climberMotorChainSparkMax.set(speedChain);
+        }
     }
 
     public void setMotorSpeed(double motorSpeed){
-        m_climberMotorRopeSparkMax.set(motorSpeed);
+        m_climberMotorRopeSparkMax.set(motorSpeed);    
+    }
+
+    public boolean isLimited(){
+        return !m_limitSwitch.get();
     }
 
 }
