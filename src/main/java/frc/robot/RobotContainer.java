@@ -17,6 +17,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -59,6 +61,8 @@ public class RobotContainer {
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
 
+  int invert = 1;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -82,9 +86,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> {m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
                 fieldRelative);
               },
             m_robotDrive));
@@ -197,9 +201,9 @@ public class RobotContainer {
       .whileTrue(
         new RunCommand(
             () -> {m_robotDrive.drive(
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getLeftY(),3)*driveSpeedFactor, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getLeftX(), 3)*driveSpeedFactor, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getRightX(), 3)*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
                 false);
               },
             m_robotDrive));
@@ -256,6 +260,18 @@ public class RobotContainer {
       .whileTrue(new RunCommand(() -> {
         m_elevator.l2();
       }, m_elevator));
+
+    m_operatorController
+      .povUp()
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.l4();
+      }, m_elevator));
+
+    m_operatorController
+      .povRight()
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.l3();
+      }, m_elevator));
   }
 
   /**
@@ -304,6 +320,12 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
     */
+  }
+
+  public void updateInversion(){
+    if(DriverStation.getAlliance().get() == Alliance.Red){
+      invert = -1;
+    }
   }
 
 }

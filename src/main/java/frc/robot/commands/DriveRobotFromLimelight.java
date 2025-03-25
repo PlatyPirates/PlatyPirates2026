@@ -23,7 +23,6 @@ public class DriveRobotFromLimelight extends Command {
     private DriveSubsystem _DriveSubsystem;
     private LEDs _LEDs;
     public static int aprilTagId = 0;
-    private static AprilTagFieldLayout aprilTagFieldLayout;
     private static Pose3d aprilTagPose;
     private static double aprilTagAngle;
     private static double xOffset = -0.5;
@@ -42,7 +41,6 @@ public class DriveRobotFromLimelight extends Command {
         _DriveSubsystem = DriveSubsystem;
         _LEDs = underglow;
         addRequirements(DriveSubsystem, underglow);
-        aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
     }
 
     public void alignWithAprilTag(){
@@ -97,16 +95,18 @@ public class DriveRobotFromLimelight extends Command {
     public void initialize() {
         if(LimelightHelpers.getTV("limelight")){
             aprilTagId = Math.toIntExact(NetworkTableInstance.getDefault().getTable("limelight").getEntry("tid").getInteger(0));
-            aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
+            // aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
 
-            double w = Math.toDegrees(2*Math.asin(aprilTagPose.getRotation().getQuaternion().getW()));
-            double z = Math.toDegrees(2*Math.asin(aprilTagPose.getRotation().getQuaternion().getZ()));
-    
-            if(DriverStation.getAlliance().toString().equals("Red")){
-                aprilTagAngle = -z*(w/-w);
-            } else {
-                aprilTagAngle = -w + 180;
-            }
+            // double w = Math.toDegrees(2*Math.asin(aprilTagPose.getRotation().getQuaternion().getW()));
+            // double z = Math.toDegrees(2*Math.asin(aprilTagPose.getRotation().getQuaternion().getZ()));
+
+            // if(DriverStation.getAlliance().toString().equals("Red")){
+            //     aprilTagAngle = -z*(w/-w);
+            // } else {
+            //     aprilTagAngle = -w + 180;
+            // }
+
+            aprilTagAngle = getAprilTagAngle(aprilTagId);
 
             System.out.println(aprilTagAngle);
             xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yOffset*Math.sin(Math.toRadians(aprilTagAngle));
@@ -138,5 +138,34 @@ public class DriveRobotFromLimelight extends Command {
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    public int getAprilTagAngle(int id){
+        switch(id){
+            case 1: return -54;
+            case 2: return 54;
+            case 3: return 90;
+            case 4: return 180;
+            case 5: return 180;
+            case 6: return 120;
+            case 7: return 180;
+            case 8: return -120;
+            case 9: return -60;
+            case 10: return 0;
+            case 11: return 60;
+
+            case 12: return -126;
+            case 13: return 126;
+            case 14: return 0;
+            case 15: return 0;
+            case 16: return -90;
+            case 17: return 60;
+            case 18: return 0;
+            case 19: return -60;
+            case 20: return -120;
+            case 21: return 180;
+            case 22: return 120;
+        }
+        return -1;
     }
 }

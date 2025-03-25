@@ -75,6 +75,8 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
+    m_robotContainer.updateInversion();
+
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
