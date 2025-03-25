@@ -34,6 +34,7 @@ public class LoadCoral extends Command{
         switch(state){
             case INTAKING:
                 _LEDs.setSolid(255, 255, 0);
+                _Intake.setSpeed(1.0);
                 if(_Shooter.distanceTriggered()){
                     state = State.LOADING;
                 }

@@ -13,6 +13,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -23,19 +25,24 @@ import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.Robot;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class DriveSubsystem extends SubsystemBase {
+  Field2d field = new Field2d();
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
@@ -60,9 +67,9 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   private final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanId);
-  private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
+  private SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
     Constants.DriveConstants.kDriveKinematics, 
-    Rotation2d.fromDegrees(0), 
+    Rotation2d.fromDegrees(0),
     getModulePositions(), 
     new Pose2d());
 
@@ -82,6 +89,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    SmartDashboard.putData(field);
+
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
   }
@@ -98,6 +107,15 @@ public class DriveSubsystem extends SubsystemBase {
     //         m_rearLeft.getPosition(),
     //         m_rearRight.getPosition()
     //     });
+    RobotModeTriggers.autonomous().onTrue(new RunCommand(() -> {
+      if(DriverStation.getAlliance().get() == Alliance.Blue){
+        m_poseEstimator.resetRotation(Rotation2d.fromDegrees(180.0));
+        //Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
+        //Pose2d newPose = currentPose.transformBy(new Transform2d(0.0, 0.0, new Rotation2d(180.0)));
+        //m_poseEstimator.resetPose(newPose);
+        //m_gyro.setYaw(180.0);
+      }
+    }));
     updateOdometry();
 
     SmartDashboard.putNumber("Pose Estimator: X Translation", m_poseEstimator.getEstimatedPosition().getTranslation().getX());
@@ -125,15 +143,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void updateOdometry() { //From Limelight example code
-    //Using MegaTag2
-    m_poseEstimator.update(
-        Rotation2d.fromDegrees(getHeading()),
-        new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
-          m_rearRight.getPosition()
-        });
 
     boolean doRejectUpdate = false;
 
@@ -164,9 +173,17 @@ public class DriveSubsystem extends SubsystemBase {
             mt1.pose,
             mt1.timestampSeconds);
       }
-    } catch (NullPointerException e){
-      System.err.println("Waiting on Limelight to boot...");
-    }
+    } catch (NullPointerException e){}
+
+    m_poseEstimator.update(
+        Rotation2d.fromDegrees(getHeading()),
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
+        });
+    field.setRobotPose(getPose());
   }
 
   /**
