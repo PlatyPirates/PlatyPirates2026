@@ -22,12 +22,12 @@ public class Elevator extends SubsystemBase{
     private RelativeEncoder encoderLeft;
     private RelativeEncoder encoderRight;
     private final PWMSparkMax m_intakeActuator;
-    private final double maxHeight = 87.0;
+    private final double maxHeight = 84.0;
 
     private final double l1 = 0.0;
     private final double l2 = 29.57;
-    private final double l3 = 0.0;
-    private final double l4 = 0.0;
+    private final double l3 = 50.0;
+    private final double l4 = 84.0;
     
     private final PIDController pid;
 
@@ -46,9 +46,6 @@ public class Elevator extends SubsystemBase{
         configLeft.openLoopRampRate(2);
         configRight.openLoopRampRate(2);
 
-        configLeft.follow(m_rightSparkMax, true);
-        
-
         m_leftSparkMax.configure(configLeft, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
         m_rightSparkMax.configure(configRight, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 
@@ -57,6 +54,14 @@ public class Elevator extends SubsystemBase{
 
     public void l2() {
         goToHeight(l2);
+    }
+
+    public void l4() {
+        goToHeight(l4);
+    }
+
+    public void l3() {
+        goToHeight(l3);
     }
 
     public void zero(){
@@ -76,7 +81,7 @@ public class Elevator extends SubsystemBase{
         }
         if((!isZero() || speed > 0) && (!(Math.abs(getHeight()) >= maxHeight) || speed < 0)){
             m_leftSparkMax.set(speed);
-            m_rightSparkMax.set(-speed);
+            m_rightSparkMax.set(speed);
         } else {
             m_leftSparkMax.set(0.0);
             m_rightSparkMax.set(0.0);
