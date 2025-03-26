@@ -110,6 +110,7 @@ public class DriveSubsystem extends SubsystemBase {
     RobotModeTriggers.autonomous().onTrue(new RunCommand(() -> {
       if(DriverStation.getAlliance().get() == Alliance.Blue){
         m_poseEstimator.resetRotation(Rotation2d.fromDegrees(180.0));
+        setHeading(180.0);
         //Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
         //Pose2d newPose = currentPose.transformBy(new Transform2d(0.0, 0.0, new Rotation2d(180.0)));
         //m_poseEstimator.resetPose(newPose);
