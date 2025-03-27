@@ -91,6 +91,20 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     SmartDashboard.putData(field);
 
+    RobotModeTriggers.autonomous().onTrue(new RunCommand(() -> {
+      if(DriverStation.getAlliance().get() == Alliance.Blue){
+        m_poseEstimator.resetRotation(Rotation2d.fromDegrees(180.0));
+        setHeading(180.0);
+        //Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
+        //Pose2d newPose = currentPose.transformBy(new Transform2d(0.0, 0.0, new Rotation2d(180.0)));
+        //m_poseEstimator.resetPose(newPose);
+        //m_gyro.setYaw(180.0);
+      } else {
+        m_poseEstimator.resetRotation(Rotation2d.fromDegrees(0.0));
+        setHeading(0.0);
+      }
+    }));
+
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
   }
@@ -107,16 +121,6 @@ public class DriveSubsystem extends SubsystemBase {
     //         m_rearLeft.getPosition(),
     //         m_rearRight.getPosition()
     //     });
-    RobotModeTriggers.autonomous().onTrue(new RunCommand(() -> {
-      if(DriverStation.getAlliance().get() == Alliance.Blue){
-        m_poseEstimator.resetRotation(Rotation2d.fromDegrees(180.0));
-        setHeading(180.0);
-        //Pose2d currentPose = m_poseEstimator.getEstimatedPosition();
-        //Pose2d newPose = currentPose.transformBy(new Transform2d(0.0, 0.0, new Rotation2d(180.0)));
-        //m_poseEstimator.resetPose(newPose);
-        //m_gyro.setYaw(180.0);
-      }
-    }));
     updateOdometry();
 
     SmartDashboard.putNumber("Pose Estimator: X Translation", m_poseEstimator.getEstimatedPosition().getTranslation().getX());
