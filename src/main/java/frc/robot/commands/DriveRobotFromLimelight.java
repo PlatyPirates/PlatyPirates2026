@@ -51,7 +51,7 @@ public class DriveRobotFromLimelight extends Command {
 
         switch(state){
             case ALIGN_ANGLE:
-                _LEDs.setSolid(255, 0, 0);
+                _LEDs.red();
                 _DriveSubsystem.turnToHeading(aprilTagAngle);
 
                 if(angleAligned){
@@ -63,7 +63,7 @@ public class DriveRobotFromLimelight extends Command {
                 }
                 break;
             case ALIGN_TRANSLATION:
-                _LEDs.setSolid(255, 0, 255);
+                _LEDs.purple();
                 _DriveSubsystem.moveToCoordinates(aprilTagPose.getX() + xOffsetMod, aprilTagPose.getY() + yOffsetMod);
 
                 if(translationAligned){
@@ -71,7 +71,7 @@ public class DriveRobotFromLimelight extends Command {
                 }
                 break;
             case FINISHED:
-                _LEDs.setSolid(0, 255, 0);
+                _LEDs.green();
                 _DriveSubsystem.drive(0.075, 0, 0, false);
                 break;
         }

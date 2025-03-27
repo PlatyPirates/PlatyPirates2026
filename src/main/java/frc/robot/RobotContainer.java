@@ -17,6 +17,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
@@ -103,7 +104,11 @@ public class RobotContainer {
     );
     m_underglow.setDefaultCommand(
       new RunCommand(() -> {
-        m_underglow.setSolid(119, 15, 5);
+        if(!m_climber.isLimited()){
+          m_underglow.maroon();
+        } else {
+          m_underglow.scrollingRainbow();
+        }
       }, m_underglow)
     );
 
@@ -157,7 +162,7 @@ public class RobotContainer {
     m_driverController
       .leftTrigger()
       .whileTrue(new RunCommand(() -> {
-        m_underglow.setFlash(255, 255, 0);
+        m_underglow.blink(Color.kYellow);
       }, m_underglow));
 
     m_driverController
@@ -211,7 +216,7 @@ public class RobotContainer {
     m_driverController
       .rightTrigger()
       .whileTrue(new RunCommand(() -> {
-        m_underglow.setFlash(255, 255, 255);
+        m_underglow.blink(Color.kWhite);
       }, m_underglow));
 
     m_operatorController
@@ -272,6 +277,7 @@ public class RobotContainer {
       .whileTrue(new RunCommand(() -> {
         m_elevator.l3();
       }, m_elevator));
+
   }
 
   /**

@@ -5,10 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
@@ -20,6 +22,8 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+
+  private SendableChooser<Command> ledTester = new SendableChooser<Command>();
 
   private RobotContainer m_robotContainer;
 
@@ -33,9 +37,19 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    m_robotContainer.m_underglow.setSolid(119, 15, 5);
+    m_robotContainer.m_underglow.maroon();
 
     m_robotContainer.m_robotDrive.zeroHeading();
+
+    ledTester.addOption("Rainbow", new RunCommand(() -> {m_robotContainer.m_underglow.rainbow();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Rainbow Scroll", new RunCommand(() -> {m_robotContainer.m_underglow.scrollingRainbow();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Blink White", new RunCommand(() -> {m_robotContainer.m_underglow.blink(Color.kWhite);}, m_robotContainer.m_underglow));
+    ledTester.addOption("Maroon and White Scrolling", new RunCommand(() -> {m_robotContainer.m_underglow.maroonAndWhiteScrolling();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Maroon and White", new RunCommand(() -> {m_robotContainer.m_underglow.maroonAndWhite();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Loading", new RunCommand(() -> {m_robotContainer.m_underglow.loading();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Error", new RunCommand(() -> {m_robotContainer.m_underglow.error();}, m_robotContainer.m_underglow));
+
+    SmartDashboard.putData("LED Tester", ledTester);
   }
 
   /**
@@ -60,11 +74,16 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // if(ledTester.getSelected() != null){
+    //   ledTester.getSelected().execute();
+    // }
+    m_robotContainer.m_underglow.loading();
+
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

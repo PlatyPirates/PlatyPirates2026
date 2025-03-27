@@ -33,7 +33,7 @@ public class LoadCoral extends Command{
     public void execute(){
         switch(state){
             case INTAKING:
-                _LEDs.setSolid(255, 255, 0);
+                _LEDs.yellow();
                 _Intake.setSpeed(1.0);
                 if(_Shooter.distanceTriggered()){
                     state = State.LOADING;
@@ -42,14 +42,14 @@ public class LoadCoral extends Command{
             case LOADING:
                 _Shooter.setSpeed(-0.1);
                 _Intake.setSpeed(1.0);
-                _LEDs.setSolid(255, 0, 255);
+                _LEDs.purple();
                 if(!_Shooter.distanceTriggered()){
                     _Shooter.setSpeed(0.0);
                     state = State.FINISHED;
                 }
                 break;
             case FINISHED:
-                _LEDs.setSolid(0, 255, 0);
+                _LEDs.green();
                 break;
         }
     }
