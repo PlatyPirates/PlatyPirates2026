@@ -15,16 +15,18 @@ import frc.robot.subsystems.Shooter;
 public class AMoveL4 extends Command {
 
     private DriveSubsystem _drive;
-    private Shooter _intake;
+    private Shooter _shooter;
     private LEDs _underglow;
     private double startTime;
     private double currentTime;
     private double stateStartTime;
     private double elapsedStateTime;
     private boolean end;
+    private DriveRobotFromLimelight driveRobotFromLimelight;
 
     enum State {
         DRIVE_FORWARD,
+        ALIGN,
         SCORE,
         END
     }
@@ -32,12 +34,13 @@ public class AMoveL4 extends Command {
     private static State state = State.DRIVE_FORWARD;
 
 
-    public AMoveL4(DriveSubsystem drive, Shooter intake, LEDs underglow) {
+    public AMoveL4(DriveSubsystem drive, Shooter shooter, LEDs underglow) {
         _drive = drive;
-        _intake = intake;
+        _shooter = shooter;
         _underglow = underglow;
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(drive, intake);
+        addRequirements(drive, shooter, underglow);
+        driveRobotFromLimelight = new DriveRobotFromLimelight(_drive, _underglow);
     }
 
     public void changeState(State inputState){
@@ -48,6 +51,7 @@ public class AMoveL4 extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize(){
+        DriveRobotFromLimelight.alignLeft();
         stateStartTime = Timer.getFPGATimestamp();
     }
 
@@ -65,13 +69,23 @@ public class AMoveL4 extends Command {
                     changeState(State.SCORE);
                 }
                 break;
-            case SCORE:
-                new DriveRobotFromLimelight(_drive, _underglow);
+            case ALIGN:
+                driveRobotFromLimelight.execute();
 
-                state = State.END;
+                if(driveRobotFromLimelight.done()){
+                    changeState(State.SCORE);
+                }
+
+                break;
+            case SCORE:
+                _shooter.setSpeed(-0.5);
+
+                if(elapsedStateTime >= 1.0){
+                    changeState(State.END);
+                }
                 break;
             case END:
-                end = true;;
+                end = true;
                 break;
 
         }    
@@ -80,7 +94,7 @@ public class AMoveL4 extends Command {
     @Override
     public void end(boolean interrupted) {
         _drive.setX();
-        _intake.setSpeed(0.0);
+        _shooter.setSpeed(0.0);
     }
 
     // Returns true when the command should end.

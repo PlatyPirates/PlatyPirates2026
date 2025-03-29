@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.DriveRobotFromLimelight;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 
@@ -50,6 +52,11 @@ public class Robot extends TimedRobot {
     ledTester.addOption("Error", new RunCommand(() -> {m_robotContainer.m_underglow.error();}, m_robotContainer.m_underglow));
 
     SmartDashboard.putData("LED Tester", ledTester);
+    SmartDashboard.putNumber("P-gain", 0.0);
+    SmartDashboard.putNumber("I-gain", 0.0);
+    SmartDashboard.putNumber("D-gain", 0.0);
+
+    DriveRobotFromLimelight.aprilTagFieldLayout = new AprilTagFieldLayout(Constants.DriveConstants.)
   }
 
   /**
@@ -118,6 +125,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.m_elevator.setPID(
+      SmartDashboard.getNumber("P-gain", 0.0), 
+      SmartDashboard.getNumber("I-gain", 0.0), 
+      SmartDashboard.getNumber("D-gain", 0.0));
   }
 
   /** This function is called periodically during operator control. */

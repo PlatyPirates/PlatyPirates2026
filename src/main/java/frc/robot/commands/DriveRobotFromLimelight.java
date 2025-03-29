@@ -28,6 +28,7 @@ public class DriveRobotFromLimelight extends Command {
     private static double xOffset = -0.5;
     private static double yOffset = 0.0; //0.46
     private static double xOffsetMod, yOffsetMod;
+    public static AprilTagFieldLayout aprilTagFieldLayout;
 
     enum State {
         ALIGN_ANGLE,
@@ -90,6 +91,10 @@ public class DriveRobotFromLimelight extends Command {
         yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
     }
 
+    public boolean done(){
+        return state == State.FINISHED;
+    }
+
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
@@ -106,7 +111,8 @@ public class DriveRobotFromLimelight extends Command {
             //     aprilTagAngle = -w + 180;
             // }
 
-            aprilTagAngle = getAprilTagAngle(aprilTagId);
+            aprilTagAngle = getAprilTagAngle(aprilTagId); 
+            aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
 
             System.out.println(aprilTagAngle);
             xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yOffset*Math.sin(Math.toRadians(aprilTagAngle));

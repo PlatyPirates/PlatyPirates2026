@@ -18,7 +18,7 @@ public class LEDs extends SubsystemBase{
     private Color maroon = Color.kMaroon;
 
     public LEDs(int length){
-        addressableLED = new AddressableLED(0);
+        addressableLED = new AddressableLED(1);
 
         ledBuffer = new AddressableLEDBuffer(length); // Our full LED strip length (76)
         addressableLED.setLength(ledBuffer.getLength());

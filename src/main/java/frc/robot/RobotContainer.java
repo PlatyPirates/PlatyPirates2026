@@ -115,7 +115,6 @@ public class RobotContainer {
     m_elevator.setDefaultCommand(
         new RunCommand(
         () -> {m_elevator.setSpeed(-m_operatorController.getLeftY());
-        m_elevator.setActuatorSpeed(0.0);
         }
       , m_elevator));
 
@@ -140,6 +139,11 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     m_driverController
+      .a()
+      .whileTrue(new DriveRobotFromLimelight(m_robotDrive, m_underglow)
+      );
+
+    m_driverController
       .b()
       .whileTrue(new RunCommand(
         () -> m_robotDrive.setX(), m_robotDrive));
@@ -150,57 +154,17 @@ public class RobotContainer {
         () -> m_robotDrive.resetHeading(),
         m_robotDrive));
 
-     m_driverController
-      .a()
-      .whileTrue(new DriveRobotFromLimelight(m_robotDrive, m_underglow)
-      );
-
     m_driverController
       .leftTrigger()
-      .whileTrue(new RunCommand( () -> {driveSpeedFactor = 0.3;
-      }));
-    m_driverController
-      .leftTrigger()
-      .whileTrue(new RunCommand(() -> {
+      .whileTrue(new RunCommand( () -> {
+        driveSpeedFactor = 0.3;
         m_underglow.blink(Color.kYellow);
       }, m_underglow));
 
     m_driverController
       .leftTrigger()
       .whileFalse(new RunCommand(() -> driveSpeedFactor = 1.0));
-    
-    m_driverController
-      .povLeft()
-      .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignLeft();}
-      ));
 
-    m_driverController
-      .povRight()
-      .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignRight();}
-      ));
-
-    m_operatorController
-      .leftBumper()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_climber.setMotorSpeed(1.0);
-        }));
-        
-
-    m_operatorController
-      .start()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_climber.setMotorSpeed(-1.0);
-        }));
-
-    m_operatorController //TODO test without this? why do we need it?
-      .start()
-      .whileFalse(new RunCommand(
-        () -> {
-          m_climber.setMotorSpeed(0.0);
-        }));
-    
     m_driverController
       .rightTrigger()
       .whileTrue(
@@ -210,22 +174,21 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 false);
+
+                m_underglow.blink(Color.kWhite);
               },
-            m_robotDrive));
+            m_robotDrive, m_underglow));
 
     m_driverController
-      .rightTrigger()
-      .whileTrue(new RunCommand(() -> {
-        m_underglow.blink(Color.kWhite);
-      }, m_underglow));
+      .povLeft()
+      .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignLeft();}
+      ));
 
-    m_operatorController
-      .y()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_shooter.setSpeed(-0.5);
-        }, m_underglow));
-
+    m_driverController
+      .povRight()
+      .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignRight();}
+      ));
+  
     m_operatorController
       .a()
       .whileTrue(new RunCommand(
@@ -234,32 +197,30 @@ public class RobotContainer {
         }));
 
     m_operatorController
-      .y()
-      .onFalse(new RunCommand(
-        () -> {
-          m_shooter.setSpeed(0.0);
-        }));
-
-    m_operatorController
-      .a()
-      .onFalse(new RunCommand(
-        () -> {
-          m_shooter.setSpeed(0.0);
-        }));
-    m_operatorController
       .b()
       .whileTrue(new LoadCoral(m_shooter, m_underglow, m_intake));
-
-    m_driverController
-      .povDown()
-      .whileTrue(new RunCommand(() -> {
-        m_elevator.setActuatorSpeed(1.0); }, m_elevator));
-
-    m_driverController
-      .povUp()
-      .whileTrue(new RunCommand(() -> {
-        m_elevator.setActuatorSpeed(-1.0); }, m_elevator));
     
+    m_operatorController
+      .y()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_shooter.setSpeed(-0.5);
+        }, m_underglow));     
+
+    m_operatorController
+      .start()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_climber.setMotorSpeed(-1.0);
+        }));
+
+    m_operatorController
+      .leftBumper()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_climber.setMotorSpeed(1.0);
+        }));
+
     m_operatorController
       .povLeft()
       .whileTrue(new RunCommand(() -> {
@@ -276,6 +237,12 @@ public class RobotContainer {
       .povRight()
       .whileTrue(new RunCommand(() -> {
         m_elevator.l3();
+      }, m_elevator));
+    
+    m_operatorController
+      .povDown()
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.l1();
       }, m_elevator));
 
   }
