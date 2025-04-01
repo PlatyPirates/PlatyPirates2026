@@ -40,7 +40,9 @@ public class AMoveL4 {
     }
 
     public Command alignAndRaiseElevator(){
-        return new RunCommand(() -> {_elevator.l4();}, _elevator).deadlineWith(driveRobotFromLimelight);
+        return new RunCommand(() -> {
+            _elevator.l4();
+        }, _elevator).deadlineWith(driveRobotFromLimelight);
     }
 
     public Command score(){
@@ -57,7 +59,7 @@ public class AMoveL4 {
     }
 
     public Command moveAndL4(){
-        return driveForward().withTimeout(1.0)
+        return driveForward().repeatedly().withTimeout(1.0)
                 .andThen(alignAndRaiseElevator())
                 .andThen(score()).withTimeout(1.0)
                 .andThen(moveBackAndLowerElevator()).withTimeout(1.0);
