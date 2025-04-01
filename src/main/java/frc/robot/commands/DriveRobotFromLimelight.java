@@ -25,7 +25,7 @@ public class DriveRobotFromLimelight extends Command {
     public static int aprilTagId = 0;
     private static Pose3d aprilTagPose;
     private static double aprilTagAngle;
-    private static double xOffset = -0.5;
+    private static double xOffset = -0.58;
     private static double yOffset = 0.0; //0.46
     private static double xOffsetMod, yOffsetMod;
     public static AprilTagFieldLayout aprilTagFieldLayout;
@@ -73,20 +73,20 @@ public class DriveRobotFromLimelight extends Command {
                 break;
             case FINISHED:
                 _LEDs.green();
-                _DriveSubsystem.drive(0.075, 0, 0, false);
+                //_DriveSubsystem.drive(0.075, 0, 0, false);
                 break;
         }
     }
 
     public static void alignLeft(){
-        double yTemp = yOffset + 0.15;
+        double yTemp = yOffset + 0.23;
         xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yTemp*Math.sin(Math.toRadians(aprilTagAngle));
         yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
 
     }
 
     public static void alignRight(){
-        double yTemp = yOffset - 0.17;
+        double yTemp = yOffset - 0.23;
         xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yTemp*Math.sin(Math.toRadians(aprilTagAngle));
         yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
     }
@@ -114,7 +114,7 @@ public class DriveRobotFromLimelight extends Command {
             aprilTagAngle = getAprilTagAngle(aprilTagId); 
             aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
 
-            System.out.println(aprilTagAngle);
+            System.out.println(aprilTagAngle + " " + aprilTagPose.getTranslation().getX() + " " + aprilTagPose.getTranslation().getY());
             xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yOffset*Math.sin(Math.toRadians(aprilTagAngle));
             yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yOffset*Math.cos(Math.toRadians(aprilTagAngle));
         }

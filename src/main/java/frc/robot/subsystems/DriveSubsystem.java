@@ -71,7 +71,9 @@ public class DriveSubsystem extends SubsystemBase {
     Constants.DriveConstants.kDriveKinematics, 
     Rotation2d.fromDegrees(0),
     getModulePositions(), 
-    new Pose2d());
+    new Pose2d(),
+    VecBuilder.fill(1,1,1), //Robot state std devs
+    VecBuilder.fill(.5,.5,10)); //Vision std devs
 
   private double angleTolerance = 0.5;
 
@@ -173,22 +175,22 @@ public class DriveSubsystem extends SubsystemBase {
 
       if(!doRejectUpdate)
       {
-        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
         m_poseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);
-      }
+  }
     } catch (NullPointerException e){}
 
-    m_poseEstimator.update(
-        Rotation2d.fromDegrees(getHeading()),
-        new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
-          m_rearRight.getPosition()
-        });
-    field.setRobotPose(getPose());
+      m_poseEstimator.update(
+            Rotation2d.fromDegrees(getHeading()),
+            new SwerveModulePosition[] {
+              m_frontLeft.getPosition(),
+              m_frontRight.getPosition(),
+              m_rearLeft.getPosition(),
+              m_rearRight.getPosition()
+            });
+        field.setRobotPose(getPose());
+    
   }
 
   /**

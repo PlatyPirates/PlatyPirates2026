@@ -7,6 +7,7 @@ public class LoadCoral extends Command{
     private Shooter _Shooter;
     private Intake _Intake;
     private LEDs _LEDs;
+    private Elevator _elevator;
 
     enum State {
         INTAKING,
@@ -16,12 +17,12 @@ public class LoadCoral extends Command{
 
     private static State state = State.INTAKING;
 
-    public LoadCoral(Shooter shooter, LEDs leds, Intake intake){
+    public LoadCoral(Shooter shooter, LEDs leds, Intake intake, Elevator elevator){
         _Shooter = shooter;
         _Intake = intake;
         _LEDs = leds;
-        addRequirements(shooter);
-        addRequirements(leds);
+        _elevator = elevator;
+        addRequirements(shooter, leds, elevator, intake);
     }
 
     @Override
@@ -35,6 +36,7 @@ public class LoadCoral extends Command{
             case INTAKING:
                 _LEDs.yellow();
                 _Intake.setSpeed(1.0);
+                _elevator.setSpeed(-0.4);
                 if(_Shooter.distanceTriggered()){
                     state = State.LOADING;
                 }

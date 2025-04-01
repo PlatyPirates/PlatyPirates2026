@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -74,6 +75,8 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
     autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive, m_underglow));
     autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_shooter));
+    autoChooser.addOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator));
+
     autoChooser.addOption("Do Nothing",
 
     new RunCommand(
@@ -104,10 +107,10 @@ public class RobotContainer {
     );
     m_underglow.setDefaultCommand(
       new RunCommand(() -> {
-        if(!m_climber.isLimited()){
-          m_underglow.maroon();
-        } else {
+        if(m_climber.isLimited() && (Timer.getMatchTime() <= 30.0) && DriverStation.isTeleop()){
           m_underglow.scrollingRainbow();
+        } else {
+          m_underglow.maroon();
         }
       }, m_underglow)
     );
@@ -170,8 +173,8 @@ public class RobotContainer {
       .whileTrue(
         new RunCommand(
             () -> {m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert * -1, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert * -1, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 false);
 
@@ -198,7 +201,7 @@ public class RobotContainer {
 
     m_operatorController
       .b()
-      .whileTrue(new LoadCoral(m_shooter, m_underglow, m_intake));
+      .whileTrue(new LoadCoral(m_shooter, m_underglow, m_intake, m_elevator));
     
     m_operatorController
       .y()
@@ -220,6 +223,14 @@ public class RobotContainer {
         () -> {
           m_climber.setMotorSpeed(1.0);
         }));
+    
+    m_operatorController
+      .rightTrigger()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_elevator.barge();
+        }
+      ));
 
     m_operatorController
       .povLeft()

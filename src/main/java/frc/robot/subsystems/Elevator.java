@@ -32,7 +32,8 @@ public class Elevator extends SubsystemBase{
     private final double l1 = -0.1;
     private final double l2 = 29.57;
     private final double l3 = 50.0;
-    private final double l4 = 79.33;
+    private final double l4 = 79.0;
+    private final double barge = 93.0;
     
     private PIDController pid;
 
@@ -53,7 +54,7 @@ public class Elevator extends SubsystemBase{
         m_leftSparkMax.configure(configLeft, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
         m_rightSparkMax.configure(configRight, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 
-        pid = new PIDController(0.3, 0.02, 0.1);
+        pid = new PIDController(0.3, 0.016, 0.2);
         pid.setTolerance(0.03);
     }
 
@@ -78,6 +79,14 @@ public class Elevator extends SubsystemBase{
 
     public void l3() {
         goToHeight(l3);
+    }
+
+    public void barge(){
+        if(getHeight() <= l4){
+            goToHeight(l4);
+        } else {
+            goToHeight(barge);
+        }
     }
 
     public void zero(){

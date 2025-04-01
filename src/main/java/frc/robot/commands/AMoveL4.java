@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter;
 
@@ -17,6 +19,7 @@ public class AMoveL4 extends Command {
     private DriveSubsystem _drive;
     private Shooter _shooter;
     private LEDs _underglow;
+    private Elevator _elevator;
     private double startTime;
     private double currentTime;
     private double stateStartTime;
@@ -28,16 +31,18 @@ public class AMoveL4 extends Command {
         DRIVE_FORWARD,
         ALIGN,
         SCORE,
+        MOVE_BACK,
         END
     }
 
     private static State state = State.DRIVE_FORWARD;
 
 
-    public AMoveL4(DriveSubsystem drive, Shooter shooter, LEDs underglow) {
+    public AMoveL4(DriveSubsystem drive, Shooter shooter, LEDs underglow, Elevator elevator) {
         _drive = drive;
         _shooter = shooter;
         _underglow = underglow;
+        _elevator = elevator;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(drive, shooter, underglow);
         driveRobotFromLimelight = new DriveRobotFromLimelight(_drive, _underglow);
@@ -63,16 +68,19 @@ public class AMoveL4 extends Command {
 
         switch(state){
             case DRIVE_FORWARD:
-                _drive.drive(-0.5, 0.0, 0.05, true);
+                _drive.drive(0.2, 0.0, 0, false);
 
-                if(elapsedStateTime >= 2.0){
-                    changeState(State.SCORE);
+                if(elapsedStateTime >= 1.0){
+                    _drive.drive(0, 0, 0, false);
+                    changeState(State.ALIGN);
+                    driveRobotFromLimelight.schedule();
                 }
                 break;
             case ALIGN:
-                driveRobotFromLimelight.execute();
+                _elevator.l4();
 
                 if(driveRobotFromLimelight.done()){
+                    driveRobotFromLimelight.end(true);
                     changeState(State.SCORE);
                 }
 
@@ -80,6 +88,14 @@ public class AMoveL4 extends Command {
             case SCORE:
                 _shooter.setSpeed(-0.5);
 
+                if(elapsedStateTime >= 1.0){
+                    changeState(State.MOVE_BACK);
+                }
+                break;
+            case MOVE_BACK:
+                _elevator.l1();
+                _drive.drive(0.2, 0.0, 0.0, false);
+                
                 if(elapsedStateTime >= 1.0){
                     changeState(State.END);
                 }
