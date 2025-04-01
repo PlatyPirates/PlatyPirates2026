@@ -75,7 +75,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
     autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive, m_underglow));
     autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_shooter));
-    autoChooser.addOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator));
+    autoChooser.addOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator).moveAndL4());
 
     autoChooser.addOption("Do Nothing",
 
