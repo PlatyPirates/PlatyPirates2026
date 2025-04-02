@@ -1,4 +1,6 @@
 package frc.robot.commands;
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.IntegerSubscriber;
@@ -40,7 +42,10 @@ public class AMoveL4 {
     }
 
     public Command alignAndRaiseElevator(){
-        return driveRobotFromLimelight;
+        return (new RunCommand(() -> {
+            _elevator.l4();
+            DriveRobotFromLimelight.alignLeft();
+        }, _elevator)).deadlineWith(driveRobotFromLimelight).until(() -> driveRobotFromLimelight.done());
     }
 
     public Command score(){
@@ -57,10 +62,10 @@ public class AMoveL4 {
     }
 
     public Command moveAndL4(){
-        Command cmd = driveForward().withTimeout(1.0)
-                .andThen(alignAndRaiseElevator().repeatedly())
-                .andThen(score()).repeatedly().withTimeout(1.0)
-                .andThen(moveBackAndLowerElevator().repeatedly()).withTimeout(0.75);
+        Command cmd = driveForward().withTimeout(1.0).andThen(
+                alignAndRaiseElevator().repeatedly(),
+                score().repeatedly().withTimeout(1.0),
+                moveBackAndLowerElevator().repeatedly().withTimeout(0.75));
         cmd.addRequirements(_elevator, _drive, _underglow, _shooter);
         return cmd;
     }
