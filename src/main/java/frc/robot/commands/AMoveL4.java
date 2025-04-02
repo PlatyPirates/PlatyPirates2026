@@ -40,7 +40,7 @@ public class AMoveL4 {
     }
 
     public Command alignAndRaiseElevator(){
-        return new RunCommand(() -> {_elevator.l4();}, _elevator).deadlineWith(driveRobotFromLimelight);
+        return driveRobotFromLimelight.deadlineWith(new RunCommand(() -> {_elevator.l4();}, _elevator));
     }
 
     public Command score(){
