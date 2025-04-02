@@ -45,6 +45,7 @@ public class DriveRobotFromLimelight extends Command {
     }
 
     public void alignWithAprilTag(){
+        System.out.println("aligning!");
         boolean angleAligned = _DriveSubsystem.angleAligned(aprilTagAngle);
         boolean translationAligned = _DriveSubsystem.translationAligned(aprilTagPose, xOffsetMod, yOffsetMod);
         SmartDashboard.putBoolean("Angle Aligned", angleAligned);
@@ -137,6 +138,7 @@ public class DriveRobotFromLimelight extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        System.out.println("end");
         _DriveSubsystem.drive(0.0, 0.0, 0.0, true);
     }
     

@@ -40,7 +40,7 @@ public class AMoveL4 {
     }
 
     public Command alignAndRaiseElevator(){
-        return driveRobotFromLimelight.deadlineWith(new RunCommand(() -> {_elevator.l4();}, _elevator));
+        return driveRobotFromLimelight;
     }
 
     public Command score(){
@@ -57,10 +57,12 @@ public class AMoveL4 {
     }
 
     public Command moveAndL4(){
-        return driveForward().repeatedly().withTimeout(1.0)
-                .andThen(alignAndRaiseElevator())
-                .andThen(score()).withTimeout(1.0)
-                .andThen(moveBackAndLowerElevator()).withTimeout(1.0);
+        Command cmd = driveForward().withTimeout(1.0)
+                .andThen(alignAndRaiseElevator().repeatedly())
+                .andThen(score()).repeatedly().withTimeout(1.0)
+                .andThen(moveBackAndLowerElevator().repeatedly()).withTimeout(0.75);
+        cmd.addRequirements(_elevator, _drive, _underglow, _shooter);
+        return cmd;
     }
     
 }

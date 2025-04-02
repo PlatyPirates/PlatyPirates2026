@@ -101,6 +101,8 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.updateInversion();
 
+    m_robotContainer.m_robotDrive.poseInit();
+
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
