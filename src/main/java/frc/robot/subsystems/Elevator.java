@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase{
 
     private final double l1 = -0.1;
     private final double l2 = 29.57;
-    private final double l3 = 50.0;
+    private final double l3 = 54.9;
     private final double l4 = 79.0;
     private final double barge = 93.0;
     
@@ -104,6 +104,11 @@ public class Elevator extends SubsystemBase{
             m_leftSparkMax.set(0.0);
             m_rightSparkMax.set(0.0);
         }
+     }
+
+     public void stop(){
+        m_leftSparkMax.set(0.0);
+        m_rightSparkMax.set(0.0);
      }
 
     public double getHeight(){
