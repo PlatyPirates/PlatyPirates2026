@@ -47,7 +47,7 @@ public class DriveRobotFromLimelight extends Command {
     public void alignWithAprilTag(){
         boolean angleAligned = _DriveSubsystem.angleAligned(aprilTagAngle);
         boolean translationAligned = _DriveSubsystem.translationAligned(aprilTagPose, xOffsetMod, yOffsetMod);
-        SmartDashboard.putBoolean("Aligned", angleAligned && translationAligned);
+        SmartDashboard.putBoolean("Aligned", angleAligned && translationAligned && System.currentTimeMillis() %5 ==0);
 
         switch(state){
             case ALIGN_ANGLE:
