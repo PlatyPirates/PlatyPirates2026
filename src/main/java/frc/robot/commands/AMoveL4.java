@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.AprilTagAlign;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -80,27 +81,58 @@ public class AMoveL4 {
     }
 
 
-    public Command moveAndL4(){
-        Command cmd = driveForward().withTimeout(1.0).andThen(
-                alignAndRaiseElevator().withTimeout(5.0)).andThen(
-                score().repeatedly().withTimeout(1.0)).andThen(
-                moveBack().withTimeout(0.75)).andThen(
-                lowerElevator())
-                ;
+    public Command moveAndL4(AprilTagAlign whichWay){
+        Command cmd;
+        switch (whichWay) {
+            case LEFT:
+                cmd = leftTag().andThen(
+                    driveForward().withTimeout(1.0).andThen(
+                    alignAndRaiseElevator().withTimeout(5.0)).andThen(
+                    score().repeatedly().withTimeout(1.0)).andThen(
+                    moveBack().withTimeout(0.75)).andThen(
+                    lowerElevator())
+                );
+                break;
+            case RIGHT:
+                cmd = rightTag().andThen(
+                    driveForward().withTimeout(1.0).andThen(
+                    alignAndRaiseElevator().withTimeout(5.0)).andThen(
+                    score().repeatedly().withTimeout(1.0)).andThen(
+                    moveBack().withTimeout(0.75)).andThen(
+                    lowerElevator())
+                );
+                break;
+            case CENTER:
+            default:
+                cmd = centerTag().andThen(
+                    driveForward().withTimeout(1.0).andThen(
+                    alignAndRaiseElevator().withTimeout(5.0)).andThen(
+                    score().repeatedly().withTimeout(1.0)).andThen(
+                    moveBack().withTimeout(0.75)).andThen(
+                    lowerElevator())
+                );
+                break;
+        }
         cmd.addRequirements(_elevator, _drive, _underglow, _shooter, _intake);
         return cmd;
     }
 
-    public static void leftTag(){
-        rotationSpeed = -maxRot;
+    public Command leftTag(){
+        return new RunCommand(() -> {
+            rotationSpeed = -maxRot;
+        });
     }
 
-    public static void rightTag(){
-        rotationSpeed = maxRot;
+    public Command rightTag(){
+        return new RunCommand(() -> {
+            rotationSpeed = maxRot;
+        });
     }
 
-    public static void centerTag(){
-        rotationSpeed = 0.0;
+    public Command centerTag(){
+        return new RunCommand(() -> {
+            rotationSpeed = 0.0;
+        });
     }
 }
 

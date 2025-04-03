@@ -30,7 +30,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private SendableChooser<Command> ledTester = new SendableChooser<Command>();
-  private SendableChooser<Command> l4Dropdown = new SendableChooser<Command>();
 
 
   private RobotContainer m_robotContainer;
@@ -58,10 +57,6 @@ public class Robot extends TimedRobot {
     ledTester.addOption("Error", new RunCommand(() -> {m_robotContainer.m_underglow.error();}, m_robotContainer.m_underglow));
 
     DriveRobotFromLimelight.aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
-    l4Dropdown.addOption("Center Tag", new RunCommand(() -> {AMoveL4.centerTag();}));
-    l4Dropdown.addOption("Left Tag", new RunCommand(() -> {AMoveL4.leftTag();}));
-    l4Dropdown.addOption("Right Tag", new RunCommand(() -> {AMoveL4.rightTag();}));
 
     SmartDashboard.putData(l4Dropdown);
 
