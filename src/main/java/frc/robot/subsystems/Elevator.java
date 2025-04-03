@@ -30,7 +30,7 @@ public class Elevator extends SubsystemBase{
     private RelativeEncoder encoderRight;
 
     private final double l1 = -0.1;
-    private final double l2 = 29.57;
+    private final double l2 = 33.85;
     private final double l3 = 54.9;
     private final double l4 = 79.0;
     private final double barge = 93.0;
