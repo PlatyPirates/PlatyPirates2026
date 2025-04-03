@@ -25,7 +25,7 @@ public class DriveRobotFromLimelight extends Command {
     public static int aprilTagId = 0;
     private static Pose3d aprilTagPose;
     private static double aprilTagAngle;
-    private static double xOffset = 9;
+    private static double xOffset = -0.58;
     private static double yOffset = 0.0; //0.46
     private static double xOffsetMod, yOffsetMod;
     public static AprilTagFieldLayout aprilTagFieldLayout;
