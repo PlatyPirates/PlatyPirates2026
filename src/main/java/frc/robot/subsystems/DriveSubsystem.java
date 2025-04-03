@@ -150,7 +150,7 @@ public class DriveSubsystem extends SubsystemBase {
     boolean doRejectUpdate = false;
 
     LimelightHelpers.SetRobotOrientation("limelight", getEstimatedHeading(), 0, 0, 0, 0, 0);
-    
+
     LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
     try{
       if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
@@ -186,7 +186,7 @@ public class DriveSubsystem extends SubsystemBase {
               m_rearRight.getPosition()
             });
         field.setRobotPose(getPose());
-    
+
   }
 
   /**
@@ -258,7 +258,7 @@ public class DriveSubsystem extends SubsystemBase {
     double yError = y - getY();
     double ksPercent = 0.035;
     double kpPercent = 0.070;
-    
+
     if(Math.abs(xError) > tolerance){
       xSpeed = Math.signum(xError) * ksPercent + kpPercent * xError;
     }
@@ -267,7 +267,6 @@ public class DriveSubsystem extends SubsystemBase {
       ySpeed = Math.signum(yError) * ksPercent + kpPercent * yError;
     }
 
-    
     SmartDashboard.putNumber("xError", xSpeed);
     SmartDashboard.putNumber("yError", ySpeed);
 
@@ -290,7 +289,7 @@ public class DriveSubsystem extends SubsystemBase {
     else if(error < -180){
       error += 360;
     }
-    
+
     if(Math.abs(error) > angleTolerance){
       turnSpeed = Math.signum(error) * Constants.DriveConstants.ksPercent + Constants.DriveConstants.kpPercent * error;
     }

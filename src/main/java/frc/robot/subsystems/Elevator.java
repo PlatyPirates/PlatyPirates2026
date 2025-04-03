@@ -34,7 +34,7 @@ public class Elevator extends SubsystemBase{
     private final double l3 = 54.9;
     private final double l4 = 79.0;
     private final double barge = 93.0;
-    
+
     private PIDController pid;
 
     private final double kg = 0.0;
@@ -43,8 +43,8 @@ public class Elevator extends SubsystemBase{
         m_leftSparkMax = new SparkMax(Constants.DriveConstants.kLeftElevatorCanId, MotorType.kBrushless);
         m_rightSparkMax = new SparkMax(Constants.DriveConstants.kRightElevatorCanId, MotorType.kBrushless);
         encoderLeft = m_leftSparkMax.getEncoder();
-        encoderRight = m_rightSparkMax.getEncoder(); 
-        
+        encoderRight = m_rightSparkMax.getEncoder();
+
         SparkBaseConfig configLeft = new SparkMaxConfig();
         SparkBaseConfig configRight = new SparkMaxConfig();
 

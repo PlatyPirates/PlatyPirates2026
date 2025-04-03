@@ -62,7 +62,7 @@ public class Climber extends SubsystemBase {
     }
 
     public void setMotorSpeed(double motorSpeed){
-        m_climberMotorRopeSparkMax.set(motorSpeed);  
+        m_climberMotorRopeSparkMax.set(motorSpeed);
     }
 
     public boolean isLimited(){

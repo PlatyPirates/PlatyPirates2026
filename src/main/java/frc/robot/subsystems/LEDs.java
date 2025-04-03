@@ -31,29 +31,29 @@ public class LEDs extends SubsystemBase{
         pattern.applyTo(ledBuffer);
         addressableLED.setData(ledBuffer);
     }
-    
+
     public void maroon(){
-       applyPattern(LEDPattern.solid(maroon)); 
+       applyPattern(LEDPattern.solid(maroon));
     }
 
     public void red(){
-        applyPattern(LEDPattern.solid(Color.kRed)); 
+        applyPattern(LEDPattern.solid(Color.kRed));
     }
 
     public void rainbow(){
-        applyPattern(LEDPattern.rainbow(255, 128)); 
+        applyPattern(LEDPattern.rainbow(255, 128));
     }
 
     public void purple(){
-        applyPattern(LEDPattern.solid(Color.kPurple)); 
+        applyPattern(LEDPattern.solid(Color.kPurple));
     }
 
     public void green(){
-        applyPattern(LEDPattern.solid(Color.kGreen)); 
+        applyPattern(LEDPattern.solid(Color.kGreen));
     }
 
     public void yellow(){
-        applyPattern(LEDPattern.solid(Color.kYellow)); 
+        applyPattern(LEDPattern.solid(Color.kYellow));
     }
 
     public void scrollingRainbow(){
@@ -94,7 +94,7 @@ public class LEDs extends SubsystemBase{
 
     @Override
     public void periodic(){
-        
+
     }
 
 }

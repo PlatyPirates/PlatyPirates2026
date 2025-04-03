@@ -89,7 +89,6 @@ public class DriveRobotFromLimelight extends Command {
         double yTemp = yOffset + 0.02;
         xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yTemp*Math.sin(Math.toRadians(aprilTagAngle));
         yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
-
     }
 
     public static void alignRight(){
@@ -118,7 +117,7 @@ public class DriveRobotFromLimelight extends Command {
             //     aprilTagAngle = -w + 180;
             // }
 
-            aprilTagAngle = getAprilTagAngle(aprilTagId); 
+            aprilTagAngle = getAprilTagAngle(aprilTagId);
             aprilTagPose = aprilTagFieldLayout.getTagPose(aprilTagId).get();
 
             System.out.println(aprilTagAngle + " " + aprilTagPose.getTranslation().getX() + " " + aprilTagPose.getTranslation().getY());
@@ -128,7 +127,7 @@ public class DriveRobotFromLimelight extends Command {
 
         state = State.ALIGN_ANGLE;
     }
-    
+
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
@@ -138,15 +137,13 @@ public class DriveRobotFromLimelight extends Command {
             System.err.println("No AprilTag detected.");
         }
     }
-       
-    
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         _DriveSubsystem.drive(0.0, 0.0, 0.0, true);
     }
-    
+
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {

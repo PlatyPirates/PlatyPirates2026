@@ -74,7 +74,7 @@ public class AMoveLowCoral extends Command {
                 end = true;;
                 break;
 
-        }    
+        }
     }
     // Called once the command ends or is interrupted.
     @Override

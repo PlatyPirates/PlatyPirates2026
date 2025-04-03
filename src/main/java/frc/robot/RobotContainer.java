@@ -82,7 +82,7 @@ public class RobotContainer {
     new RunCommand(
       ()-> m_robotDrive.drive(0.0,0.0,0.0,true), m_robotDrive)
     );
-  
+
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -196,8 +196,7 @@ public class RobotContainer {
       .povUp()
         .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignMiddle();}
       ));
-      
-  
+
     m_operatorController
       .a()
       .whileTrue(new RunCommand(
@@ -208,13 +207,13 @@ public class RobotContainer {
     m_operatorController
       .b()
       .whileTrue(new LoadCoral(m_shooter, m_underglow, m_intake, m_elevator));
-    
+
     m_operatorController
       .y()
       .whileTrue(new RunCommand(
         () -> {
           m_shooter.setSpeed(-0.5);
-        }, m_underglow));     
+        }, m_underglow));
 
     m_operatorController
       .start()
@@ -229,7 +228,7 @@ public class RobotContainer {
         () -> {
           m_climber.setMotorSpeed(1.0);
         }));
-    
+
     m_operatorController
       .rightTrigger()
       .whileTrue(new RunCommand(
@@ -255,7 +254,7 @@ public class RobotContainer {
       .whileTrue(new RunCommand(() -> {
         m_elevator.l3();
       }, m_elevator));
-    
+
     m_operatorController
       .povDown()
       .whileTrue(new RunCommand(() -> {
