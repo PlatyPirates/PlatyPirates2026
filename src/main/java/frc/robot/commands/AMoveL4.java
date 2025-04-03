@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter;
 
@@ -23,13 +24,15 @@ public class AMoveL4 {
     private Shooter _shooter;
     private LEDs _underglow;
     private Elevator _elevator;
+    private Intake _intake;
     private DriveRobotFromLimelight driveRobotFromLimelight;
 
-    public AMoveL4(DriveSubsystem drive, Shooter shooter, LEDs underglow, Elevator elevator) {
+    public AMoveL4(DriveSubsystem drive, Shooter shooter, LEDs underglow, Elevator elevator, Intake intake) {
         _drive = drive;
         _shooter = shooter;
         _underglow = underglow;
         _elevator = elevator;
+        _intake = intake;
         // Use addRequirements() here to declare subsystem dependencies.
         driveRobotFromLimelight = new DriveRobotFromLimelight(_drive, _underglow);
     }
@@ -38,25 +41,29 @@ public class AMoveL4 {
         return new RunCommand(() -> {
             _drive.drive(0.2, 0.0, 0, false);
             DriveRobotFromLimelight.alignLeft();
-        }, _drive);
+            _intake.setSpeed(1.0);
+        }, _drive, _intake);
     }
 
     public Command alignAndRaiseElevator(){
         return (new RunCommand(() -> {
             _elevator.l4();
+            _intake.setSpeed(0.0);
             DriveRobotFromLimelight.alignLeft();
-        }, _elevator)).deadlineWith(driveRobotFromLimelight).repeatedly();
+        }, _elevator, _intake)).deadlineWith(driveRobotFromLimelight).repeatedly();
     }
 
     public Command score(){
         return new RunCommand(() -> {
             _shooter.setSpeed(-0.5);
+            _elevator.stop();
         }, _shooter);
     }
 
     public Command moveBack(){
         return new RunCommand(() -> {
             _shooter.setSpeed(0.0);
+            _elevator.stop();
             _drive.drive(-0.2, 0.0, 0.0, false);
         }, _drive);
     }
@@ -76,7 +83,7 @@ public class AMoveL4 {
                 moveBack().withTimeout(0.75)).andThen(
                 lowerElevator())
                 ;
-        cmd.addRequirements(_elevator, _drive, _underglow, _shooter);
+        cmd.addRequirements(_elevator, _drive, _underglow, _shooter, _intake);
         return cmd;
     }
     
