@@ -86,7 +86,7 @@ public class DriveRobotFromLimelight extends Command {
     }
 
     public static void alignMiddle(){
-        double yTemp = yOffset + 0.02;
+        double yTemp = yOffset - 0.05;
         xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yTemp*Math.sin(Math.toRadians(aprilTagAngle));
         yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
     }
