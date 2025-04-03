@@ -106,7 +106,8 @@ public class Robot extends TimedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
-      l4Dropdown.getSelected().andThen(m_autonomousCommand).schedule();
+      //l4Dropdown.getSelected().andThen(m_autonomousCommand).schedule();
+      m_autonomousCommand.schedule();
     }
 
     m_robotContainer.updateInversion();
