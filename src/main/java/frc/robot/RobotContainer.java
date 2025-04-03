@@ -191,6 +191,12 @@ public class RobotContainer {
       .povRight()
       .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignRight();}
       ));
+
+    m_driverController
+      .povUp()
+        .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignMiddle();}
+      ));
+      
   
     m_operatorController
       .a()

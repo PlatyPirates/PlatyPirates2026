@@ -25,7 +25,7 @@ public class DriveRobotFromLimelight extends Command {
     public static int aprilTagId = 0;
     private static Pose3d aprilTagPose;
     private static double aprilTagAngle;
-    private static double xOffset = -0.58;
+    private static double xOffset = 9;
     private static double yOffset = 0.0; //0.46
     private static double xOffsetMod, yOffsetMod;
     public static AprilTagFieldLayout aprilTagFieldLayout;
@@ -80,6 +80,13 @@ public class DriveRobotFromLimelight extends Command {
 
     public static void alignLeft(){
         double yTemp = yOffset + 0.23;
+        xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yTemp*Math.sin(Math.toRadians(aprilTagAngle));
+        yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
+
+    }
+
+    public static void alignMiddle(){
+        double yTemp = yOffset + 0.02;
         xOffsetMod = xOffset*Math.cos(Math.toRadians(aprilTagAngle))-yTemp*Math.sin(Math.toRadians(aprilTagAngle));
         yOffsetMod = xOffset*Math.sin(Math.toRadians(aprilTagAngle))+yTemp*Math.cos(Math.toRadians(aprilTagAngle));
 

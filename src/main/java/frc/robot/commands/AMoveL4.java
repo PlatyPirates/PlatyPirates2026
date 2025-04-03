@@ -27,6 +27,10 @@ public class AMoveL4 {
     private Intake _intake;
     private DriveRobotFromLimelight driveRobotFromLimelight;
 
+    private static double rotationSpeed = 0.0;
+    private static double maxRot = 0.1;
+
+
     public AMoveL4(DriveSubsystem drive, Shooter shooter, LEDs underglow, Elevator elevator, Intake intake) {
         _drive = drive;
         _shooter = shooter;
@@ -39,7 +43,7 @@ public class AMoveL4 {
 
     public Command driveForward(){
         return new RunCommand(() -> {
-            _drive.drive(0.2, 0.0, 0, false);
+            _drive.drive(0.2, 0.0, rotationSpeed, false);
             DriveRobotFromLimelight.alignLeft();
             _intake.setSpeed(1.0);
         }, _drive, _intake);
@@ -85,6 +89,18 @@ public class AMoveL4 {
                 ;
         cmd.addRequirements(_elevator, _drive, _underglow, _shooter, _intake);
         return cmd;
+    }
+
+    public static void leftTag(){
+        rotationSpeed = -maxRot;
+    }
+
+    public static void rightTag(){
+        rotationSpeed = maxRot;
+    }
+
+    public static void centerTag(){
+        rotationSpeed = 0.0;
     }
     
 }

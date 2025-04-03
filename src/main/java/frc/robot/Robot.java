@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.AMoveL4;
 import frc.robot.commands.DriveRobotFromLimelight;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -29,6 +30,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private SendableChooser<Command> ledTester = new SendableChooser<Command>();
+  private SendableChooser<Command> l4Dropdown = new SendableChooser<Command>();
+
 
   private RobotContainer m_robotContainer;
 
@@ -55,6 +58,13 @@ public class Robot extends TimedRobot {
     ledTester.addOption("Error", new RunCommand(() -> {m_robotContainer.m_underglow.error();}, m_robotContainer.m_underglow));
 
     DriveRobotFromLimelight.aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+  
+    l4Dropdown.addOption("Center Tag", new RunCommand(() -> {AMoveL4.centerTag();}));
+    l4Dropdown.addOption("Left Tag", new RunCommand(() -> {AMoveL4.leftTag();}));
+    l4Dropdown.addOption("Right Tag", new RunCommand(() -> {AMoveL4.rightTag();}));
+
+    SmartDashboard.putData(l4Dropdown);
+
   }
 
   /**
@@ -96,7 +106,7 @@ public class Robot extends TimedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+      l4Dropdown.getSelected().andThen(m_autonomousCommand).schedule();
     }
 
     m_robotContainer.updateInversion();
