@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants.AprilTagAlign;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -47,6 +48,7 @@ public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+  private SendableChooser<AprilTagAlign> l4Dropdown = new SendableChooser<AprilTagAlign>();
 
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -75,13 +77,14 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
     autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive, m_underglow));
     autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_shooter));
-    autoChooser.addOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4());
-
-    autoChooser.addOption("Do Nothing",
-
-    new RunCommand(
+    autoChooser.addOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown.getSelected()));
+    autoChooser.addOption("Do Nothing", new RunCommand(
       ()-> m_robotDrive.drive(0.0,0.0,0.0,true), m_robotDrive)
     );
+
+    l4Dropdown.addOption("Center Tag", AprilTagAlign.CENTER);
+    l4Dropdown.addOption("Left Tag", AprilTagAlign.LEFT);
+    l4Dropdown.addOption("Right Tag", AprilTagAlign.RIGHT);
 
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
