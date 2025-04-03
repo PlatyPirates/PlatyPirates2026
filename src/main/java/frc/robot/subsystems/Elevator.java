@@ -58,6 +58,9 @@ public class Elevator extends SubsystemBase{
         pid.setTolerance(0.03);
     }
 
+    /*
+     * Create PID controller for elevator
+     */
     public void setPID(double p, double i, double d){
         System.out.println("Setting values: P = " + p + ", I = " + i + ", D = " + d);
         pid = new PIDController(p, i, d);
@@ -65,22 +68,37 @@ public class Elevator extends SubsystemBase{
         pid.setIZone(2.0);
     }
 
+    /*
+     * Drive elevator motors to go to L1 height
+     */
     public void l1(){
         goToHeight(l1);
     }
 
+    /*
+     * Drive elevator motors to go to L2 height
+     */
     public void l2() {
         goToHeight(l2);
     }
 
-    public void l4() {
-        goToHeight(l4);
-    }
-
+    /*
+     * Drive elevator motors to go to L3 height
+     */
     public void l3() {
         goToHeight(l3);
     }
 
+    /*
+     * Drive elevator motors to go to L4 height
+     */
+    public void l4() {
+        goToHeight(l4);
+    }
+
+    /**
+     * Drive elevator motors to go to barge height
+     */
     public void barge(){
         if(getHeight() <= l4){
             goToHeight(l4);
@@ -89,14 +107,22 @@ public class Elevator extends SubsystemBase{
         }
     }
 
+    /**
+     * Sets the encoder reading to 0 if we hit the bottom limit switch. Called periodically
+     */
     public void zero(){
-        if(!m_lowerLimit.get()){
+        if(!m_lowerLimit.get() && !m_upperLimit.get()){
             encoderLeft.setPosition(0.0);
             encoderRight.setPosition(0.0);
         }
     }
 
-     public void setSpeed(double speed){
+    /**
+     * Sets the elevator speed, only if we are not trying to go past a limit switch
+     *
+     * @param speed, a double between -1 and 1
+     */
+    public void setSpeed(double speed){
         if((!isZero() && speed < 0) || (!isMax() && speed > 0)){
             m_leftSparkMax.set(speed);
             m_rightSparkMax.set(speed);
@@ -106,33 +132,43 @@ public class Elevator extends SubsystemBase{
         }
      }
 
+    /**
+     * Get current elevator height. Only uses the left encoder because that one doesn't skip like the right
+     * one sometimes does. Also, the right encoder returns a negative value.
+     *
+     * @return height in motor rotations
+     */
     public double getHeight(){
         return encoderLeft.getPosition();
         //return (encoderLeft.getPosition() + encoderRight.getPosition()) / 2.0;
     }
 
-    public boolean fixZero(){
-        if(!isZero()){
-            setSpeed(-1.0);
-            return false;
-        } else {
-            encoderLeft.setPosition(0.0);
-            encoderRight.setPosition(0.0);
-            return true;
-        }
-    }
-
-    public void goToHeight(double height){
+    /**
+     * Set motor speed according to PID algo for movement to specified height. Only used internally
+     *
+     * @return height, in motor rotations
+     */
+    private void goToHeight(double height){
         double pidOutput = pid.calculate(getHeight(), height);
 
         setSpeed(Math.min(Math.max(pidOutput + kg, -1.0), 1.0));
     }
 
-    public boolean isZero(){
+    /**
+     * Checks if the elevator is contacting the lower limit switch
+     *
+     * @return true, if the lower limit switch is contacted
+     */
+    private boolean isZero(){
         return !m_lowerLimit.get();
     }
 
-    public boolean isMax(){
+    /**
+     * Checks if the elevator is contacting the upper limit switch
+     *
+     * @return true, if the upper limit switch is contacted
+     */
+    private boolean isMax(){
         return !m_upperLimit.get();
     }
 
