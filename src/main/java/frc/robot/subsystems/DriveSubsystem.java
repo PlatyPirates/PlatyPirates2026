@@ -68,9 +68,9 @@ public class DriveSubsystem extends SubsystemBase {
   //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   private final Pigeon2 m_gyro = new Pigeon2(DriveConstants.kGyroCanId);
   private SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
-    Constants.DriveConstants.kDriveKinematics, 
+    Constants.DriveConstants.kDriveKinematics,
     Rotation2d.fromDegrees(0),
-    getModulePositions(), 
+    getModulePositions(),
     new Pose2d(),
     VecBuilder.fill(1,1,1), //Robot state std devs
     VecBuilder.fill(.5,.5,10)); //Vision std devs
