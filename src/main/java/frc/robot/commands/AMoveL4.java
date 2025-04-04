@@ -90,58 +90,31 @@ public class AMoveL4 {
 
     public Command moveAndL4(SendableChooser<AprilTagAlign> chooser){
         AprilTagAlign whichWay = chooser.getSelected();
-        Command cmd;
+        Command directionalCommand;
+        Command fullCmd;
         switch (whichWay) {
             case LEFT:
-                cmd =
-                    driveForwardLeft().withTimeout(1.0).andThen(
-                    alignAndRaiseElevator().withTimeout(8.0)).andThen(
-                    score().repeatedly().withTimeout(1.0)).andThen(
-                    moveBack().withTimeout(0.75)).andThen(
-                    lowerElevator())
-                ;
+                System.out.println("Going Left in Auto");
+                directionalCommand = driveForwardLeft();
                 break;
             case RIGHT:
-                cmd =
-                    driveForwardRight().withTimeout(1.0).andThen(
-                    alignAndRaiseElevator().withTimeout(7.0)).andThen(
-                    score().repeatedly().withTimeout(1.0)).andThen(
-                    moveBack().withTimeout(0.75)).andThen(
-                    lowerElevator())
-                ;
+                System.out.println("Going right in Auto");
+                directionalCommand = driveForwardRight();
                 break;
             case CENTER:
             default:
-                cmd =
-                    driveForward().withTimeout(1.0).andThen(
-                    alignAndRaiseElevator().withTimeout(8.0)).andThen(
-                    score().repeatedly().withTimeout(1.0)).andThen(
-                    moveBack().withTimeout(0.75)).andThen(
-                    lowerElevator())
-                ;
+                System.out.println("Going to center in Auto");
+                directionalCommand = driveForward();
                 break;
         }
-        cmd.addRequirements(_elevator, _drive, _underglow, _shooter, _intake);
-        return cmd;
-    }
 
-    public Command leftTag(){
-        return new RunCommand(() -> {
-            rotationSpeed = -maxRot;
-        }, _drive);
-    }
-
-    public Command rightTag(){
-        return new RunCommand(() -> {
-            rotationSpeed = maxRot;
-            System.out.println(rotationSpeed);
-        }, _drive);
-    }
-
-    public Command centerTag(){
-        return new RunCommand(() -> {
-            rotationSpeed = 0.0;
-        }, _drive);
+        fullCmd = directionalCommand.withTimeout(1.0).andThen(
+            alignAndRaiseElevator().withTimeout(8.0)).andThen(
+            score().repeatedly().withTimeout(1.0)).andThen(
+            moveBack().withTimeout(0.75)).andThen(
+            lowerElevator());
+        fullCmd.addRequirements(_elevator, _drive, _underglow, _shooter, _intake);
+        return fullCmd;
     }
 }
 
