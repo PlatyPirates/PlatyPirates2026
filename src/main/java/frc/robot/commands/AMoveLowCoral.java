@@ -1,14 +1,7 @@
 
 package frc.robot.commands;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.DoubleTopic;
-import edu.wpi.first.networktables.IntegerSubscriber;
-import edu.wpi.first.networktables.IntegerTopic;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Shooter;
 
@@ -16,7 +9,6 @@ public class AMoveLowCoral extends Command {
 
     private DriveSubsystem _drive;
     private Shooter _intake;
-    private double startTime;
     private double currentTime;
     private double stateStartTime;
     private double elapsedStateTime;

@@ -4,8 +4,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,8 +13,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.wpilibj.PWM;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.SparkBase;
 

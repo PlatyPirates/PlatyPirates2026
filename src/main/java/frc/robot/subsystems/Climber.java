@@ -1,16 +1,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SoftLimitConfig;
-import com.revrobotics.spark.config.SoftLimitConfigAccessor;
 import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkBaseConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
