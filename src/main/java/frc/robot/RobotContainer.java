@@ -64,12 +64,12 @@ public class RobotContainer {
 
     SmartDashboard.putData("L4 Options", l4Dropdown);
 
-    autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
+    autoChooser.addOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive, m_intake));
     autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive, m_underglow));
     autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_shooter));
-    autoChooser.addOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown.getSelected()));
+    autoChooser.setDefaultOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown));
     autoChooser.addOption("Do Nothing", new RunCommand(
-      ()-> m_robotDrive.drive(0.0,0.0,0.0,true), m_robotDrive)
+      ()-> {m_robotDrive.drive(0.0,0.0,0.0,true); m_intake.setSpeed(1.0);}, m_robotDrive, m_intake)
     );
 
     SmartDashboard.putData("Auto Choices", autoChooser);
@@ -193,7 +193,7 @@ public class RobotContainer {
       .whileTrue(new RunCommand(
         () -> {
           m_shooter.setSpeed(0.5);
-        }));
+        }, m_shooter));
 
     m_operatorController
       .b()
@@ -204,7 +204,7 @@ public class RobotContainer {
       .whileTrue(new RunCommand(
         () -> {
           m_shooter.setSpeed(-0.5);
-        }, m_underglow));
+        }, m_shooter));
 
     m_operatorController
       .start()
@@ -229,9 +229,15 @@ public class RobotContainer {
       ));
 
     m_operatorController
-      .povLeft()
+      .povLeft().and(m_operatorController.leftTrigger().negate())
       .whileTrue(new RunCommand(() -> {
         m_elevator.l2();
+      }, m_elevator));
+
+    m_operatorController
+      .povLeft().and(m_operatorController.leftTrigger())
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.algae1();
       }, m_elevator));
 
     m_operatorController
@@ -241,9 +247,15 @@ public class RobotContainer {
       }, m_elevator));
 
     m_operatorController
-      .povRight()
+      .povRight().and(m_operatorController.leftTrigger().negate())
       .whileTrue(new RunCommand(() -> {
         m_elevator.l3();
+      }, m_elevator));
+
+    m_operatorController
+      .povRight().and(m_operatorController.leftTrigger())
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.algae2();
       }, m_elevator));
 
     m_operatorController

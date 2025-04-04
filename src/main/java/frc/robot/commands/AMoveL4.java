@@ -1,4 +1,6 @@
 package frc.robot.commands;
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.AprilTagAlign;
@@ -18,7 +20,7 @@ public class AMoveL4 {
     private DriveRobotFromLimelight driveRobotFromLimelight;
 
     private static double rotationSpeed = 0.0;
-    private static double maxRot = 0.1;
+    private static double maxRot = 0.2;
 
 
     public AMoveL4(DriveSubsystem drive, Shooter shooter, LEDs underglow, Elevator elevator, Intake intake) {
@@ -33,7 +35,23 @@ public class AMoveL4 {
 
     public Command driveForward(){
         return new RunCommand(() -> {
-            _drive.drive(0.2, 0.0, rotationSpeed, false);
+            _drive.drive(0.2, 0.0, 0.0, false);
+            DriveRobotFromLimelight.alignLeft();
+            _intake.setSpeed(1.0);
+        }, _drive, _intake);
+    }
+
+    public Command driveForwardRight(){
+        return new RunCommand(() -> {
+            _drive.drive(0.2, 0.0, 0.1, false);
+            DriveRobotFromLimelight.alignLeft();
+            _intake.setSpeed(1.0);
+        }, _drive, _intake);
+    }
+
+    public Command driveForwardLeft(){
+        return new RunCommand(() -> {
+            _drive.drive(0.2, 0.0, -0.1, false);
             DriveRobotFromLimelight.alignLeft();
             _intake.setSpeed(1.0);
         }, _drive, _intake);
@@ -70,36 +88,37 @@ public class AMoveL4 {
     }
 
 
-    public Command moveAndL4(AprilTagAlign whichWay){
+    public Command moveAndL4(SendableChooser<AprilTagAlign> chooser){
+        AprilTagAlign whichWay = chooser.getSelected();
         Command cmd;
         switch (whichWay) {
             case LEFT:
-                cmd = leftTag().andThen(
-                    driveForward().withTimeout(1.0).andThen(
-                    alignAndRaiseElevator().withTimeout(7.0)).andThen(
+                cmd =
+                    driveForwardLeft().withTimeout(1.0).andThen(
+                    alignAndRaiseElevator().withTimeout(8.0)).andThen(
                     score().repeatedly().withTimeout(1.0)).andThen(
                     moveBack().withTimeout(0.75)).andThen(
                     lowerElevator())
-                );
+                ;
                 break;
             case RIGHT:
-                cmd = rightTag().andThen(
-                    driveForward().withTimeout(1.0).andThen(
+                cmd =
+                    driveForwardRight().withTimeout(1.0).andThen(
                     alignAndRaiseElevator().withTimeout(7.0)).andThen(
                     score().repeatedly().withTimeout(1.0)).andThen(
                     moveBack().withTimeout(0.75)).andThen(
                     lowerElevator())
-                );
+                ;
                 break;
             case CENTER:
             default:
-                cmd = centerTag().andThen(
+                cmd =
                     driveForward().withTimeout(1.0).andThen(
-                    alignAndRaiseElevator().withTimeout(7.0)).andThen(
+                    alignAndRaiseElevator().withTimeout(8.0)).andThen(
                     score().repeatedly().withTimeout(1.0)).andThen(
                     moveBack().withTimeout(0.75)).andThen(
                     lowerElevator())
-                );
+                ;
                 break;
         }
         cmd.addRequirements(_elevator, _drive, _underglow, _shooter, _intake);
@@ -109,19 +128,20 @@ public class AMoveL4 {
     public Command leftTag(){
         return new RunCommand(() -> {
             rotationSpeed = -maxRot;
-        }).withTimeout(0.01);
+        }, _drive);
     }
 
     public Command rightTag(){
         return new RunCommand(() -> {
             rotationSpeed = maxRot;
-        }).withTimeout(0.01);
+            System.out.println(rotationSpeed);
+        }, _drive);
     }
 
     public Command centerTag(){
         return new RunCommand(() -> {
             rotationSpeed = 0.0;
-        }).withTimeout(0.01);
+        }, _drive);
     }
 }
 

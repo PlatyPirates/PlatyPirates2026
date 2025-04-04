@@ -30,6 +30,8 @@ public class Elevator extends SubsystemBase{
     private final double l3 = 54.9;
     private final double l4 = 79.0;
     private final double barge = 93.0;
+    private final double algae1 = 23.0;
+    private final double algae2 = 42.0;
 
     private PIDController pid;
 
@@ -90,6 +92,14 @@ public class Elevator extends SubsystemBase{
      */
     public void l4() {
         goToHeight(l4);
+    }
+
+    public void algae1(){
+        goToHeight(algae1);
+    }
+
+    public void algae2(){
+        goToHeight(algae2);
     }
 
     /**
