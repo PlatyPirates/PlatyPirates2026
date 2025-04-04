@@ -58,8 +58,6 @@ public class Robot extends TimedRobot {
 
     DriveRobotFromLimelight.aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
-    SmartDashboard.putData(l4Dropdown);
-
   }
 
   /**

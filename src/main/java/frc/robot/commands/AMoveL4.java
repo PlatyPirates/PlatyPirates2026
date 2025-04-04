@@ -87,7 +87,7 @@ public class AMoveL4 {
             case LEFT:
                 cmd = leftTag().andThen(
                     driveForward().withTimeout(1.0).andThen(
-                    alignAndRaiseElevator().withTimeout(5.0)).andThen(
+                    alignAndRaiseElevator().withTimeout(7.0)).andThen(
                     score().repeatedly().withTimeout(1.0)).andThen(
                     moveBack().withTimeout(0.75)).andThen(
                     lowerElevator())
@@ -96,7 +96,7 @@ public class AMoveL4 {
             case RIGHT:
                 cmd = rightTag().andThen(
                     driveForward().withTimeout(1.0).andThen(
-                    alignAndRaiseElevator().withTimeout(5.0)).andThen(
+                    alignAndRaiseElevator().withTimeout(7.0)).andThen(
                     score().repeatedly().withTimeout(1.0)).andThen(
                     moveBack().withTimeout(0.75)).andThen(
                     lowerElevator())
@@ -106,7 +106,7 @@ public class AMoveL4 {
             default:
                 cmd = centerTag().andThen(
                     driveForward().withTimeout(1.0).andThen(
-                    alignAndRaiseElevator().withTimeout(5.0)).andThen(
+                    alignAndRaiseElevator().withTimeout(7.0)).andThen(
                     score().repeatedly().withTimeout(1.0)).andThen(
                     moveBack().withTimeout(0.75)).andThen(
                     lowerElevator())
@@ -120,19 +120,19 @@ public class AMoveL4 {
     public Command leftTag(){
         return new RunCommand(() -> {
             rotationSpeed = -maxRot;
-        });
+        }).withTimeout(0.01);
     }
 
     public Command rightTag(){
         return new RunCommand(() -> {
             rotationSpeed = maxRot;
-        });
+        }).withTimeout(0.01);
     }
 
     public Command centerTag(){
         return new RunCommand(() -> {
             rotationSpeed = 0.0;
-        });
+        }).withTimeout(0.01);
     }
 }
 

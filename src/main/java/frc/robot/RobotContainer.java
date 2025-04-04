@@ -73,6 +73,12 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    
+    l4Dropdown.setDefaultOption("Center Tag", AprilTagAlign.CENTER);
+    l4Dropdown.addOption("Left Tag", AprilTagAlign.LEFT);
+    l4Dropdown.addOption("Right Tag", AprilTagAlign.RIGHT);
+
+    SmartDashboard.putData("L4 Options", l4Dropdown);
 
     autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
     autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive, m_underglow));
@@ -81,10 +87,6 @@ public class RobotContainer {
     autoChooser.addOption("Do Nothing", new RunCommand(
       ()-> m_robotDrive.drive(0.0,0.0,0.0,true), m_robotDrive)
     );
-
-    l4Dropdown.addOption("Center Tag", AprilTagAlign.CENTER);
-    l4Dropdown.addOption("Left Tag", AprilTagAlign.LEFT);
-    l4Dropdown.addOption("Right Tag", AprilTagAlign.RIGHT);
 
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
@@ -176,8 +178,8 @@ public class RobotContainer {
       .whileTrue(
         new RunCommand(
             () -> {m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert * -1, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert * -1, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor * -1, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor * -1, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 false);
 

@@ -29,6 +29,7 @@ public class DriveRobotFromLimelight extends Command {
     private static double yOffset = 0.0; //0.46
     private static double xOffsetMod, yOffsetMod;
     public static AprilTagFieldLayout aprilTagFieldLayout;
+    public static boolean pink = false;
 
     enum State {
         ALIGN_ANGLE,
@@ -47,7 +48,9 @@ public class DriveRobotFromLimelight extends Command {
     public void alignWithAprilTag(){
         boolean angleAligned = _DriveSubsystem.angleAligned(aprilTagAngle);
         boolean translationAligned = _DriveSubsystem.translationAligned(aprilTagPose, xOffsetMod, yOffsetMod);
-        SmartDashboard.putBoolean("Aligned", angleAligned && translationAligned && System.currentTimeMillis() %2 ==0);
+        SmartDashboard.putBoolean("Aligned", angleAligned && translationAligned && pink);
+
+        pink = !pink;
 
         switch(state){
             case ALIGN_ANGLE:

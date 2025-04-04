@@ -79,7 +79,7 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
 
     public static final double ksPercent = 0.035;
-    public static final double kpPercent = 0.025; //originally 0.009
+    public static final double kpPercent = 0.030; //originally 0.009
   }
 
   public static final class ModuleConstants {
