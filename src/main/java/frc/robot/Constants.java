@@ -164,4 +164,10 @@ public final class Constants {
     CENTER,
     RIGHT
   }
+
+  public enum Auto {
+    TAXI,
+    NOTHING,
+    L4
+  }
 }

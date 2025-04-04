@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+  private SendableChooser<Constants.Auto> autoChooser = new SendableChooser<Constants.Auto>();
   private SendableChooser<AprilTagAlign> l4Dropdown = new SendableChooser<AprilTagAlign>();
 
   // The driver's controller
@@ -43,8 +43,7 @@ public class RobotContainer {
   Elevator m_elevator = new Elevator();
   Intake m_intake = new Intake();
 
-  LEDs m_underglow = new LEDs(173);
-
+  LEDs m_underglow = new LEDs(171);
 
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
@@ -64,13 +63,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("L4 Options", l4Dropdown);
 
-    autoChooser.addOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive, m_intake));
-    autoChooser.addOption("Drive Robot From Limelight", new DriveRobotFromLimelight(m_robotDrive, m_underglow));
-    autoChooser.addOption("Score L2 Coral", new AMoveLowCoral(m_robotDrive, m_shooter));
-    autoChooser.setDefaultOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown));
-    autoChooser.addOption("Do Nothing", new RunCommand(
-      ()-> {m_robotDrive.drive(0.0,0.0,0.0,true); m_intake.setSpeed(1.0);}, m_robotDrive, m_intake)
-    );
+    autoChooser.setDefaultOption("l4", Constants.Auto.L4);
+    autoChooser.addOption("Taxi", Constants.Auto.TAXI);
+    autoChooser.addOption("Do Nothing", Constants.Auto.NOTHING);
 
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
@@ -272,7 +267,33 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    Command cmd;
+    Constants.Auto selected = autoChooser.getSelected();
+    switch(selected){
+      case TAXI:
+        cmd = new AMoveEnd(m_robotDrive, m_intake);
+        break;
+      case L4:
+      default:
+        cmd = new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown);
+        break;
+      case NOTHING:
+        cmd = new RunCommand(
+          ()-> {
+            m_robotDrive.drive(0.0,0.0,0.0,true); 
+            m_intake.setSpeed(1.0);
+          }, m_robotDrive, m_intake);
+
+        break;
+    }
+    return cmd;
+
+
+    // autoChooser.addOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive, m_intake));
+    // autoChooser.setDefaultOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown));
+    // autoChooser.addOption("Do Nothing", new RunCommand(
+    //   ()-> {m_robotDrive.drive(0.0,0.0,0.0,true); m_intake.setSpeed(1.0);}, m_robotDrive, m_intake)
+    // );
     // Create config for trajectory
     /*TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
