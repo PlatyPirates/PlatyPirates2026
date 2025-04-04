@@ -73,7 +73,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    
+
     l4Dropdown.setDefaultOption("Center Tag", AprilTagAlign.CENTER);
     l4Dropdown.addOption("Left Tag", AprilTagAlign.LEFT);
     l4Dropdown.addOption("Right Tag", AprilTagAlign.RIGHT);
@@ -178,8 +178,8 @@ public class RobotContainer {
       .whileTrue(
         new RunCommand(
             () -> {m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor * -1, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor * -1, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 false);
 
@@ -198,9 +198,11 @@ public class RobotContainer {
       ));
 
     m_driverController
-      .povUp()
-        .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignMiddle();}
-      ));
+      .povLeft().or(m_driverController.povRight())
+      .whileFalse(new RunCommand(
+        () -> {
+          DriveRobotFromLimelight.alignMiddle();
+        }));
 
     m_operatorController
       .a()
