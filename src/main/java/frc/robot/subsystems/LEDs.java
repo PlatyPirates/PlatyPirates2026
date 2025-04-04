@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class LEDs extends SubsystemBase{
     private AddressableLED addressableLED;
     private AddressableLEDBuffer ledBuffer;
-    private Distance ledSpacing = Meters.of(1/30.0);
+    private Distance ledSpacing = Meters.of(0.016);
 
     private Color maroon = Color.kMaroon;
 
@@ -55,7 +55,7 @@ public class LEDs extends SubsystemBase{
     }
 
     public void scrollingRainbow(){
-        applyPattern(LEDPattern.rainbow(255, 128).scrollAtAbsoluteSpeed(MetersPerSecond.of(1), ledSpacing)); 
+        applyPattern(LEDPattern.rainbow(255, 128).scrollAtAbsoluteSpeed(MetersPerSecond.of(1), ledSpacing));
     }
 
     public void maroonAndWhite(){
