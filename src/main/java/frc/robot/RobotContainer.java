@@ -280,7 +280,7 @@ public class RobotContainer {
       case NOTHING:
         cmd = new RunCommand(
           ()-> {
-            m_robotDrive.drive(0.0,0.0,0.0,true); 
+            m_robotDrive.drive(0.0,0.0,0.0,true);
             m_intake.setSpeed(1.0);
           }, m_robotDrive, m_intake);
 
