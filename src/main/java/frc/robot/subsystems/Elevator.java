@@ -117,7 +117,7 @@ public class Elevator extends SubsystemBase{
      * Sets the encoder reading to 0 if we hit the bottom limit switch. Called periodically
      */
     public void zero(){
-        if(!m_lowerLimit.get() && !m_upperLimit.get()){
+        if(!m_lowerLimit.get()){
             encoderLeft.setPosition(0.0);
             encoderRight.setPosition(0.0);
         }
