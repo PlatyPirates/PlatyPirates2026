@@ -219,7 +219,7 @@ public class RobotContainer {
       .rightTrigger()
       .whileTrue(new RunCommand(
         () -> {
-          m_elevator.barge();
+          m_elevator.barge(); // Need to go to l4 before using this
         }
       ));
 
