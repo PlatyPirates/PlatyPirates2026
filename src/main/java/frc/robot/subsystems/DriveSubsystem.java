@@ -194,7 +194,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Method to drive the robot using joystick info.
+   * Method to drive the robot
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
@@ -203,14 +203,10 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    // Apply cubic function
-    double xSpeed_cubed = Math.pow(xSpeed, 3);
-    double ySpeed_cubed = Math.pow(ySpeed, 3);
-    double rot_cubed = Math.pow(rot, 3);
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed_cubed * DriveConstants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeed_cubed * DriveConstants.kMaxSpeedMetersPerSecond;
-    double rotDelivered = rot_cubed * DriveConstants.kMaxAngularSpeed;
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
@@ -223,6 +219,24 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+    /**
+   * Method to drive the robot more easily during teleop
+   *
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the
+   *                      field.
+   */
+  public void driveTeleop(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    // Apply cubic function
+    double xSpeed_cubed = Math.pow(xSpeed, 3);
+    double ySpeed_cubed = Math.pow(ySpeed, 3);
+    double rot_cubed = Math.pow(rot, 3);
+
+    drive(xSpeed_cubed, ySpeed_cubed,rot_cubed, fieldRelative);
   }
 
   public boolean angleAligned(double aprilTagAngle) {
