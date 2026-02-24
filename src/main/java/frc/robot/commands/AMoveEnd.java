@@ -1,24 +1,19 @@
 
 package frc.robot.commands;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.DoubleTopic;
-import edu.wpi.first.networktables.IntegerSubscriber;
-import edu.wpi.first.networktables.IntegerTopic;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Intake;
 
 public class AMoveEnd extends Command {
 
     private DriveSubsystem _drive;
+    private Intake _intake;
     private double startTime;
-    private final long tolerance = 12;
 
-    public AMoveEnd(DriveSubsystem drive) {
+    public AMoveEnd(DriveSubsystem drive, Intake intake) {
         _drive = drive;
+        _intake = intake;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(drive);
     }
@@ -32,11 +27,13 @@ public class AMoveEnd extends Command {
     @Override
     public void execute(){
         _drive.drive(0.5, 0.0, 0.0, true);
+        _intake.setSpeed(1.0);
     }
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         _drive.setX();
+        _intake.setSpeed(0.0);
     }
 
     // Returns true when the command should end.

@@ -5,28 +5,22 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants.AprilTagAlign;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AMoveEnd;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -37,10 +31,24 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   public final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+  private SendableChooser<Constants.Auto> autoChooser = new SendableChooser<Constants.Auto>();
+  private SendableChooser<AprilTagAlign> l4Dropdown = new SendableChooser<AprilTagAlign>();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+
+  Shooter m_shooter = new Shooter();
+  Climber m_climber = new Climber();
+  Elevator m_elevator = new Elevator();
+  Intake m_intake = new Intake();
+
+  LEDs m_underglow = new LEDs(171);
+
+  double driveSpeedFactor = 1.0;
+  public boolean fieldRelative = true;
+
+  int invert = 1;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -49,11 +57,15 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    autoChooser.setDefaultOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive));
-    autoChooser.addOption("Do Nothing",
-      new RunCommand(
-        ()-> m_robotDrive.drive(0.0,0.0,0.0,true), m_robotDrive)
-    );
+    l4Dropdown.setDefaultOption("Center Tag", AprilTagAlign.CENTER);
+    l4Dropdown.addOption("Left Tag", AprilTagAlign.LEFT);
+    l4Dropdown.addOption("Right Tag", AprilTagAlign.RIGHT);
+
+    SmartDashboard.putData("L4 Options", l4Dropdown);
+
+    autoChooser.setDefaultOption("l4", Constants.Auto.L4);
+    autoChooser.addOption("Taxi", Constants.Auto.TAXI);
+    autoChooser.addOption("Do Nothing", Constants.Auto.NOTHING);
 
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
@@ -61,12 +73,45 @@ public class RobotContainer {
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true),
+            () -> {m_robotDrive.driveTeleop(
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                fieldRelative);
+              },
             m_robotDrive));
+
+    m_climber.setDefaultCommand(
+      new RunCommand(
+        () -> {m_climber.setChainSpeed(-m_operatorController.getRightY()*0.15);
+          m_climber.setMotorSpeed(0.0);
+        },
+        m_climber
+        )
+    );
+    m_underglow.setDefaultCommand(
+      new RunCommand(() -> {
+        if(m_climber.isLimited() && (Timer.getMatchTime() <= 30.0) && DriverStation.isTeleop()){
+          m_underglow.scrollingRainbow();
+        } else {
+          m_underglow.maroon();
+        }
+      }, m_underglow)
+    );
+
+    m_elevator.setDefaultCommand(
+        new RunCommand(
+        () -> {m_elevator.setSpeed(-m_operatorController.getLeftY()*0.5);
+        }
+      , m_elevator));
+
+    m_shooter.setDefaultCommand(new RunCommand(() -> {
+      m_shooter.setSpeed(0.0);
+    }, m_shooter));
+
+    m_intake.setDefaultCommand(new RunCommand( () -> {
+      m_intake.setSpeed(0.0);
+    }, m_intake));
   }
 
   /**
@@ -79,15 +124,141 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
+
+    m_driverController
+      .a()
+      .whileTrue(new DriveRobotFromLimelight(m_robotDrive, m_underglow)
+      );
+
+    m_driverController
+      .b()
+      .whileTrue(new RunCommand(
+        () -> m_robotDrive.setX(), m_robotDrive));
+
+    m_driverController
+      .leftBumper()
+      .whileTrue(new RunCommand(
+        () -> m_robotDrive.resetHeading(),
+        m_robotDrive));
+
+    m_driverController
+      .leftTrigger()
+      .whileTrue(new RunCommand( () -> {
+        driveSpeedFactor = 0.3;
+        m_underglow.blink(Color.kYellow);
+      }, m_underglow));
+
+    m_driverController
+      .leftTrigger()
+      .whileFalse(new RunCommand(() -> driveSpeedFactor = 1.0));
+
+    m_driverController
+      .rightTrigger()
+      .whileTrue(
+        new RunCommand(
+            () -> {m_robotDrive.driveTeleop(
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
+                false);
+
+                //m_underglow.blink(Color.kWhite);
+              },
             m_robotDrive));
-     // Resets direction to 0 degrees
-     new JoystickButton(m_driverController, Button.kL1.value)
-     .whileTrue(new RunCommand(
-       () -> m_robotDrive.zeroHeading(),
-       m_robotDrive));
+
+    m_driverController
+      .povLeft()
+      .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignLeft();}
+      ));
+
+    m_driverController
+      .povRight()
+      .whileTrue(new RunCommand(() -> {DriveRobotFromLimelight.alignRight();}
+      ));
+
+    m_driverController
+      .povLeft().or(m_driverController.povRight())
+      .whileFalse(new RunCommand(
+        () -> {
+          DriveRobotFromLimelight.alignMiddle();
+        }));
+
+    m_operatorController
+      .a()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_shooter.setSpeed(0.5);
+        }, m_shooter));
+
+    m_operatorController
+      .b()
+      .whileTrue(new LoadCoral(m_shooter, m_underglow, m_intake, m_elevator));
+
+    m_operatorController
+      .y()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_shooter.setSpeed(-0.5);
+        }, m_shooter));
+
+    m_operatorController
+      .start()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_climber.setMotorSpeed(-1.0);
+        }));
+
+    m_operatorController
+      .leftBumper()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_climber.setMotorSpeed(1.0);
+        }));
+
+    m_operatorController
+      .rightTrigger()
+      .whileTrue(new RunCommand(
+        () -> {
+          m_elevator.barge(); // Need to go to l4 before using this
+        }
+      ));
+
+    m_operatorController
+      .povLeft().and(m_operatorController.leftTrigger().negate())
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.l2();
+      }, m_elevator));
+
+    m_operatorController
+      .povLeft().and(m_operatorController.leftTrigger())
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.algae1();
+      }, m_elevator));
+
+    m_operatorController
+      .povUp()
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.l4();
+      }, m_elevator));
+
+    m_operatorController
+      .povRight().and(m_operatorController.leftTrigger().negate())
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.l3();
+      }, m_elevator));
+
+    m_operatorController
+      .povRight().and(m_operatorController.leftTrigger())
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.algae2();
+      }, m_elevator));
+
+    m_operatorController
+      .povDown()
+      .whileTrue(new RunCommand(() -> {
+        m_elevator.l1();
+      }, m_elevator));
+
   }
 
   /**
@@ -96,7 +267,33 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    Command cmd;
+    Constants.Auto selected = autoChooser.getSelected();
+    switch(selected){
+      case TAXI:
+        cmd = new AMoveEnd(m_robotDrive, m_intake);
+        break;
+      case L4:
+      default:
+        cmd = new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown);
+        break;
+      case NOTHING:
+        cmd = new RunCommand(
+          ()-> {
+            m_robotDrive.drive(0.0,0.0,0.0,true);
+            m_intake.setSpeed(1.0);
+          }, m_robotDrive, m_intake);
+
+        break;
+    }
+    return cmd;
+
+
+    // autoChooser.addOption("Cross Auto Line Only", new AMoveEnd(m_robotDrive, m_intake));
+    // autoChooser.setDefaultOption("Score L4 Coral", new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown));
+    // autoChooser.addOption("Do Nothing", new RunCommand(
+    //   ()-> {m_robotDrive.drive(0.0,0.0,0.0,true); m_intake.setSpeed(1.0);}, m_robotDrive, m_intake)
+    // );
     // Create config for trajectory
     /*TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -137,4 +334,11 @@ public class RobotContainer {
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
     */
   }
+
+  public void updateInversion(){
+    if(DriverStation.getAlliance().get() == Alliance.Red){
+      invert = -1;
+    }
+  }
+
 }

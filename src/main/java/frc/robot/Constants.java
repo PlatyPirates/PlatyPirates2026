@@ -28,7 +28,7 @@ public final class Constants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 4.8;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final double kMaxAngularSpeed = Math.PI; // radians per second
 
     public static final double kDirectionSlewRate = 1.2; // radians per second
     public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
@@ -62,11 +62,24 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 4;
     public static final int kRearRightTurningCanId = 1;
 
-    public static final int kIntakeCanId = 10;
+    public static final int kShooterCanId = 12;
 
     public static final int kGyroCanId = 9;
 
+    public static final int kClimberMotorChainCanId = 10;
+    public static final int kClimberMotorRopeCanId = 11;
+
+    public static final int kLeftElevatorCanId = 13;
+    public static final int kRightElevatorCanId = 14;
+
+    public static final int kIntakeCanId = 15;
+
+    public static final int kLinearActuator = 1;
+
     public static final boolean kGyroReversed = false;
+
+    public static final double ksPercent = 0.035;
+    public static final double kpPercent = 0.030; //originally 0.009
   }
 
   public static final class ModuleConstants {
@@ -144,5 +157,17 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public enum AprilTagAlign {
+    LEFT,
+    CENTER,
+    RIGHT
+  }
+
+  public enum Auto {
+    TAXI,
+    NOTHING,
+    L4
   }
 }

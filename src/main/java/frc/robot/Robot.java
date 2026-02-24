@@ -5,8 +5,15 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.commands.DriveRobotFromLimelight;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,6 +23,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+
+  private SendableChooser<Command> ledTester = new SendableChooser<Command>();
+
 
   private RobotContainer m_robotContainer;
 
@@ -28,6 +38,21 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    m_robotContainer.m_underglow.maroon();
+
+    m_robotContainer.m_robotDrive.zeroHeading();
+
+    ledTester.addOption("Rainbow", new RunCommand(() -> {m_robotContainer.m_underglow.rainbow();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Rainbow Scroll", new RunCommand(() -> {m_robotContainer.m_underglow.scrollingRainbow();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Blink White", new RunCommand(() -> {m_robotContainer.m_underglow.blink(Color.kWhite);}, m_robotContainer.m_underglow));
+    ledTester.addOption("Maroon and White Scrolling", new RunCommand(() -> {m_robotContainer.m_underglow.maroonAndWhiteScrolling();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Maroon and White", new RunCommand(() -> {m_robotContainer.m_underglow.maroonAndWhite();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Loading", new RunCommand(() -> {m_robotContainer.m_underglow.loading();}, m_robotContainer.m_underglow));
+    ledTester.addOption("Error", new RunCommand(() -> {m_robotContainer.m_underglow.error();}, m_robotContainer.m_underglow));
+
+    DriveRobotFromLimelight.aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
   }
 
   /**
@@ -43,20 +68,40 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Robot Heading", m_robotContainer.m_robotDrive.getHeading());
+    SmartDashboard.putNumber("Estimated Heading", m_robotContainer.m_robotDrive.getEstimatedHeading());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // if(ledTester.getSelected() != null){
+    //   ledTester.getSelected().execute();
+    // }
+    m_robotContainer.m_underglow.loading();
+
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    if (m_autonomousCommand != null) {
+      //l4Dropdown.getSelected().andThen(m_autonomousCommand).schedule();
+      m_autonomousCommand.schedule();
+    }
+
+    m_robotContainer.updateInversion();
+
+    m_robotContainer.m_robotDrive.poseInit();
+
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -64,11 +109,6 @@ public class Robot extends TimedRobot {
      * = new MyAutoCommand(); break; case "Default Auto": default:
      * autonomousCommand = new ExampleCommand(); break; }
      */
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -84,6 +124,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   /** This function is called periodically during operator control. */
