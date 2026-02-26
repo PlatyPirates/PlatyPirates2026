@@ -37,12 +37,9 @@ public class RobotContainer {
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
-
-  Shooter m_shooter = new Shooter();
   Climber m_climber = new Climber();
   Elevator m_elevator = new Elevator();
   Intake m_intake = new Intake();
-
   LEDs m_underglow = new LEDs(171);
 
   double driveSpeedFactor = 1.0;
@@ -105,9 +102,7 @@ public class RobotContainer {
         }
       , m_elevator));
 
-    m_shooter.setDefaultCommand(new RunCommand(() -> {
-      m_shooter.setSpeed(0.0);
-    }, m_shooter));
+
 
     m_intake.setDefaultCommand(new RunCommand( () -> {
       m_intake.setSpeed(0.0);
@@ -183,23 +178,6 @@ public class RobotContainer {
           DriveRobotFromLimelight.alignMiddle();
         }));
 
-    m_operatorController
-      .a()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_shooter.setSpeed(0.5);
-        }, m_shooter));
-
-    m_operatorController
-      .b()
-      .whileTrue(new LoadCoral(m_shooter, m_underglow, m_intake, m_elevator));
-
-    m_operatorController
-      .y()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_shooter.setSpeed(-0.5);
-        }, m_shooter));
 
     m_operatorController
       .start()
@@ -275,8 +253,8 @@ public class RobotContainer {
         break;
       case L4:
       default:
-        cmd = new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown);
-        break;
+        //cmd = new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown);
+        //break;
       case NOTHING:
         cmd = new RunCommand(
           ()-> {
