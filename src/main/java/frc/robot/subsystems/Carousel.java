@@ -20,7 +20,7 @@ public class Carousel extends SubsystemBase {
         carouselMotor = new SparkMax(0, MotorType.kBrushless); // TODO add the real CAN ID to constants
 
     }
-
+    
     // methods
     public void moveCarousel() {
         carouselMotor.set(1.0);
