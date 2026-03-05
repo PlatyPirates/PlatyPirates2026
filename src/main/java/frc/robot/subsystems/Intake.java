@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
         intakeMotor.set(1.0);
     }
 
-     public void retractArm() {
+    public void retractArm() {
         intakeMotor.set(-1.0); 
     }
 
