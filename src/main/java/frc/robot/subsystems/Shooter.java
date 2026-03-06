@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
     }
     
     //methods
-    public void feedBall() {
+    public void baseMotor() {
         feedBall.set(1.0);
     }
 

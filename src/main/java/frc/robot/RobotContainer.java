@@ -63,7 +63,7 @@ public class RobotContainer {
     SmartDashboard.putData("L4 Options", l4Dropdown);
 
     autoChooser.setDefaultOption("l4", Constants.Auto.L4);
-    autoChooser.addOption("Taxi", Constants.Auto.TAXI);
+    autoChooser.addOption("AutoShoot + Drive", Constants.Auto.TAXI);
     autoChooser.addOption("Shoot", Constants.Auto.SHOOT);
     autoChooser.addOption("Do Nothing", Constants.Auto.NOTHING);
 
@@ -106,10 +106,8 @@ public class RobotContainer {
       , m_elevator));
 
 
-
-    m_intake.setDefaultCommand(new RunCommand( () -> {
-      m_intake.setSpeed(0.0);
-    }, m_intake));
+    m_intake.setDefaultCommand(
+    new RunCommand(() -> m_intake.stopMotors(), m_intake));
   }
 
   /**
@@ -255,7 +253,7 @@ public class RobotContainer {
        cmd = new AutoShoot(m_shooter, m_carousel, m_robotDrive);
     break;
       case TAXI:
-        cmd = new AMoveEnd(m_robotDrive, m_intake);
+        cmd = new AutoShoot(m_shooter, m_carousel, m_robotDrive);
         break;
       case L4:
       default:
@@ -265,7 +263,7 @@ public class RobotContainer {
         cmd = new RunCommand(
           ()-> {
             m_robotDrive.drive(0.0,0.0,0.0,true);
-            m_intake.setSpeed(1.0);
+            m_intake.stopMotors();
           }, m_robotDrive, m_intake);
 
         break;

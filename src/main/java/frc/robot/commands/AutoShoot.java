@@ -48,7 +48,7 @@ public class AutoShoot extends Command {
         } else { // if everything above is false feed the balls into the shooter and shoot
             m_shooter.shoot();
             m_carousel.moveCarousel();
-            m_shooter.feedBall();
+            m_shooter.baseMotor();
 
         }
     }
