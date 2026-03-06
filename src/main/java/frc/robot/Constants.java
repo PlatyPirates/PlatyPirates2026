@@ -168,6 +168,7 @@ public final class Constants {
   public enum Auto {
     TAXI,
     NOTHING,
+    SHOOT,
     L4
   }
 }
