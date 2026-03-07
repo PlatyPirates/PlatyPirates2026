@@ -193,13 +193,13 @@ m_operatorController
     }, m_shooter));
 
 m_operatorController
-    .leftTrigger()
+    .leftBumper()
     .whileTrue(new RunCommand(() -> {
       m_intake.reverseScooper();
     }, m_intake));
 
 m_operatorController
-    .rightTrigger()
+    .rightBumper()
     .whileTrue(new RunCommand(() -> {
       m_carousel.reverseCarousel();
     }, m_carousel));
