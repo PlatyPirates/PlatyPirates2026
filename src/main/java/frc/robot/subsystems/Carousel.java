@@ -17,7 +17,7 @@ public class Carousel extends SubsystemBase {
 
     // constructor
     public Carousel() {
-        carouselMotor = new SparkMax(0, MotorType.kBrushless); // TODO add the real CAN ID to constants
+        carouselMotor = new SparkMax(9, MotorType.kBrushless);
 
     }
     
