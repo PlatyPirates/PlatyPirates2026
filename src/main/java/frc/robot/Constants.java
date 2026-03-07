@@ -70,7 +70,7 @@ public final class Constants {
     public static final int kCarouselMotorCanId = 10;
     public static final int kIntakeArmMotorCanId = 11;
     public static final int kIntakeScooperMotorCanId = 12;
-    public static final int kFlywheelMotor1CanId = 13;
+    // public static final int kFlywheelMotor1CanId = 13;
     public static final int kFlywheelMotor2CanId = 14;
     public static final int kFeedBallMotorCanId = 15;
 
@@ -171,7 +171,7 @@ public final class Constants {
     public static final double kScooperMotorReverse = -0.5;
 
     // Shooter
-    public static final double kFlywheel1Speed = 1.0;
+    // public static final double kFlywheel1Speed = 1.0;
     public static final double kFlywheel2Speed = 1.0;
     public static final double kFlywheel1Reverse = -1.0;
     public static final double kFlywheel2Reverse = -1.0;

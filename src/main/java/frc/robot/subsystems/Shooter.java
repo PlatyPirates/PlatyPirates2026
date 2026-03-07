@@ -14,7 +14,7 @@ import com.revrobotics.spark.SparkMax;
 public class Shooter extends SubsystemBase {
 
     //motors-Kracken
-    private final TalonFX flywheelMotor1;
+    // private final TalonFX flywheelMotor1;
     private final TalonFX flywheelMotor2;
     private final DutyCycleOut shooterControl = new DutyCycleOut(0);
 
@@ -23,7 +23,7 @@ public class Shooter extends SubsystemBase {
 
     //constructor
     public Shooter() {
-        flywheelMotor1 = new TalonFX(Constants.DriveConstants.kFlywheelMotor1CanId);
+        // flywheelMotor1 = new TalonFX(Constants.DriveConstants.kFlywheelMotor1CanId);
         flywheelMotor2 = new TalonFX(Constants.DriveConstants.kFlywheelMotor2CanId);
         feedBall = new SparkMax(Constants.DriveConstants.kFeedBallMotorCanId, MotorType.kBrushless);
 
@@ -35,12 +35,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public void shoot() {
-        flywheelMotor1.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel1Speed));
+        // flywheelMotor1.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel1Speed));
         flywheelMotor2.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel2Speed));
     }
 
     public void stopFlywheels() {
-        flywheelMotor1.setControl(shooterControl.withOutput(0.0));
+        // flywheelMotor1.setControl(shooterControl.withOutput(0.0));
         flywheelMotor2.setControl(shooterControl.withOutput(0.0));
     }
 
@@ -53,7 +53,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void reverseFlywheels() {
-        flywheelMotor1.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel1Reverse));
+        // flywheelMotor1.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel1Reverse));
         flywheelMotor2.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel2Reverse));
     }
 
