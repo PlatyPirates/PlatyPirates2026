@@ -23,20 +23,20 @@ public class Shooter extends SubsystemBase {
 
     //constructor
     public Shooter() {
-        flywheelMotor1 = new TalonFX(12);
-        flywheelMotor2 = new TalonFX(13);
-        feedBall = new SparkMax(14, MotorType.kBrushless);
+        flywheelMotor1 = new TalonFX(Constants.DriveConstants.kFlywheelMotor1CanId);
+        flywheelMotor2 = new TalonFX(Constants.DriveConstants.kFlywheelMotor2CanId);
+        feedBall = new SparkMax(Constants.DriveConstants.kFeedBallMotorCanId, MotorType.kBrushless);
 
     }
     
     //methods
     public void baseMotor() {
-        feedBall.set(1.0);
+        feedBall.set(Constants.SubsystemConstants.kFeedBallMotorSpeed);
     }
 
     public void shoot() {
-        flywheelMotor1.setControl(shooterControl.withOutput(1.0));
-        flywheelMotor2.setControl(shooterControl.withOutput(1.0));
+        flywheelMotor1.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel1Speed));
+        flywheelMotor2.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel2Speed));
     }
 
     public void stopFlywheels() {
@@ -49,12 +49,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public void reverseFeed() {
-        feedBall.set(-1.0);
+        feedBall.set(Constants.SubsystemConstants.kFeedBallMotorReverse);
     }
 
     public void reverseFlywheels() {
-        flywheelMotor1.setControl(shooterControl.withOutput(-1.0));
-        flywheelMotor2.setControl(shooterControl.withOutput(-1.0));
+        flywheelMotor1.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel1Reverse));
+        flywheelMotor2.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel2Reverse));
     }
 
 }

@@ -53,16 +53,16 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    // sets the options in the drive station for autonomous
     l4Dropdown.setDefaultOption("Center Tag", AprilTagAlign.CENTER);
     l4Dropdown.addOption("Left Tag", AprilTagAlign.LEFT);
     l4Dropdown.addOption("Right Tag", AprilTagAlign.RIGHT);
 
     SmartDashboard.putData("L4 Options", l4Dropdown);
 
-    autoChooser.setDefaultOption("l4", Constants.Auto.L4);
+    autoChooser.setDefaultOption("Do Nothing", Constants.Auto.NOTHING);
     autoChooser.addOption("AutoShoot + Drive", Constants.Auto.TAXI);
     autoChooser.addOption("Shoot", Constants.Auto.SHOOT);
-    autoChooser.addOption("Do Nothing", Constants.Auto.NOTHING);
 
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
@@ -219,7 +219,6 @@ m_operatorController
       case TAXI:
         cmd = new AutoShoot(m_shooter, m_carousel, m_robotDrive);
         break;
-      case L4:
       default:
         //cmd = new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown);
         //break;

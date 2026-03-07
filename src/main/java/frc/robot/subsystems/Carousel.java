@@ -17,13 +17,13 @@ public class Carousel extends SubsystemBase {
 
     // constructor
     public Carousel() {
-        carouselMotor = new SparkMax(9, MotorType.kBrushless);
+        carouselMotor = new SparkMax(Constants.DriveConstants.kCarouselMotorCanId, MotorType.kBrushless);
 
     }
     
     // methods
     public void moveCarousel() {
-        carouselMotor.set(1.0);
+        carouselMotor.set(Constants.SubsystemConstants.kCarouselMotorSpeed);
     }
 
     public void stopCarousel() {
@@ -31,7 +31,7 @@ public class Carousel extends SubsystemBase {
     }
 
     public void reverseCarousel() {
-        carouselMotor.set(-1.0);
+        carouselMotor.set(Constants.SubsystemConstants.kCarouselMotorReverse);
     }
 
 

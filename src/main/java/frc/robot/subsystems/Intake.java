@@ -17,21 +17,19 @@ public class Intake extends SubsystemBase {
     //motors
     private final SparkFlex intakeMotor;
     private final SparkMax scooperMotor;
-    // TODO: add intakeMotor and scooperMotor IDs to constants
-
     // constructor activates once when the robot turns on
     public Intake() {
-        intakeMotor = new SparkFlex(10, SparkLowLevel.MotorType.kBrushless);
-        scooperMotor = new SparkMax(11, MotorType.kBrushless);
+        intakeMotor = new SparkFlex(Constants.DriveConstants.kIntakeArmMotorCanId, SparkLowLevel.MotorType.kBrushless);
+        scooperMotor = new SparkMax(Constants.DriveConstants.kIntakeScooperMotorCanId, MotorType.kBrushless);
     }
     
     // methods
     public void extendArm() {
-        intakeMotor.set(0.10);
+        intakeMotor.set(Constants.SubsystemConstants.kIntakeArmExtend);
     }
 
     public void retractArm() {
-        intakeMotor.set(-0.10);
+        intakeMotor.set(Constants.SubsystemConstants.kIntakeArmRetract);
     }
 
     public void stopMotors() {
@@ -48,11 +46,11 @@ public class Intake extends SubsystemBase {
     }
 
     public void spinScooper() {
-        scooperMotor.set(0.5);
+        scooperMotor.set(Constants.SubsystemConstants.kScooperMotorSpeed);
     }
 
     public void reverseScooper() {
-        scooperMotor.set(-0.5);
+        scooperMotor.set(Constants.SubsystemConstants.kScooperMotorReverse);
 
     }
 
