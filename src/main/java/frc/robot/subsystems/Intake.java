@@ -27,11 +27,11 @@ public class Intake extends SubsystemBase {
     
     // methods
     public void extendArm() {
-        intakeMotor.set(0.5);
+        intakeMotor.set(0.10);
     }
 
     public void retractArm() {
-        intakeMotor.set(-0.5);
+        intakeMotor.set(-0.10);
     }
 
     public void stopMotors() {

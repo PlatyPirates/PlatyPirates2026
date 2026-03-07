@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.AprilTagAlign;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.*;
@@ -20,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -37,8 +36,6 @@ public class RobotContainer {
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   CommandXboxController m_operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
-  Climber m_climber = new Climber();
-  Elevator m_elevator = new Elevator();
   Intake m_intake = new Intake();
   LEDs m_underglow = new LEDs(171);
   Shooter m_shooter = new Shooter();
@@ -81,30 +78,11 @@ public class RobotContainer {
               },
             m_robotDrive));
 
-    m_climber.setDefaultCommand(
-      new RunCommand(
-        () -> {m_climber.setChainSpeed(-m_operatorController.getRightY()*0.15);
-          m_climber.setMotorSpeed(0.0);
-        },
-        m_climber
-        )
-    );
     m_underglow.setDefaultCommand(
       new RunCommand(() -> {
-        if(m_climber.isLimited() && (Timer.getMatchTime() <= 30.0) && DriverStation.isTeleop()){
-          m_underglow.scrollingRainbow();
-        } else {
-          m_underglow.maroon();
-        }
+        m_underglow.maroon();
       }, m_underglow)
     );
-
-    m_elevator.setDefaultCommand(
-        new RunCommand(
-        () -> {m_elevator.setSpeed(-m_operatorController.getLeftY()*0.5);
-        }
-      , m_elevator));
-
 
     m_intake.setDefaultCommand(
     new RunCommand(() -> m_intake.stopMotors(), m_intake));
@@ -121,6 +99,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+// the following is all the xbox controls
+// these are the controls for the driver
     m_driverController
       .a()
       .whileTrue(new DriveRobotFromLimelight(m_robotDrive, m_underglow)
@@ -179,67 +159,51 @@ public class RobotContainer {
           DriveRobotFromLimelight.alignMiddle();
         }));
 
+// this is all the code for the operators controls
+m_operatorController
+    .a()
+    .whileTrue(new RunCommand(() -> {
+        m_shooter.shoot();
+        m_carousel.moveCarousel();
+    }, m_shooter, m_carousel))
+    .whileFalse(new RunCommand(() -> {
+        m_shooter.stopFlywheels();
+        m_carousel.stopCarousel();
+    }, m_shooter, m_carousel));
 
-    m_operatorController
-      .start()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_climber.setMotorSpeed(-1.0);
-        }));
+m_operatorController
+    .b()
+    .onTrue(new InstantCommand(() -> {
+        m_intake.extendArm();
+        m_intake.spinScooper();
+    }, m_intake));
 
-    m_operatorController
-      .leftBumper()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_climber.setMotorSpeed(1.0);
-        }));
+m_operatorController
+    .x()
+    .onTrue(new InstantCommand(() -> {
+        m_intake.retractArm();
+        m_intake.stopScooper();
+    }, m_intake));
 
-    m_operatorController
-      .rightTrigger()
-      .whileTrue(new RunCommand(
-        () -> {
-          m_elevator.barge(); // Need to go to l4 before using this
-        }
-      ));
+m_operatorController
+    .y()
+    .whileTrue(new RunCommand(() -> {
+      m_shooter.reverseFlywheels();
+      m_shooter.reverseFeed();
+    }, m_shooter));
 
-    m_operatorController
-      .povLeft().and(m_operatorController.leftTrigger().negate())
-      .whileTrue(new RunCommand(() -> {
-        m_elevator.l2();
-      }, m_elevator));
+m_operatorController
+    .leftTrigger()
+    .whileTrue(new RunCommand(() -> {
+      m_intake.reverseScooper();
+    }, m_intake));
 
-    m_operatorController
-      .povLeft().and(m_operatorController.leftTrigger())
-      .whileTrue(new RunCommand(() -> {
-        m_elevator.algae1();
-      }, m_elevator));
-
-    m_operatorController
-      .povUp()
-      .whileTrue(new RunCommand(() -> {
-        m_elevator.l4();
-      }, m_elevator));
-
-    m_operatorController
-      .povRight().and(m_operatorController.leftTrigger().negate())
-      .whileTrue(new RunCommand(() -> {
-        m_elevator.l3();
-      }, m_elevator));
-
-    m_operatorController
-      .povRight().and(m_operatorController.leftTrigger())
-      .whileTrue(new RunCommand(() -> {
-        m_elevator.algae2();
-      }, m_elevator));
-
-    m_operatorController
-      .povDown()
-      .whileTrue(new RunCommand(() -> {
-        m_elevator.l1();
-      }, m_elevator));
-
+m_operatorController
+    .rightTrigger()
+    .whileTrue(new RunCommand(() -> {
+      m_carousel.reverseCarousel();
+    }, m_carousel));
   }
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

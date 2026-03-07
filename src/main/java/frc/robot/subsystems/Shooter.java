@@ -23,9 +23,9 @@ public class Shooter extends SubsystemBase {
 
     //constructor
     public Shooter() {
-        flywheelMotor1 = new TalonFX(0); //TODO Add real CAN IDs
-        flywheelMotor2 = new TalonFX(0); //TODO come back with real CAN ID
-        feedBall = new SparkMax(0, MotorType.kBrushless); //TODO come back with real CAN ID
+        flywheelMotor1 = new TalonFX(12);
+        flywheelMotor2 = new TalonFX(13);
+        feedBall = new SparkMax(14, MotorType.kBrushless);
 
     }
     
@@ -50,6 +50,11 @@ public class Shooter extends SubsystemBase {
 
     public void reverseFeed() {
         feedBall.set(-1.0);
+    }
+
+    public void reverseFlywheels() {
+        flywheelMotor1.setControl(shooterControl.withOutput(-1.0));
+        flywheelMotor2.setControl(shooterControl.withOutput(-1.0));
     }
 
 }
