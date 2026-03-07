@@ -52,29 +52,27 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 5;
-    public static final int kRearLeftDrivingCanId = 7;
-    public static final int kFrontRightDrivingCanId = 3;
-    public static final int kRearRightDrivingCanId = 2;
+    // drive CAN ID's 1-8
+    public static final int kFrontLeftDrivingCanId = 3;
+    public static final int kRearLeftDrivingCanId = 2;
+    public static final int kFrontRightDrivingCanId = 5;
+    public static final int kRearRightDrivingCanId = 7;
 
-    public static final int kFrontLeftTurningCanId = 6;
-    public static final int kRearLeftTurningCanId = 8;
-    public static final int kFrontRightTurningCanId = 4;
-    public static final int kRearRightTurningCanId = 1;
+    public static final int kFrontLeftTurningCanId = 4;
+    public static final int kRearLeftTurningCanId = 1;
+    public static final int kFrontRightTurningCanId = 6;
+    public static final int kRearRightTurningCanId = 8;
 
-    public static final int kShooterCanId = 12;
-
+    // gyro CanId 9
     public static final int kGyroCanId = 9;
 
-    public static final int kClimberMotorChainCanId = 10;
-    public static final int kClimberMotorRopeCanId = 11;
-
-    public static final int kLeftElevatorCanId = 13;
-    public static final int kRightElevatorCanId = 14;
-
-    public static final int kIntakeCanId = 15;
-
-    public static final int kLinearActuator = 1;
+    // Subsystem CAN IDs 10-15
+    public static final int kCarouselMotorCanId = 10;
+    public static final int kIntakeArmMotorCanId = 11;
+    public static final int kIntakeScooperMotorCanId = 12;
+    // public static final int kFlywheelMotor1CanId = 13;
+    public static final int kFlywheelMotor2CanId = 14;
+    public static final int kFeedBallMotorCanId = 15;
 
     public static final boolean kGyroReversed = false;
 
@@ -159,6 +157,28 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  // subsytem speed constants
+  public static final class SubsystemConstants {
+
+    // Carosel
+    public static final double kCarouselMotorSpeed = 1.0;
+    public static final double kCarouselMotorReverse = -1.0;
+
+    // Intake
+    public static final double kIntakeArmExtend = 0.10;
+    public static final double kIntakeArmRetract = -0.10;
+    public static final double kScooperMotorSpeed = 0.5;
+    public static final double kScooperMotorReverse = -0.5;
+
+    // Shooter
+    // public static final double kFlywheel1Speed = 1.0;
+    public static final double kFlywheel2Speed = 1.0;
+    public static final double kFlywheel1Reverse = -1.0;
+    public static final double kFlywheel2Reverse = -1.0;
+    public static final double kFeedBallMotorSpeed = 1.0;
+    public static final double kFeedBallMotorReverse = -1.0;
+  }
+
   public enum AprilTagAlign {
     LEFT,
     CENTER,
@@ -168,6 +188,6 @@ public final class Constants {
   public enum Auto {
     TAXI,
     NOTHING,
-    L4
+    SHOOT
   }
 }
