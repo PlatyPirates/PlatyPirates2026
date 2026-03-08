@@ -6,18 +6,20 @@ package frc.robot.subsystems;
 //importing things 
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 
 public class Carousel extends SubsystemBase {
 
     // motors
-    private final SparkMax carouselMotor;
+    private final TalonFX carouselMotor;
 
     // constructor
     public Carousel() {
-        carouselMotor = new SparkMax(Constants.DriveConstants.kCarouselMotorCanId, MotorType.kBrushless);
+        carouselMotor = new TalonFX(Constants.DriveConstants.kCarouselMotorCanId);
 
     }
     
