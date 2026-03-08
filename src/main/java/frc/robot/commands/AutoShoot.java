@@ -37,9 +37,9 @@ public class AutoShoot extends Command {
 
     @Override
     public void execute() {
-        // if the code has been running less then 2 seconds move backward
+        // if the code has been running less then 2 seconds move forward
         if (m_timer.get() < DRIVE_TIME) {
-            m_drive.drive(-0.4, 0.0, 0.0, true);
+            m_drive.drive(0.4, 0.0, 0.0, true);
 
         } else if (m_timer.get() < SPINUP_TIME) { // if above is false stop and start running the shooter
             m_drive.drive(0.0, 0.0, 0.0, true);
