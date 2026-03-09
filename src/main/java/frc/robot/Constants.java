@@ -161,22 +161,22 @@ public final class Constants {
   public static final class SubsystemConstants {
 
     // Carosel
-    public static final double kCarouselMotorSpeed = 1.0;
-    public static final double kCarouselMotorReverse = -1.0;
+    public static final double kCarouselMotorSpeed = -0.10;
+    public static final double kCarouselMotorReverse = 0.10;
 
     // Intake
-    public static final double kIntakeArmExtend = 0.10;
-    public static final double kIntakeArmRetract = -0.10;
-    public static final double kScooperMotorSpeed = 0.5;
-    public static final double kScooperMotorReverse = -0.5;
+    public static final double kIntakeArmExtend = 0.5;
+    public static final double kIntakeArmRetract = -0.5;
+    public static final double kScooperMotorSpeed = -1.0;
+    public static final double kScooperMotorReverse = 1.0;
 
     // Shooter
     // public static final double kFlywheel1Speed = 1.0;
-    public static final double kFlywheel2Speed = 1.0;
-    public static final double kFlywheel1Reverse = -1.0;
-    public static final double kFlywheel2Reverse = -1.0;
-    public static final double kFeedBallMotorSpeed = 1.0;
-    public static final double kFeedBallMotorReverse = -1.0;
+    public static final double kFlywheel2Speed = 0.4;
+    //public static final double kFlywheel1Reverse = -0.4;
+    public static final double kFlywheel2Reverse = -0.4;
+    public static final double kFeedBallMotorSpeed = 0.5;
+    public static final double kFeedBallMotorReverse = -0.5;
   }
 
   public enum AprilTagAlign {

@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -64,16 +65,15 @@ public class DriveSubsystem extends SubsystemBase {
   private double angleTolerance = 1.0; //0.5
 
   // Odometry class for tracking robot pose
-  // SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-  //     DriveConstants.kDriveKinematics,
-  //     //Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
-  //     Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()),
-  //     new SwerveModulePosition[] {
-  //         m_frontLeft.getPosition(),
-  //         m_frontRight.getPosition(),
-  //         m_rearLeft.getPosition(),
-  //         m_rearRight.getPosition()
-  //     });
+  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+    DriveConstants.kDriveKinematics,
+    Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble()),
+    new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_rearLeft.getPosition(),
+        m_rearRight.getPosition()
+      });
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
