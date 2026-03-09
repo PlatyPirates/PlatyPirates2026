@@ -177,15 +177,22 @@ m_operatorController
 m_operatorController
     .b()
     .whileTrue(new RunCommand(() -> {
-        //m_intake.extendArm();
-        m_intake.reverseScooper();
+        m_intake.extendArm();
+        //m_intake.spinScooper();
+    }, m_intake))
+    .whileFalse(new RunCommand(() -> {
+       //m_intake.spinScooper();
+       m_intake.stopIntake();
     }, m_intake));
 
 m_operatorController
     .x()
     .whileTrue(new InstantCommand(() -> {
         m_intake.retractArm();
-        m_intake.stopScooper();
+        //m_intake.stopScooper();
+    }, m_intake))
+    .whileFalse(new InstantCommand(() -> {
+      m_intake.stopIntake();
     }, m_intake));
 
 m_operatorController
@@ -194,7 +201,7 @@ m_operatorController
       m_shooter.reverseFlywheels();
       m_shooter.reverseFeed();
     }, m_shooter))
-    .onFalse(new InstantCommand(() -> {
+    .whileFalse(new RunCommand(() -> {
       m_shooter.stopFlywheels();
       m_shooter.stopFeed();
     }, m_shooter));
@@ -202,14 +209,29 @@ m_operatorController
 m_operatorController
     .leftBumper()
     .whileTrue(new RunCommand(() -> {
-      m_intake.reverseScooper();
+      m_intake.spinScooper();
+    }, m_intake))
+    .whileFalse(new RunCommand(() -> {
+      m_intake.stopScooper();
     }, m_intake));
 
 m_operatorController
     .rightBumper()
     .whileTrue(new RunCommand(() -> {
       m_carousel.reverseCarousel();
+    }, m_carousel))
+    .whileFalse(new RunCommand(() -> {
+      m_carousel.stopCarousel();
     }, m_carousel));
+
+m_operatorController
+    .leftTrigger()
+    .whileTrue(new RunCommand(() -> {
+      m_intake.reverseScooper();
+    }, m_intake))
+    .whileFalse(new RunCommand(() -> {
+      m_intake.stopIntake();
+    }, m_intake));
   }
 
   /**
