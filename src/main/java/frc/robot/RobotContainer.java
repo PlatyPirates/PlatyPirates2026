@@ -174,7 +174,7 @@ m_operatorController
 m_operatorController
     .b()
     .whileTrue(new RunCommand(() -> {
-        m_intake.extendArm();
+        m_intake.retractArm();
         //m_intake.spinScooper();
     }, m_intake))
     .whileFalse(new RunCommand(() -> {
@@ -185,7 +185,7 @@ m_operatorController
 m_operatorController
     .x()
     .whileTrue(new InstantCommand(() -> {
-        m_intake.retractArm();
+        m_intake.extendArm();
         //m_intake.stopScooper();
     }, m_intake))
     .whileFalse(new InstantCommand(() -> {
