@@ -86,6 +86,9 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
     new RunCommand(() -> m_intake.stopMotors(), m_intake));
+
+    m_carousel.setDefaultCommand(
+      new RunCommand(() -> m_carousel.stopCarousel(), m_carousel));
   }
 
   /**
@@ -180,18 +183,18 @@ m_operatorController
         m_intake.extendArm();
         //m_intake.spinScooper();
     }, m_intake))
-    .whileFalse(new RunCommand(() -> {
+    .onFalse(new RunCommand(() -> {
        //m_intake.spinScooper();
        m_intake.stopIntake();
     }, m_intake));
 
 m_operatorController
     .x()
-    .whileTrue(new InstantCommand(() -> {
+    .whileTrue(new RunCommand(() -> {
         m_intake.retractArm();
         //m_intake.stopScooper();
     }, m_intake))
-    .whileFalse(new InstantCommand(() -> {
+    .onFalse(new RunCommand(() -> {
       m_intake.stopIntake();
     }, m_intake));
 
