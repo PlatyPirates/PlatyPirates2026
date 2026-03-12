@@ -191,7 +191,7 @@ m_operatorController
 m_operatorController
     .x()
     .whileTrue(new RunCommand(() -> {
-        m_intake.retractArm();
+        m_intake.extendArm();
         //m_intake.stopScooper();u
     }, m_intake))
     .onFalse(new RunCommand(() -> {
