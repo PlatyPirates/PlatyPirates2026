@@ -180,7 +180,7 @@ m_operatorController
 m_operatorController
     .b()
     .whileTrue(new RunCommand(() -> {
-        m_intake.extendArm();
+        m_intake.retractArm();
         //m_intake.spinScooper();
     }, m_intake))
     .onFalse(new RunCommand(() -> {
