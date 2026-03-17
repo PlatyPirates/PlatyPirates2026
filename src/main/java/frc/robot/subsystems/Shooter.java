@@ -40,8 +40,9 @@ public class Shooter extends SubsystemBase {
     }
 
     public void stopFlywheels() {
-        // flywheelMotor1.setControl(shooterControl.withOutput(0.0));
+        //flywheelMotor1.setControl(shooterControl.withOutput(0.0));
         flywheelMotor2.setControl(shooterControl.withOutput(0.0));
+        
     }
 
     public void stopFeed() {

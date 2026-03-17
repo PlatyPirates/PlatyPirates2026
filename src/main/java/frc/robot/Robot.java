@@ -52,7 +52,6 @@ public class Robot extends TimedRobot {
     ledTester.addOption("Error", new RunCommand(() -> {m_robotContainer.m_underglow.error();}, m_robotContainer.m_underglow));
 
     DriveRobotFromLimelight.aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
-
   }
 
   /**

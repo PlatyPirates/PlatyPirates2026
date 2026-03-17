@@ -71,8 +71,8 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> {m_robotDrive.driveTeleop(
-                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(-m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(-m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 fieldRelative);
               },
@@ -86,6 +86,9 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
     new RunCommand(() -> m_intake.stopMotors(), m_intake));
+
+    m_carousel.setDefaultCommand(
+      new RunCommand(() -> m_carousel.stopCarousel(), m_carousel));
   }
 
   /**
@@ -136,7 +139,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                false);
+                true);
 
                 //m_underglow.blink(Color.kWhite);
               },
@@ -160,50 +163,80 @@ public class RobotContainer {
         }));
 
 // this is all the code for the operators controls
+
 m_operatorController
     .a()
     .whileTrue(new RunCommand(() -> {
         m_shooter.shoot();
         m_carousel.moveCarousel();
+        m_shooter.baseMotor();
     }, m_shooter, m_carousel))
     .whileFalse(new RunCommand(() -> {
         m_shooter.stopFlywheels();
         m_carousel.stopCarousel();
+        m_shooter.stopFeed();
     }, m_shooter, m_carousel));
 
 m_operatorController
     .b()
-    .onTrue(new InstantCommand(() -> {
-        m_intake.extendArm();
-        m_intake.spinScooper();
+    .whileTrue(new RunCommand(() -> {
+        m_intake.retractArm();
+        //m_intake.spinScooper();
+    }, m_intake))
+    .onFalse(new RunCommand(() -> {
+       //m_intake.spinScooper();
+       m_intake.stopIntake();
     }, m_intake));
 
 m_operatorController
     .x()
-    .onTrue(new InstantCommand(() -> {
-        m_intake.retractArm();
-        m_intake.stopScooper();
+    .whileTrue(new RunCommand(() -> {
+        m_intake.extendArm();
+        //m_intake.stopScooper();u
+    }, m_intake))
+    .onFalse(new RunCommand(() -> {
+      m_intake.stopIntake();
     }, m_intake));
 
 m_operatorController
     .y()
-    .whileTrue(new RunCommand(() -> {
+    .whileTrue(new InstantCommand(() -> {
       m_shooter.reverseFlywheels();
       m_shooter.reverseFeed();
+    }, m_shooter))
+    .whileFalse(new RunCommand(() -> {
+      m_shooter.stopFlywheels();
+      m_shooter.stopFeed();
     }, m_shooter));
 
 m_operatorController
     .leftBumper()
     .whileTrue(new RunCommand(() -> {
-      m_intake.reverseScooper();
+      m_intake.spinScooper();
+    }, m_intake))
+    .whileFalse(new RunCommand(() -> {
+      m_intake.stopScooper();
     }, m_intake));
 
 m_operatorController
     .rightBumper()
     .whileTrue(new RunCommand(() -> {
       m_carousel.reverseCarousel();
+    }, m_carousel))
+    .whileFalse(new RunCommand(() -> {
+      m_carousel.stopCarousel();
     }, m_carousel));
+
+m_operatorController
+    .leftTrigger()
+    .whileTrue(new RunCommand(() -> {
+      m_intake.reverseScooper();
+    }, m_intake))
+    .whileFalse(new RunCommand(() -> {
+      m_intake.stopIntake();
+    }, m_intake));
   }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
