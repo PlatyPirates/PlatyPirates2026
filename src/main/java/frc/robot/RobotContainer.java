@@ -204,7 +204,7 @@ m_operatorController
       m_shooter.reverseFlywheels();
       m_shooter.reverseFeed();
     }, m_shooter))
-    .whileFalse(new RunCommand(() -> {
+    .onFalse(new RunCommand(() -> {
       m_shooter.stopFlywheels();
       m_shooter.stopFeed();
     }, m_shooter));
@@ -214,7 +214,7 @@ m_operatorController
     .whileTrue(new RunCommand(() -> {
       m_intake.spinScooper();
     }, m_intake))
-    .whileFalse(new RunCommand(() -> {
+    .onFalse(new RunCommand(() -> {
       m_intake.stopScooper();
     }, m_intake));
 
@@ -223,7 +223,7 @@ m_operatorController
     .whileTrue(new RunCommand(() -> {
       m_carousel.reverseCarousel();
     }, m_carousel))
-    .whileFalse(new RunCommand(() -> {
+    .onFalse(new RunCommand(() -> {
       m_carousel.stopCarousel();
     }, m_carousel));
 
@@ -232,7 +232,7 @@ m_operatorController
     .whileTrue(new RunCommand(() -> {
       m_intake.reverseScooper();
     }, m_intake))
-    .whileFalse(new RunCommand(() -> {
+    .onFalse(new RunCommand(() -> {
       m_intake.stopIntake();
     }, m_intake));
   }
