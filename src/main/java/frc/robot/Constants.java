@@ -73,6 +73,7 @@ public final class Constants {
     // public static final int kFlywheelMotor1CanId = 13;
     public static final int kFlywheelMotor2CanId = 14;
     public static final int kFeedBallMotorCanId = 15;
+    public static final int kTurretMotorCanId = 16;
 
     public static final boolean kGyroReversed = false;
 
@@ -177,6 +178,7 @@ public final class Constants {
     public static final double kFlywheel2Reverse = -0.5;
     public static final double kFeedBallMotorSpeed = 0.5;
     public static final double kFeedBallMotorReverse = -0.5;
+    public static final double kTurretSpeed = 0.5;
   }
 
   public enum AprilTagAlign {
