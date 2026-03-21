@@ -165,7 +165,7 @@ public final class Constants {
     public static final double kCarouselMotorReverse = 0.4;
 
     // Intake
-    public static final double kIntakeArmExtend = -0.2;
+    public static final double kIntakeArmExtend = -0.2 ;
     public static final double kIntakeArmRetract = 0.4;
     public static final double kScooperMotorSpeed = -1.0;
     public static final double kScooperMotorReverse = 1.0;
