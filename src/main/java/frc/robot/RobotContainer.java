@@ -41,6 +41,7 @@ public class RobotContainer {
   Shooter m_shooter = new Shooter();
   Carousel m_carousel = new Carousel();
   Turret m_Turret = new Turret();
+  Hood m_Hood = new Hood();
 
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
@@ -90,13 +91,22 @@ public class RobotContainer {
 
     m_carousel.setDefaultCommand(
       new RunCommand(() -> m_carousel.stopCarousel(), m_carousel));
-    
+
     m_Turret.setDefaultCommand(
       new RunCommand(
         () -> m_Turret.moveTurret(
           MathUtil.applyDeadband(m_operatorController.getLeftX(), OIConstants.kDriveDeadband)
         ),
       m_Turret));
+
+    m_Hood.setDefaultCommand(
+      new RunCommand(
+        () -> m_Hood.moveHood(
+          MathUtil.applyDeadband(m_operatorController.getRightY(), OIConstants.kDriveDeadband)
+        ),
+      m_Hood));
+    
+  
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be
