@@ -73,7 +73,8 @@ public final class Constants {
     // public static final int kFlywheelMotor1CanId = 13;
     public static final int kFlywheelMotor2CanId = 14;
     public static final int kFeedBallMotorCanId = 15;
-    public static final int kTurretMotorCanId = 16;
+    public static final int kTurretMotorCanId = 21;
+    public static final int kHoodMotorCanId = 20;
 
     public static final boolean kGyroReversed = false;
 

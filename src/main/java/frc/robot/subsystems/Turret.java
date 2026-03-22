@@ -18,12 +18,11 @@ public class Turret extends SubsystemBase {
     // constructor
     public Turret() {
         turretMotor = new SparkMax(Constants.DriveConstants.kTurretMotorCanId, MotorType.kBrushless);
-
     }
 
     // methods
-    public void moveTurret() {
-        turretMotor.set(Constants.SubsystemConstants.kTurretSpeed);
+    public void moveTurret(double speed) {
+        turretMotor.set(speed);
     }
 
     public void stopTurret() {
