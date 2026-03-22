@@ -13,7 +13,7 @@ public class Hood extends SubsystemBase {
 
     // motors 
     private final SparkMax hoodMotor;
-
+    
     // constructor
     public Hood() {
         hoodMotor = new SparkMax(Constants.DriveConstants.kHoodMotorCanId, MotorType.kBrushless);
@@ -21,6 +21,7 @@ public class Hood extends SubsystemBase {
 
     // methods
     public void moveHood(double speed) {
+        
         hoodMotor.set(speed);
     }
     
