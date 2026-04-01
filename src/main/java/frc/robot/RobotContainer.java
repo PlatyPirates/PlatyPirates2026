@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -40,8 +41,8 @@ public class RobotContainer {
   LEDs m_underglow = new LEDs(171);
   Shooter m_shooter = new Shooter();
   Carousel m_carousel = new Carousel();
-  Turret m_Turret = new Turret();
-  Hood m_Hood = new Hood();
+  public Turret m_Turret = new Turret();
+  public Hood m_Hood = new Hood();
 
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
@@ -188,7 +189,7 @@ m_operatorController
         m_carousel.moveCarousel();
         m_shooter.baseMotor();
     }, m_shooter, m_carousel))
-    .whileFalse(new RunCommand(() -> {
+    .whileFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
         m_shooter.stopFlywheels();
         m_carousel.stopCarousel();
         m_shooter.stopFeed();

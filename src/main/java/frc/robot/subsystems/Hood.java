@@ -32,6 +32,10 @@ public class Hood extends SubsystemBase {
         return limitSwitch.get();
     }
 
+    public boolean atLimit() {
+        return !limitSwitch.get();
+    }
+
     public void resetEncoder() {
         hoodEncoder.setPosition(0);
     }
@@ -52,6 +56,11 @@ public class Hood extends SubsystemBase {
     
     public void stopHood() {
         hoodMotor.set(0.0);
+    }
+    
+    //sets the speed for the homing routine. It doesn't have the soft limits because it would break done when trying to home
+    public void homeHood() {
+        hoodMotor.set(-0.1);
     }
 
     @Override
