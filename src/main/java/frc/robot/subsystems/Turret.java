@@ -70,7 +70,8 @@ public class Turret extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Turret Position", turretEncoder.getPosition());
-    }
+        SmartDashboard.putNumber("Turret kP", Constants.SubsystemConstants.kTurretP);
+        }
 
-    
-}
+        
+    }

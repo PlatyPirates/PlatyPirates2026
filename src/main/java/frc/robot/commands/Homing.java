@@ -20,7 +20,10 @@ public class Homing extends Command {
         addRequirements(hood, turret);
 
     }
-    
+
+    //this is the part where we actually tell the motors what to do we call back to the subsystems here
+
+    //execute runs every 20ms
     @Override
     public void execute() {
         if (hood.notAtLimit()) {
@@ -38,13 +41,15 @@ public class Homing extends Command {
         }
 
     }
-
+    
+    //is finished is a boolean in this case it runs when they hit their limit switches
     @Override
     public boolean isFinished() {
         return hood.atLimit() && turret.atLimit();
 
     }
-
+    
+    //end ends the whole thing and sets the encoders for the soft limits
     @Override 
     public void end(boolean interrupted) {
         hood.resetEncoder();
