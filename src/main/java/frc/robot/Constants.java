@@ -182,11 +182,11 @@ public final class Constants {
 
     //limits for the subsystems
     //Hood limits
-    public static final double kHoodMax = 10.0; // TODO needs tuning
+    public static final double kHoodMax = 999.0; // TODO needs tuning
     public static final double kHoodMin = 0.0;
 
     // Turret limits
-    public static final double kTurretMax = 100.0; // TODO needs tuning
+    public static final double kTurretMax = 999.0; // TODO needs tuning
     public static final double kTurretMin = 0.0; 
 
     // intake limits
