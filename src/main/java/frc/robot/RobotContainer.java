@@ -248,14 +248,21 @@ m_operatorController
     }, m_carousel));
 
 m_operatorController
-    .leftTrigger()
+    .rightTrigger()
     .whileTrue(new RunCommand(() -> {
       m_intake.reverseScooper();
     }, m_intake))
     .onFalse(new RunCommand(() -> {
-      m_intake.stopIntake();
+      m_intake.stopScooper();
     }, m_intake));
+
+m_operatorController
+    .leftTrigger()
+    .whileTrue(new AimTurret(m_Turret));
+
   }
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
