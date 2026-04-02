@@ -43,6 +43,7 @@ public class RobotContainer {
   Carousel m_carousel = new Carousel();
   public Turret m_Turret = new Turret();
   public Hood m_Hood = new Hood();
+  Climber m_Climber = new Climber();
 
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
@@ -259,6 +260,26 @@ m_operatorController
 m_operatorController
     .leftTrigger()
     .whileTrue(new AimTurret(m_Turret));
+
+
+m_operatorController
+    .povUp()
+    .whileTrue(new RunCommand(()  ->{
+      m_Climber.extendClimber();
+    }, m_Climber))
+    .onFalse(new RunCommand( () -> {
+      m_Climber.stopMotor();
+    }, m_Climber));
+
+m_operatorController
+    .povDown()
+    .whileTrue(new RunCommand(()  ->{
+      m_Climber.reverseClimber();
+    }, m_Climber))
+    .onFalse(new RunCommand( () -> {
+      m_Climber.stopMotor();
+    }, m_Climber));
+
 
   }
 

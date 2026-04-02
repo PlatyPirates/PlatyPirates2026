@@ -75,6 +75,8 @@ public final class Constants {
     public static final int kFeedBallMotorCanId = 15;
     public static final int kTurretMotorCanId = 21;
     public static final int kHoodMotorCanId = 20;
+    public static final int kClimberMotorCanId = 22;
+
 
     public static final boolean kGyroReversed = false;
 
@@ -194,6 +196,10 @@ public final class Constants {
     // intake limits
     public static final double kIntakeMax = 10.0; //TODO needs tuning
     public static final double kIntakeMin = 0.0;
+
+    //Climber Constants 
+    public static final double kMoveClimber = 1.0; // TODO needs tuning 
+    public static final double kReverseClimber = -1.0;
   }
 
   public enum AprilTagAlign {
