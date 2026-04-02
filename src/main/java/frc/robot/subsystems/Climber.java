@@ -45,24 +45,16 @@ public class Climber extends SubsystemBase {
 
     //Methods 
      // this tells the motor to stop if it ever exeeds a set limit to keep it from overextending itself
-    public void extendClimber(double speed) {
-        if ((climbEncoder.getPosition() < Constants.SubsystemConstants.kClimberMax && speed > 0))
-         {
+    public void moveClimber(double speed) {
+        if ((climbEncoder.getPosition() < Constants.SubsystemConstants.kClimberMax && speed > 0
+        ||
+        climbEncoder.getPosition() > Constants.SubsystemConstants.kClimberMin && speed < 0)) {
+
             climberMotor.set(speed);
 
         } else {
             climberMotor.set(0.0);
         }
-    }
-
-    public void reverseClimber(double speed) {
-        if ((climbEncoder.getPosition() > Constants.SubsystemConstants.kClimberMin && speed < 0)) {
-            climberMotor.set(speed);
-            
-        } else {
-            climberMotor.set(0.0);
-        }
-
     }
 
     public void stopMotor() {
