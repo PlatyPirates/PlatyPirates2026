@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 
@@ -66,11 +67,12 @@ public class Turret extends SubsystemBase {
         turretMotor.set(-0.1);
     }
 
-    //shows the position of the turret in the Driver Station
+    //shows the position, kp and tx of the turret in the shuffle board.
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Turret Position", turretEncoder.getPosition());
         SmartDashboard.putNumber("Turret kP", Constants.SubsystemConstants.kTurretP);
+        SmartDashboard.putNumber("Turret TX", LimelightHelpers.getTX("limelight"));
         }
 
         

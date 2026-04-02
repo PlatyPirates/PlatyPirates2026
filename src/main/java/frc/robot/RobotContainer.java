@@ -55,8 +55,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-
-    SmartDashboard.putNumber("Flywheel Speed", Constants.SubsystemConstants.kFlywheel2Speed);
     
     // sets the options in the drive station for autonomous
     l4Dropdown.setDefaultOption("Center Tag", AprilTagAlign.CENTER);
