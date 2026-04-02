@@ -174,9 +174,9 @@ public final class Constants {
 
     // Shooter
     // public static final double kFlywheel1Speed = 1.0;
-    public static final double kFlywheel2Speed = 0.5;
+    public static double kFlywheel2Speed = 0.5;
     //public static final double kFlywheel1Reverse = -0.4;
-    public static final double kFlywheel2Reverse = -0.5;
+    public static double kFlywheel2Reverse = -kFlywheel2Speed;
     public static final double kFeedBallMotorSpeed = 0.5;
     public static final double kFeedBallMotorReverse = -0.5;
   }

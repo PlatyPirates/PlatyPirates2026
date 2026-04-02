@@ -26,7 +26,6 @@ public class Robot extends TimedRobot {
 
   private SendableChooser<Command> ledTester = new SendableChooser<Command>();
 
-
   private RobotContainer m_robotContainer;
 
   /**
@@ -71,6 +70,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("Robot Heading", m_robotContainer.m_robotDrive.getHeading());
     SmartDashboard.putNumber("Estimated Heading", m_robotContainer.m_robotDrive.getEstimatedHeading());
+    Constants.SubsystemConstants.kFlywheel2Speed = SmartDashboard.getNumber("Flywheel Speed", -1.0);
+    Constants.SubsystemConstants.kFlywheel2Reverse = -Constants.SubsystemConstants.kFlywheel2Speed;
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
