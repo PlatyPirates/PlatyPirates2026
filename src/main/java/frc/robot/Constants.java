@@ -190,7 +190,7 @@ public final class Constants {
     // Turret limits
     public static final double kTurretMax = 999.0; // TODO needs tuning
     public static final double kTurretMin = 0.0; 
-    public static final double kTurretP = 0.03; 
+    public static final double kTurretP = 0.02; 
     public static final double kTurretTolerance = 2.0;
 
     // intake limits

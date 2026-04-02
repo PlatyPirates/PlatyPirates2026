@@ -21,11 +21,6 @@ public class AimTurret extends Command {
     }
 
 //now we tell what the turret to do 
-@Override
-public void initialize() {
-
-}
-
 @Override 
 public void execute() {
     if(LimelightHelpers.getTV("limelight")) {
@@ -43,7 +38,7 @@ public void execute() {
 
 @Override 
 public boolean isFinished() {
-    return Math.abs(LimelightHelpers.getTX("limelight")) < Constants.SubsystemConstants.kTurretTolerance;
+    return false;
 
 }
 
