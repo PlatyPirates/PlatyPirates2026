@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.m_robotDrive.zeroHeading();
 
-    new Homing(m_robotContainer.m_Hood, m_robotContainer.m_Turret).schedule();
+    new Homing(m_robotContainer.m_Hood, m_robotContainer.m_Turret, m_robotContainer.m_Climber).schedule();
 
 
     ledTester.addOption("Rainbow", new RunCommand(() -> {m_robotContainer.m_underglow.rainbow();}, m_robotContainer.m_underglow));

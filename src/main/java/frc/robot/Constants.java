@@ -200,6 +200,8 @@ public final class Constants {
     //Climber Constants 
     public static final double kMoveClimber = 1.0; // TODO needs tuning 
     public static final double kReverseClimber = -1.0;
+    public static final double kClimberMax = 999.0;
+    public static final double kClimberMin = 0.0;
   }
 
   public enum AprilTagAlign {
