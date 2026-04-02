@@ -73,6 +73,8 @@ public final class Constants {
     // public static final int kFlywheelMotor1CanId = 13;
     public static final int kFlywheelMotor2CanId = 14;
     public static final int kFeedBallMotorCanId = 15;
+    public static final int kTurretMotorCanId = 21;
+    public static final int kHoodMotorCanId = 20;
 
     public static final boolean kGyroReversed = false;
 
@@ -161,22 +163,37 @@ public final class Constants {
   public static final class SubsystemConstants {
 
     // Carosel
-    public static final double kCarouselMotorSpeed = -0.25;
-    public static final double kCarouselMotorReverse = 0.25;
+    public static final double kCarouselMotorSpeed = -0.4;
+    public static final double kCarouselMotorReverse = 0.4;
 
     // Intake
-    public static final double kIntakeArmExtend = -0.2;
-    public static final double kIntakeArmRetract = 0.2;
+    public static final double kIntakeArmExtend = -0.2 ;
+    public static final double kIntakeArmRetract = 0.4;
     public static final double kScooperMotorSpeed = -1.0;
     public static final double kScooperMotorReverse = 1.0;
 
     // Shooter
     // public static final double kFlywheel1Speed = 1.0;
-    public static final double kFlywheel2Speed = 0.5;
+    public static double kFlywheel2Speed = 0.5;
     //public static final double kFlywheel1Reverse = -0.4;
-    public static final double kFlywheel2Reverse = -0.5;
+    public static double kFlywheel2Reverse = -kFlywheel2Speed;
     public static final double kFeedBallMotorSpeed = 0.5;
     public static final double kFeedBallMotorReverse = -0.5;
+
+    //limits for the subsystems
+    //Hood limits
+    public static final double kHoodMax = 999.0; // TODO needs tuning
+    public static final double kHoodMin = 0.0;
+
+    // Turret limits
+    public static final double kTurretMax = 999.0; // TODO needs tuning
+    public static final double kTurretMin = 0.0; 
+    public static final double kTurretP = 0.03; 
+    public static final double kTurretTolerance = 2.0;
+
+    // intake limits
+    public static final double kIntakeMax = 10.0; //TODO needs tuning
+    public static final double kIntakeMin = 0.0;
   }
 
   public enum AprilTagAlign {

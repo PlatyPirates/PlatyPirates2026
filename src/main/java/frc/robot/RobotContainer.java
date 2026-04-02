@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -40,6 +41,8 @@ public class RobotContainer {
   LEDs m_underglow = new LEDs(171);
   Shooter m_shooter = new Shooter();
   Carousel m_carousel = new Carousel();
+  public Turret m_Turret = new Turret();
+  public Hood m_Hood = new Hood();
 
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
@@ -53,6 +56,8 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    SmartDashboard.putNumber("Flywheel Speed", Constants.SubsystemConstants.kFlywheel2Speed);
+    
     // sets the options in the drive station for autonomous
     l4Dropdown.setDefaultOption("Center Tag", AprilTagAlign.CENTER);
     l4Dropdown.addOption("Left Tag", AprilTagAlign.LEFT);
@@ -85,12 +90,27 @@ public class RobotContainer {
     );
 
     m_intake.setDefaultCommand(
-    new RunCommand(() -> m_intake.stopMotors(), m_intake));
+     new RunCommand(() -> m_intake.stopMotors(), m_intake));
 
     m_carousel.setDefaultCommand(
       new RunCommand(() -> m_carousel.stopCarousel(), m_carousel));
-  }
 
+    m_Turret.setDefaultCommand(
+      new RunCommand(
+        () -> m_Turret.moveTurret(
+          MathUtil.applyDeadband(m_operatorController.getRightX(), OIConstants.kDriveDeadband)
+        ),
+      m_Turret));
+
+    m_Hood.setDefaultCommand(
+      new RunCommand(
+        () -> m_Hood.moveHood(
+          MathUtil.applyDeadband(m_operatorController.getRightY(), OIConstants.kDriveDeadband)
+        ),
+      m_Hood));
+    
+  
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
@@ -171,7 +191,7 @@ m_operatorController
         m_carousel.moveCarousel();
         m_shooter.baseMotor();
     }, m_shooter, m_carousel))
-    .whileFalse(new RunCommand(() -> {
+    .whileFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
         m_shooter.stopFlywheels();
         m_carousel.stopCarousel();
         m_shooter.stopFeed();
@@ -204,7 +224,7 @@ m_operatorController
       m_shooter.reverseFlywheels();
       m_shooter.reverseFeed();
     }, m_shooter))
-    .whileFalse(new RunCommand(() -> {
+    .onFalse(new RunCommand(() -> {
       m_shooter.stopFlywheels();
       m_shooter.stopFeed();
     }, m_shooter));
@@ -214,7 +234,7 @@ m_operatorController
     .whileTrue(new RunCommand(() -> {
       m_intake.spinScooper();
     }, m_intake))
-    .whileFalse(new RunCommand(() -> {
+    .onFalse(new RunCommand(() -> {
       m_intake.stopScooper();
     }, m_intake));
 
@@ -223,19 +243,26 @@ m_operatorController
     .whileTrue(new RunCommand(() -> {
       m_carousel.reverseCarousel();
     }, m_carousel))
-    .whileFalse(new RunCommand(() -> {
+    .onFalse(new RunCommand(() -> {
       m_carousel.stopCarousel();
     }, m_carousel));
 
 m_operatorController
-    .leftTrigger()
+    .rightTrigger()
     .whileTrue(new RunCommand(() -> {
       m_intake.reverseScooper();
     }, m_intake))
-    .whileFalse(new RunCommand(() -> {
-      m_intake.stopIntake();
+    .onFalse(new RunCommand(() -> {
+      m_intake.stopScooper();
     }, m_intake));
+
+m_operatorController
+    .leftTrigger()
+    .whileTrue(new AimTurret(m_Turret));
+
   }
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

@@ -3,35 +3,39 @@
 
 package frc.robot.subsystems;
 
-//importing things 
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.hardware.TalonFX;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
+//importing things 
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants;
 
 public class Carousel extends SubsystemBase {
 
     // motors
-    private final SparkMax carouselMotor;
+    private final TalonFX carouselMotor;
+    private final DutyCycleOut carouselControl = new DutyCycleOut(0);
+
 
     // constructor
     public Carousel() {
-        carouselMotor = new SparkMax(Constants.DriveConstants.kCarouselMotorCanId, MotorType.kBrushless);
+        carouselMotor = new TalonFX(Constants.DriveConstants.kCarouselMotorCanId);
 
     }
     
     // methods
     public void moveCarousel() {
-        carouselMotor.set(Constants.SubsystemConstants.kCarouselMotorSpeed);
+        carouselMotor.setControl(carouselControl.withOutput(Constants.SubsystemConstants.kCarouselMotorSpeed));
     }
 
     public void stopCarousel() {
-        carouselMotor.set(0.0);
+        carouselMotor.setControl(carouselControl.withOutput(0.0));
     }
 
     public void reverseCarousel() {
-        carouselMotor.set(Constants.SubsystemConstants.kCarouselMotorReverse);
+        carouselMotor.setControl(carouselControl.withOutput(Constants.SubsystemConstants.kCarouselMotorReverse));
     }
 
 

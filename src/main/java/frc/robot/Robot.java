@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.DriveRobotFromLimelight;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import frc.robot.commands.Homing;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,7 +26,6 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private SendableChooser<Command> ledTester = new SendableChooser<Command>();
-
 
   private RobotContainer m_robotContainer;
 
@@ -42,6 +42,9 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_underglow.maroon();
 
     m_robotContainer.m_robotDrive.zeroHeading();
+
+    new Homing(m_robotContainer.m_Hood, m_robotContainer.m_Turret).schedule();
+
 
     ledTester.addOption("Rainbow", new RunCommand(() -> {m_robotContainer.m_underglow.rainbow();}, m_robotContainer.m_underglow));
     ledTester.addOption("Rainbow Scroll", new RunCommand(() -> {m_robotContainer.m_underglow.scrollingRainbow();}, m_robotContainer.m_underglow));
@@ -71,6 +74,9 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     SmartDashboard.putNumber("Robot Heading", m_robotContainer.m_robotDrive.getHeading());
     SmartDashboard.putNumber("Estimated Heading", m_robotContainer.m_robotDrive.getEstimatedHeading());
+    Constants.SubsystemConstants.kFlywheel2Speed = SmartDashboard.getNumber("Flywheel Speed", -1.0);
+    Constants.SubsystemConstants.kFlywheel2Reverse = -Constants.SubsystemConstants.kFlywheel2Speed;
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
