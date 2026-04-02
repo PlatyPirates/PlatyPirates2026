@@ -179,6 +179,19 @@ public final class Constants {
     public static double kFlywheel2Reverse = -kFlywheel2Speed;
     public static final double kFeedBallMotorSpeed = 0.5;
     public static final double kFeedBallMotorReverse = -0.5;
+
+    //limits for the subsystems
+    //Hood limits
+    public static final double kHoodMax = 999.0; // TODO needs tuning
+    public static final double kHoodMin = 0.0;
+
+    // Turret limits
+    public static final double kTurretMax = 999.0; // TODO needs tuning
+    public static final double kTurretMin = 0.0; 
+
+    // intake limits
+    public static final double kIntakeMax = 10.0; //TODO needs tuning
+    public static final double kIntakeMin = 0.0;
   }
 
   public enum AprilTagAlign {

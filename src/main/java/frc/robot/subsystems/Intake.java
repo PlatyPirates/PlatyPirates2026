@@ -26,6 +26,7 @@ public class Intake extends SubsystemBase {
     // methods
     public void extendArm() {
         intakeMotor.set(Constants.SubsystemConstants.kIntakeArmExtend);
+
     }
 
     public void retractArm() {
