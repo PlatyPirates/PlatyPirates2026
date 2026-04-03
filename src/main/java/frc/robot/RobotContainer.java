@@ -43,7 +43,7 @@ public class RobotContainer {
   Carousel m_carousel = new Carousel();
   public Turret m_Turret = new Turret();
   public Hood m_Hood = new Hood();
-  Climber m_Climber = new Climber();
+  public Climber m_Climber = new Climber();
 
   double driveSpeedFactor = 1.0;
   public boolean fieldRelative = true;
@@ -56,8 +56,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-
-    SmartDashboard.putNumber("Flywheel Speed", Constants.SubsystemConstants.kFlywheel2Speed);
     
     // sets the options in the drive station for autonomous
     l4Dropdown.setDefaultOption("Center Tag", AprilTagAlign.CENTER);
@@ -69,6 +67,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do Nothing", Constants.Auto.NOTHING);
     autoChooser.addOption("AutoShoot + Drive", Constants.Auto.TAXI);
     autoChooser.addOption("Shoot", Constants.Auto.SHOOT);
+    autoChooser.addOption("Climb", Constants.Auto.CLIMB);
 
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
@@ -110,6 +109,13 @@ public class RobotContainer {
         ),
       m_Hood));
     
+    m_Climber.setDefaultCommand(
+      new RunCommand(
+        () -> m_Climber.moveClimber(
+          MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
+        ),
+      m_Climber));
+    
   
   }
   /**
@@ -123,8 +129,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-// the following is all the xbox controls
-// these are the controls for the driver
+    // the following is all the xbox controls
+    // these are the controls for the driver
     m_driverController
       .a()
       .whileTrue(new DriveRobotFromLimelight(m_robotDrive, m_underglow)
@@ -181,85 +187,87 @@ public class RobotContainer {
       .whileFalse(new RunCommand(
         () -> {
           DriveRobotFromLimelight.alignMiddle();
-        }));
+        }
+      )
+    );
 
-// this is all the code for the operators controls
+    // this is all the code for the operators controls
 
-m_operatorController
-    .a()
-    .whileTrue(new RunCommand(() -> {
-        m_shooter.shoot();
-        m_carousel.moveCarousel();
-        m_shooter.baseMotor();
-    }, m_shooter, m_carousel))
-    .whileFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
-        m_shooter.stopFlywheels();
-        m_carousel.stopCarousel();
-        m_shooter.stopFeed();
-    }, m_shooter, m_carousel));
+    m_operatorController
+        .a()
+        .whileTrue(new RunCommand(() -> {
+            m_shooter.shoot();
+            m_carousel.moveCarousel();
+            m_shooter.baseMotor();
+        }, m_shooter, m_carousel))
+        .whileFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
+            m_shooter.stopFlywheels();
+            m_carousel.stopCarousel();
+            m_shooter.stopFeed();
+        }, m_shooter, m_carousel));
 
-m_operatorController
-    .b()
-    .whileTrue(new RunCommand(() -> {
-        m_intake.retractArm();
-        //m_intake.spinScooper();
-    }, m_intake))
-    .onFalse(new RunCommand(() -> {
-       //m_intake.spinScooper();
-       m_intake.stopIntake();
-    }, m_intake));
+    m_operatorController
+        .b()
+        .whileTrue(new RunCommand(() -> {
+            m_intake.retractArm();
+            //m_intake.spinScooper();
+        }, m_intake))
+        .onFalse(new RunCommand(() -> {
+          //m_intake.spinScooper();
+          m_intake.stopIntake();
+        }, m_intake));
 
-m_operatorController
-    .x()
-    .whileTrue(new RunCommand(() -> {
-        m_intake.extendArm();
-        //m_intake.stopScooper();u
-    }, m_intake))
-    .onFalse(new RunCommand(() -> {
-      m_intake.stopIntake();
-    }, m_intake));
+    m_operatorController
+        .x()
+        .whileTrue(new RunCommand(() -> {
+            m_intake.extendArm();
+            //m_intake.stopScooper();u
+        }, m_intake))
+        .onFalse(new RunCommand(() -> {
+          m_intake.stopIntake();
+        }, m_intake));
 
-m_operatorController
-    .y()
-    .whileTrue(new InstantCommand(() -> {
-      m_shooter.reverseFlywheels();
-      m_shooter.reverseFeed();
-    }, m_shooter))
-    .onFalse(new RunCommand(() -> {
-      m_shooter.stopFlywheels();
-      m_shooter.stopFeed();
-    }, m_shooter));
+    m_operatorController
+        .y()
+        .whileTrue(new InstantCommand(() -> {
+          m_shooter.reverseFlywheels();
+          m_shooter.reverseFeed();
+        }, m_shooter))
+        .onFalse(new RunCommand(() -> {
+          m_shooter.stopFlywheels();
+          m_shooter.stopFeed();
+        }, m_shooter));
 
-m_operatorController
-    .leftBumper()
-    .whileTrue(new RunCommand(() -> {
-      m_intake.spinScooper();
-    }, m_intake))
-    .onFalse(new RunCommand(() -> {
-      m_intake.stopScooper();
-    }, m_intake));
+    m_operatorController
+        .leftBumper()
+        .whileTrue(new RunCommand(() -> {
+          m_intake.spinScooper();
+        }, m_intake))
+        .onFalse(new RunCommand(() -> {
+          m_intake.stopScooper();
+        }, m_intake));
 
-m_operatorController
-    .rightBumper()
-    .whileTrue(new RunCommand(() -> {
-      m_carousel.reverseCarousel();
-    }, m_carousel))
-    .onFalse(new RunCommand(() -> {
-      m_carousel.stopCarousel();
-    }, m_carousel));
+    m_operatorController
+        .rightBumper()
+        .whileTrue(new RunCommand(() -> {
+          m_carousel.reverseCarousel();
+        }, m_carousel))
+        .onFalse(new RunCommand(() -> {
+          m_carousel.stopCarousel();
+        }, m_carousel));
 
-m_operatorController
-    .rightTrigger()
-    .whileTrue(new RunCommand(() -> {
-      m_intake.reverseScooper();
-    }, m_intake))
-    .onFalse(new RunCommand(() -> {
-      m_intake.stopScooper();
-    }, m_intake));
+    m_operatorController
+        .rightTrigger()
+        .whileTrue(new RunCommand(() -> {
+          m_intake.reverseScooper();
+        }, m_intake))
+        .onFalse(new RunCommand(() -> {
+          m_intake.stopScooper();
+        }, m_intake));
 
-m_operatorController
-    .leftTrigger()
-    .whileTrue(new AimTurret(m_Turret));
+    m_operatorController
+        .leftTrigger()
+        .whileTrue(new AimTurret(m_Turret));
 
 
 m_operatorController
@@ -282,6 +290,7 @@ m_operatorController
 
 
   }
+    
 
 
 
@@ -311,6 +320,9 @@ m_operatorController
           }, m_robotDrive, m_intake);
 
         break;
+      case CLIMB:
+          cmd = new AutoClimb(m_Climber, m_robotDrive);
+      break;
     }
     return cmd;
 
