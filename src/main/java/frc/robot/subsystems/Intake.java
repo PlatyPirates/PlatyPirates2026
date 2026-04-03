@@ -20,7 +20,7 @@ public class Intake extends SubsystemBase {
 
     // constructor activates once when the robot turns on
     public Intake() {
-        intakeMotor = new SparkFlex(Constants.DriveConstants.kHoodMotorCanId, SparkLowLevel.MotorType.kBrushless);
+        intakeMotor = new SparkFlex(Constants.DriveConstants.kIntakeArmMotorCanId, SparkLowLevel.MotorType.kBrushless);
         scooperMotor = new SparkMax(Constants.DriveConstants.kIntakeScooperMotorCanId, MotorType.kBrushless);
     }
     
