@@ -269,6 +269,26 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(new AimTurret(m_Turret));
 
+
+m_operatorController
+    .povUp()
+    .whileTrue(new RunCommand(()  ->{
+      m_Climber.extendClimber();
+    }, m_Climber))
+    .onFalse(new RunCommand( () -> {
+      m_Climber.stopMotor();
+    }, m_Climber));
+
+m_operatorController
+    .povDown()
+    .whileTrue(new RunCommand(()  ->{
+      m_Climber.reverseClimber();
+    }, m_Climber))
+    .onFalse(new RunCommand( () -> {
+      m_Climber.stopMotor();
+    }, m_Climber));
+
+
   }
     
 
