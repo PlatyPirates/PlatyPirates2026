@@ -38,6 +38,10 @@ public class Climber extends SubsystemBase {
         climbEncoder.setPosition(0);
     }
 
+    public double getEncoderPosition() {
+        return climbEncoder.getPosition();
+    }
+
     //for the homing command
     public void homeClimber() {
         climberMotor.set(-0.1);

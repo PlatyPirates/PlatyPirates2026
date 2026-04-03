@@ -67,6 +67,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do Nothing", Constants.Auto.NOTHING);
     autoChooser.addOption("AutoShoot + Drive", Constants.Auto.TAXI);
     autoChooser.addOption("Shoot", Constants.Auto.SHOOT);
+    autoChooser.addOption("Climb", Constants.Auto.CLIMB);
 
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
@@ -299,6 +300,9 @@ public class RobotContainer {
           }, m_robotDrive, m_intake);
 
         break;
+      case CLIMB:
+          cmd = new AutoClimb(m_Climber, m_robotDrive);
+      break;
     }
     return cmd;
 

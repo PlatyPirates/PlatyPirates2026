@@ -198,10 +198,15 @@ public final class Constants {
     public static final double kIntakeMin = 0.0;
 
     //Climber Constants 
-    public static final double kMoveClimber = 1.0; // TODO needs tuning 
-    public static final double kReverseClimber = -1.0;
+    public static final double kMoveClimber = 0.2; // TODO needs tuning 
+    public static final double kReverseClimber = -0.2;
     public static final double kClimberMax = 999.0;
     public static final double kClimberMin = 0.0;
+
+    //constants for auton
+    public static final double kClimbDriveTime = 1.0; //TODO tuning
+    public static final double kClimbDriveSpeed = 0.2;
+
   }
 
   public enum AprilTagAlign {
@@ -213,6 +218,7 @@ public final class Constants {
   public enum Auto {
     TAXI,
     NOTHING,
-    SHOOT
+    SHOOT,
+    CLIMB
   }
 }
