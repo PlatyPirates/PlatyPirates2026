@@ -219,6 +219,13 @@ public final class Constants {
     TAXI,
     NOTHING,
     SHOOT,
-    CLIMB
+    CLIMB,
+    BLUE_LEFT,
+    BLUE_RIGHT,
+    BLUE_MIDDLE,
+    RED_LEFT,
+    RED_RIGHT,
+    RED_MIDDLE
+
   }
 }
