@@ -27,6 +27,11 @@ import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 
 public class DriveSubsystem extends SubsystemBase {
   Field2d field = new Field2d();
@@ -78,6 +83,30 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     SmartDashboard.putData(field);
+    try {
+    RobotConfig config = RobotConfig.fromGUISettings();
+    AutoBuilder.configure(
+        this::getPose,
+        this::resetOdometry,
+        this::getChassisSpeeds,
+        (speeds, feedforwards) -> driveRobotRelative(speeds),
+        new PPHolonomicDriveController(
+            new PIDConstants(1.0, 0.0, 0.0),
+            new PIDConstants(1.0, 0.0, 0.0)
+        ),
+        config,
+        () -> {
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+        },
+        this
+    );
+} catch (Exception e) {
+    e.printStackTrace();
+}
 
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
@@ -92,6 +121,24 @@ public class DriveSubsystem extends SubsystemBase {
       setHeading(0.0);
     }
   }
+
+  public ChassisSpeeds getChassisSpeeds() {
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(
+        m_frontLeft.getState(),
+        m_frontRight.getState(),
+        m_rearLeft.getState(),
+        m_rearRight.getState()
+    );
+}
+
+  public void driveRobotRelative(ChassisSpeeds speeds) {
+      var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+      m_frontLeft.setDesiredState(swerveModuleStates[0]);
+      m_frontRight.setDesiredState(swerveModuleStates[1]);
+      m_rearLeft.setDesiredState(swerveModuleStates[2]);
+      m_rearRight.setDesiredState(swerveModuleStates[3]);
+}
 
   @Override
   public void periodic() {

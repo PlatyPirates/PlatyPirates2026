@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -20,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 
 /*
@@ -68,6 +72,12 @@ public class RobotContainer {
     autoChooser.addOption("AutoShoot + Drive", Constants.Auto.TAXI);
     autoChooser.addOption("Shoot", Constants.Auto.SHOOT);
     autoChooser.addOption("Climb", Constants.Auto.CLIMB);
+    autoChooser.addOption("Blue Left", Constants.Auto.BLUE_LEFT);
+    autoChooser.addOption("Blue Right", Constants.Auto.BLUE_RIGHT);
+    autoChooser.addOption("Blue Middle", Constants.Auto.BLUE_MIDDLE);
+    autoChooser.addOption("Red Left", Constants.Auto.RED_LEFT);
+    autoChooser.addOption("Red Right", Constants.Auto.RED_RIGHT);
+    autoChooser.addOption("Red Middle", Constants.Auto.RED_MIDDLE);
 
     SmartDashboard.putData("Auto Choices", autoChooser);
     // Configure default commands
@@ -268,8 +278,7 @@ public class RobotContainer {
     m_operatorController
         .leftTrigger()
         .whileTrue(new AimTurret(m_Turret));
-
-
+        
 m_operatorController
     .povUp()
     .whileTrue(new RunCommand(()  ->{
@@ -322,6 +331,24 @@ m_operatorController
         break;
       case CLIMB:
           cmd = new AutoClimb(m_Climber, m_robotDrive);
+      break;
+      case BLUE_LEFT:
+        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueLeft")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+      break;
+      case BLUE_RIGHT:
+        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueRight")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+      break;
+      case BLUE_MIDDLE:
+        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueMiddle")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+      break;
+      case RED_LEFT:
+        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedLeft")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+      break;
+      case RED_RIGHT:
+        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedRight")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+      break;
+      case RED_MIDDLE:
+        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedMiddle")).andThen(new AutoClimb(m_Climber, m_robotDrive));
       break;
     }
     return cmd;
