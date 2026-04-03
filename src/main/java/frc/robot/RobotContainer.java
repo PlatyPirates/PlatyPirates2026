@@ -278,7 +278,7 @@ public class RobotContainer {
     m_operatorController
         .leftTrigger()
         .whileTrue(new AimTurret(m_Turret));
-        
+
 m_operatorController
     .povUp()
     .whileTrue(new RunCommand(()  ->{
@@ -333,23 +333,53 @@ m_operatorController
           cmd = new AutoClimb(m_Climber, m_robotDrive);
       break;
       case BLUE_LEFT:
+    try {
         cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueLeft")).andThen(new AutoClimb(m_Climber, m_robotDrive));
-      break;
-      case BLUE_RIGHT:
-        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueRight")).andThen(new AutoClimb(m_Climber, m_robotDrive));
-      break;
-      case BLUE_MIDDLE:
-        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueMiddle")).andThen(new AutoClimb(m_Climber, m_robotDrive));
-      break;
-      case RED_LEFT:
-        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedLeft")).andThen(new AutoClimb(m_Climber, m_robotDrive));
-      break;
-      case RED_RIGHT:
-        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedRight")).andThen(new AutoClimb(m_Climber, m_robotDrive));
-      break;
-      case RED_MIDDLE:
-        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedMiddle")).andThen(new AutoClimb(m_Climber, m_robotDrive));
-      break;
+    } catch (Exception e) {
+        e.printStackTrace();
+        cmd = new RunCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, true), m_robotDrive);
+    }
+    break;
+    case BLUE_RIGHT:
+        try {
+            cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueRight")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+        } catch (Exception e) {
+            e.printStackTrace();
+            cmd = new RunCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, true), m_robotDrive);
+        }
+        break;
+    case BLUE_MIDDLE:
+        try {
+            cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueMiddle")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+        } catch (Exception e) {
+            e.printStackTrace();
+            cmd = new RunCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, true), m_robotDrive);
+        }
+        break;
+    case RED_LEFT:
+        try {
+            cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedLeft")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+        } catch (Exception e) {
+            e.printStackTrace();
+            cmd = new RunCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, true), m_robotDrive);
+        }
+        break;
+    case RED_RIGHT:
+        try {
+            cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedRight")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+        } catch (Exception e) {
+            e.printStackTrace();
+            cmd = new RunCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, true), m_robotDrive);
+        }
+        break;
+    case RED_MIDDLE:
+        try {
+            cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("RedMiddle")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+        } catch (Exception e) {
+            e.printStackTrace();
+            cmd = new RunCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, true), m_robotDrive);
+        }
+        break;
     }
     return cmd;
 
