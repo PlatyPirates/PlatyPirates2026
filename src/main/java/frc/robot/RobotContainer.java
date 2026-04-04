@@ -106,7 +106,7 @@ public class RobotContainer {
     m_Turret.setDefaultCommand(
       new RunCommand(
         () -> m_Turret.moveTurret(
-          MathUtil.applyDeadband(m_operatorController.getLeftX(), OIConstants.kDriveDeadband)
+          MathUtil.applyDeadband(m_operatorController.getRightX(), OIConstants.kDriveDeadband)
         ),
       m_Turret));
 
