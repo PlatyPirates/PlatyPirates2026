@@ -110,7 +110,7 @@ public class RobotContainer {
         ),
       m_Turret));
 
-    m_shooter.setDefaultCommand(
+   /* m_shooter.setDefaultCommand(
       new RunCommand(
         () -> {
           double speed = MathUtil.applyDeadband(m_operatorController.getRightY(), OIConstants.kDriveDeadband);
@@ -119,6 +119,7 @@ public class RobotContainer {
           m_shooter.baseMotor(speed);
         },
       m_shooter, m_carousel));
+      */
       
     
     m_Climber.setDefaultCommand(
@@ -205,7 +206,9 @@ public class RobotContainer {
 
     // this is all the code for the operators controls
 
-   /* m_operatorController
+    //m_operatorController.povUp().whileTrue(()->(m_shooter.shoot(.6)));
+
+    m_operatorController
         .a()
         .whileTrue(new RunCommand(() -> {
             m_shooter.shoot();
@@ -217,7 +220,7 @@ public class RobotContainer {
             m_carousel.stopCarousel();
             m_shooter.stopFeed();
         }, m_shooter, m_carousel));
-        */
+      
 
     m_operatorController
         .b()

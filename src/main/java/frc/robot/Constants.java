@@ -176,7 +176,7 @@ public final class Constants {
 
     // Shooter
     // public static final double kFlywheel1Speed = 1.0;
-    public static double kFlywheel2Speed = 0.25;
+    public static double kFlywheel2Speed = 0.35;
     //public static final double kFlywheel1Reverse = -0.4;
     public static double kFlywheel2Reverse = kFlywheel2Speed;
     public static final double kFeedBallMotorSpeed = 0.5;
@@ -200,7 +200,7 @@ public final class Constants {
     //Climber Constants 
     public static final double kMoveClimber = 0.2; // TODO needs tuning 
     public static final double kReverseClimber = -0.2;
-    public static final double kClimberMax = 999.0;
+    public static final double kClimberMax = 0.5;
     public static final double kClimberMin = 0.0;
 
     //constants for auton
