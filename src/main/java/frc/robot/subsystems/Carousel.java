@@ -23,8 +23,8 @@ public class Carousel extends SubsystemBase {
     }
     
     // methods
-    public void moveCarousel() {
-        carouselMotor.setControl(carouselControl.withOutput(Constants.SubsystemConstants.kCarouselMotorSpeed));
+    public void moveCarousel(double speed) {
+        carouselMotor.setControl(carouselControl.withOutput(speed));
     }
 
     public void stopCarousel() {

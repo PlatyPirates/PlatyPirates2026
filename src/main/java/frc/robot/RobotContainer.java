@@ -46,7 +46,7 @@ public class RobotContainer {
   Shooter m_shooter = new Shooter();
   Carousel m_carousel = new Carousel();
   public Turret m_Turret = new Turret();
-  public Hood m_Hood = new Hood();
+  // public Hood m_Hood = new Hood();
   public Climber m_Climber = new Climber();
 
   double driveSpeedFactor = 1.0;
@@ -112,17 +112,21 @@ public class RobotContainer {
         ),
       m_Turret));
 
-    m_Hood.setDefaultCommand(
+    m_shooter.setDefaultCommand(
       new RunCommand(
-        () -> m_Hood.moveHood(
-          MathUtil.applyDeadband(m_operatorController.getRightY(), OIConstants.kDriveDeadband)
-        ),
-      m_Hood));
+        () -> {
+          double speed = MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband);
+          m_shooter.shoot(speed);
+          m_carousel.moveCarousel(speed);
+          m_shooter.baseMotor(speed);
+        },
+      m_shooter, m_carousel));
+      
     
     m_Climber.setDefaultCommand(
       new RunCommand(
         () -> m_Climber.moveClimber(
-          MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
+          MathUtil.applyDeadband(m_operatorController.getRightY(), OIConstants.kDriveDeadband)
         ),
       m_Climber));
     
@@ -203,7 +207,7 @@ public class RobotContainer {
 
     // this is all the code for the operators controls
 
-    m_operatorController
+   /* m_operatorController
         .a()
         .whileTrue(new RunCommand(() -> {
             m_shooter.shoot();
@@ -215,6 +219,7 @@ public class RobotContainer {
             m_carousel.stopCarousel();
             m_shooter.stopFeed();
         }, m_shooter, m_carousel));
+        */
 
     m_operatorController
         .b()

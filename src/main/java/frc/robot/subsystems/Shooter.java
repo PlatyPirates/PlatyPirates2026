@@ -30,13 +30,13 @@ public class Shooter extends SubsystemBase {
     }
     
     //methods
-    public void baseMotor() {
-        feedBall.set(Constants.SubsystemConstants.kFeedBallMotorSpeed);
+    public void baseMotor(double speed) {
+        feedBall.set(speed);
     }
 
-    public void shoot() {
+    public void shoot(double speed) {
         // flywheelMotor1.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel1Speed));
-        flywheelMotor2.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel2Speed));
+        flywheelMotor2.setControl(shooterControl.withOutput(speed));
     }
 
     public void stopFlywheels() {

@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.commands.DriveRobotFromLimelight;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import frc.robot.commands.Homing;
+//import frc.robot.commands.Homing; TODO commented out see homing.java
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -43,7 +43,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.m_robotDrive.zeroHeading();
 
-    new Homing(m_robotContainer.m_Hood, m_robotContainer.m_Turret, m_robotContainer.m_Climber).schedule();
+   // new Homing(m_robotContainer.m_Hood, m_robotContainer.m_Turret, m_robotContainer.m_Climber).schedule(); TODO commented out see homing.java
 
 
     ledTester.addOption("Rainbow", new RunCommand(() -> {m_robotContainer.m_underglow.rainbow();}, m_robotContainer.m_underglow));

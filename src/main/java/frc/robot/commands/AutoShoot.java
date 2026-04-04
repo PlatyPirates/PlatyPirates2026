@@ -1,6 +1,6 @@
 // This is our autonomous code 
 // PlatyPirates team 9181 - written by Barbara and Victoria 
-
+/* 
 package frc.robot.commands;
 
 // Imports and such
@@ -67,3 +67,4 @@ public class AutoShoot extends Command {
 
     }
 }
+    */
