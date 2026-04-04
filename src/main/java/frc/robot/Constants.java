@@ -216,9 +216,7 @@ public final class Constants {
   }
 
   public enum Auto {
-    TAXI,
     NOTHING,
-    SHOOT,
     CLIMB,
     BLUE_LEFT,
     BLUE_RIGHT,
