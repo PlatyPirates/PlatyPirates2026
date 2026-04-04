@@ -1,6 +1,6 @@
 //this is the command that tells the robot what to do while homing. It sets all the limit switches
 //PlatyPirates team 9181 
-/* //TODO commented out during week5 comp because was moving weird maybe??
+//TODO commented out during week5 comp because was moving weird maybe??
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -69,4 +69,4 @@ public class Homing extends Command {
 
 
 }
-    */
+    

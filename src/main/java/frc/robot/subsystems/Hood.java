@@ -1,6 +1,5 @@
 // This is the subsystem for the movable hood of our shooter
 // PlatyPirates team 9181 - Written by Barbara
-/* 
 package frc.robot.subsystems;
 
 // imports
@@ -72,4 +71,3 @@ public class Hood extends SubsystemBase {
 
      
 }
-    */

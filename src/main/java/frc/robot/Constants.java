@@ -74,7 +74,7 @@ public final class Constants {
     public static final int kFlywheelMotor2CanId = 14;
     public static final int kFeedBallMotorCanId = 15;
     public static final int kTurretMotorCanId = 21;
-   // public static final int kHoodMotorCanId = 12;
+    public static final int kHoodMotorCanId = 12;
     public static final int kClimberMotorCanId = 22;
 
 

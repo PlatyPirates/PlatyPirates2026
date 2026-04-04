@@ -46,7 +46,7 @@ public class RobotContainer {
   Shooter m_shooter = new Shooter();
   Carousel m_carousel = new Carousel();
   public Turret m_Turret = new Turret();
-  // public Hood m_Hood = new Hood();
+  public Hood m_Hood = new Hood();
   public Climber m_Climber = new Climber();
 
   double driveSpeedFactor = 1.0;
