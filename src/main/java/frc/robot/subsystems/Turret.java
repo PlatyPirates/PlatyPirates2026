@@ -70,9 +70,13 @@ public class Turret extends SubsystemBase {
     //shows the position, kp and tx of the turret in the shuffle board.
     @Override
     public void periodic() {
+        if (atLimit()) {
+            resetEncoder();
+        }
         SmartDashboard.putNumber("Turret Position", turretEncoder.getPosition());
         SmartDashboard.putNumber("Turret kP", Constants.SubsystemConstants.kTurretP);
         SmartDashboard.putNumber("Turret TX", LimelightHelpers.getTX("limelight"));
+        SmartDashboard.putBoolean("Turret At Limit", atLimit());
         }
 
         

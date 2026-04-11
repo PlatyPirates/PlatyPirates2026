@@ -68,8 +68,11 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Climber Position", climbEncoder.getPosition());
         SmartDashboard.putBoolean("Climber At Limit", atLimit());
+        if (atLimit()) {
+            resetEncoder();
+        }
+        SmartDashboard.putNumber("Climber Position", getEncoderPosition());
     }
 
 

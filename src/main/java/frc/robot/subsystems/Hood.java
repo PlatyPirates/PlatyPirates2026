@@ -64,6 +64,9 @@ public class Hood extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (atLimit()) {
+            resetEncoder();
+        } 
         SmartDashboard.putNumber("Hood Position", hoodEncoder.getPosition());
         SmartDashboard.putBoolean("Hood At Limit", atLimit());
     }
