@@ -69,12 +69,12 @@ public final class Constants {
     // Subsystem CAN IDs 10-15
     public static final int kCarouselMotorCanId = 10;
     public static final int kIntakeArmMotorCanId = 11;
-    public static final int kIntakeScooperMotorCanId = 12;
+    public static final int kIntakeScooperMotorCanId = 20;
     // public static final int kFlywheelMotor1CanId = 13;
     public static final int kFlywheelMotor2CanId = 14;
     public static final int kFeedBallMotorCanId = 15;
     public static final int kTurretMotorCanId = 21;
-    public static final int kHoodMotorCanId = 20;
+    public static final int kHoodMotorCanId = 12;
     public static final int kClimberMotorCanId = 22;
 
 
@@ -165,8 +165,8 @@ public final class Constants {
   public static final class SubsystemConstants {
 
     // Carosel
-    public static final double kCarouselMotorSpeed = -0.4;
-    public static final double kCarouselMotorReverse = 0.4;
+    public static final double kCarouselMotorSpeed = 0.8;
+    public static final double kCarouselMotorReverse = -0.8;
 
     // Intake
     public static final double kIntakeArmExtend = -0.2 ;
@@ -176,9 +176,9 @@ public final class Constants {
 
     // Shooter
     // public static final double kFlywheel1Speed = 1.0;
-    public static double kFlywheel2Speed = 0.5;
+    public static double kFlywheel2Speed = 0.1;
     //public static final double kFlywheel1Reverse = -0.4;
-    public static double kFlywheel2Reverse = -kFlywheel2Speed;
+    public static double kFlywheel2Reverse = kFlywheel2Speed;
     public static final double kFeedBallMotorSpeed = 0.5;
     public static final double kFeedBallMotorReverse = -0.5;
 
@@ -200,7 +200,7 @@ public final class Constants {
     //Climber Constants 
     public static final double kMoveClimber = 0.2; // TODO needs tuning 
     public static final double kReverseClimber = -0.2;
-    public static final double kClimberMax = 999.0;
+    public static final double kClimberMax = 0.5;
     public static final double kClimberMin = 0.0;
 
     //constants for auton
@@ -216,9 +216,7 @@ public final class Constants {
   }
 
   public enum Auto {
-    TAXI,
     NOTHING,
-    SHOOT,
     CLIMB,
     BLUE_LEFT,
     BLUE_RIGHT,

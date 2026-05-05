@@ -31,7 +31,7 @@ public class Climber extends SubsystemBase {
     }
 
     public boolean atLimit() {
-        return !limitSwitch.get();
+        return limitSwitch.get();
     }
 
     public void resetEncoder() {
@@ -50,16 +50,16 @@ public class Climber extends SubsystemBase {
     //Methods 
      // this tells the motor to stop if it ever exeeds a set limit to keep it from overextending itself
     public void moveClimber(double speed) {
-        if ((climbEncoder.getPosition() < Constants.SubsystemConstants.kClimberMax && speed > 0
+      /*   if ((climbEncoder.getPosition() < Constants.SubsystemConstants.kClimberMax && speed > 0
         ||
-        climbEncoder.getPosition() > Constants.SubsystemConstants.kClimberMin && speed < 0)) {
+        climbEncoder.getPosition() > Constants.SubsystemConstants.kClimberMin && speed < 0)) { */
 
             climberMotor.set(speed);
 
-        } else {
+      /*   } else {
             climberMotor.set(0.0);
-        }
-    }
+        } */
+    } 
 
     public void stopMotor() {
         climberMotor.set(0.0);
@@ -68,7 +68,11 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Climber Position", climbEncoder.getPosition());
+        SmartDashboard.putBoolean("Climber At Limit", atLimit());
+        if (atLimit()) {
+            resetEncoder();
+        }
+        SmartDashboard.putNumber("Climber Position", getEncoderPosition());
     }
 
 

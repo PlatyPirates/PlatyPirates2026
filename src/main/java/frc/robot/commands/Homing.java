@@ -1,6 +1,6 @@
 //this is the command that tells the robot what to do while homing. It sets all the limit switches
 //PlatyPirates team 9181 
-
+//TODO commented out during week5 comp because was moving weird maybe??
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,14 +11,14 @@ import frc.robot.subsystems.Climber;
 public class Homing extends Command {
 
     //fields
-    private final Hood hood;
+   // private final Hood hood;
     private final Turret turret;
     private final Climber climber;
     
 
     //constructor
     public Homing(Hood hood, Turret turret, Climber climber) {
-        this.hood = hood;
+       // this.hood = hood;
         this.turret = turret;
         this.climber = climber;
         addRequirements(hood, turret, climber);
@@ -29,11 +29,11 @@ public class Homing extends Command {
     //execute runs every 20ms
     @Override
     public void execute() {
-        if (hood.notAtLimit()) {
+       /*  if (hood.notAtLimit()) {
             hood.homeHood();
         } else {
             hood.stopHood();
-        }
+        } */
 
         if (turret.notAtLimit()) {
             turret.homeTurret();    
@@ -52,20 +52,21 @@ public class Homing extends Command {
     //is finished is a boolean in this case it runs when they hit their limit switches
     @Override
     public boolean isFinished() {
-        return hood.atLimit() && turret.atLimit() && climber.atLimit();
+        return turret.atLimit() && climber.atLimit();
 
     }
     
     //ennds the whole thing and sets the encoders for the soft limits
     @Override 
     public void end(boolean interrupted) {
-        hood.resetEncoder();
+       // hood.resetEncoder();
         turret.resetEncoder();
         climber.resetEncoder();
-
+ 
     }
 
 
 
 
 }
+    

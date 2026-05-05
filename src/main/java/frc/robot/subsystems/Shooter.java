@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
         // flywheelMotor1.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel1Speed));
         flywheelMotor2.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel2Speed));
     }
-
+        //oublic Command shootCommand
     public void stopFlywheels() {
         //flywheelMotor1.setControl(shooterControl.withOutput(0.0));
         flywheelMotor2.setControl(shooterControl.withOutput(0.0));

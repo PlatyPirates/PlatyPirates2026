@@ -69,8 +69,6 @@ public class RobotContainer {
     SmartDashboard.putData("L4 Options", l4Dropdown);
 
     autoChooser.setDefaultOption("Do Nothing", Constants.Auto.NOTHING);
-    autoChooser.addOption("AutoShoot + Drive", Constants.Auto.TAXI);
-    autoChooser.addOption("Shoot", Constants.Auto.SHOOT);
     autoChooser.addOption("Climb", Constants.Auto.CLIMB);
     autoChooser.addOption("Blue Left", Constants.Auto.BLUE_LEFT);
     autoChooser.addOption("Blue Right", Constants.Auto.BLUE_RIGHT);
@@ -112,12 +110,17 @@ public class RobotContainer {
         ),
       m_Turret));
 
-    m_Hood.setDefaultCommand(
+   /* m_shooter.setDefaultCommand(
       new RunCommand(
-        () -> m_Hood.moveHood(
-          MathUtil.applyDeadband(m_operatorController.getRightY(), OIConstants.kDriveDeadband)
-        ),
-      m_Hood));
+        () -> {
+          double speed = MathUtil.applyDeadband(m_operatorController.getRightY(), OIConstants.kDriveDeadband);
+          m_shooter.shoot(speed);
+          m_carousel.moveCarousel(speed);
+          m_shooter.baseMotor(speed);
+        },
+      m_shooter, m_carousel));
+      */
+      
     
     m_Climber.setDefaultCommand(
       new RunCommand(
@@ -203,6 +206,8 @@ public class RobotContainer {
 
     // this is all the code for the operators controls
 
+    //m_operatorController.povUp().whileTrue(()->(m_shooter.shoot(.6)));
+
     m_operatorController
         .a()
         .whileTrue(new RunCommand(() -> {
@@ -215,6 +220,7 @@ public class RobotContainer {
             m_carousel.stopCarousel();
             m_shooter.stopFeed();
         }, m_shooter, m_carousel));
+      
 
     m_operatorController
         .b()
@@ -293,12 +299,6 @@ public class RobotContainer {
     Command cmd;
     Constants.Auto selected = autoChooser.getSelected();
     switch(selected){
-      case SHOOT:
-       cmd = new AutoShoot(m_shooter, m_carousel, m_robotDrive);
-    break;
-      case TAXI:
-        cmd = new AutoShoot(m_shooter, m_carousel, m_robotDrive);
-        break;
       default:
         //cmd = new AMoveL4(m_robotDrive, m_shooter, m_underglow, m_elevator, m_intake).moveAndL4(l4Dropdown);
         //break;
