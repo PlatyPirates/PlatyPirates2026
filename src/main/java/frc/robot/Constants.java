@@ -165,8 +165,8 @@ public final class Constants {
   public static final class SubsystemConstants {
 
     // Carosel
-    public static final double kCarouselMotorSpeed = 0.4;
-    public static final double kCarouselMotorReverse = -0.4;
+    public static final double kCarouselMotorSpeed = 0.8;
+    public static final double kCarouselMotorReverse = -0.8;
 
     // Intake
     public static final double kIntakeArmExtend = -0.2 ;
@@ -176,7 +176,7 @@ public final class Constants {
 
     // Shooter
     // public static final double kFlywheel1Speed = 1.0;
-    public static double kFlywheel2Speed = 0.35;
+    public static double kFlywheel2Speed = 0.1;
     //public static final double kFlywheel1Reverse = -0.4;
     public static double kFlywheel2Reverse = kFlywheel2Speed;
     public static final double kFeedBallMotorSpeed = 0.5;

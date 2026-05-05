@@ -32,7 +32,7 @@ public class Hood extends SubsystemBase {
     }
 
     public boolean atLimit() {
-        return !limitSwitch.get();
+        return limitSwitch.get();
     }
 
     public void resetEncoder() {

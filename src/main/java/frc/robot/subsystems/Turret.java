@@ -40,7 +40,7 @@ public class Turret extends SubsystemBase {
     }
 
     public boolean atLimit() {
-        return !limitSwitch.get();
+        return limitSwitch.get();
     }
 
     // methods
