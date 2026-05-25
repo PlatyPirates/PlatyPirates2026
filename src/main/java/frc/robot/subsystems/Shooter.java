@@ -58,4 +58,8 @@ public class Shooter extends SubsystemBase {
         flywheelMotor2.setControl(shooterControl.withOutput(Constants.SubsystemConstants.kFlywheel2Reverse));
     }
 
+    public void setSpeed(double speed) {
+        feedBall.set(speed);
+    }
+
 }

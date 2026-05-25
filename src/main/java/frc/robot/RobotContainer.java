@@ -110,23 +110,27 @@ public class RobotContainer {
         ),
       m_Turret));
 
-   /* m_shooter.setDefaultCommand(
+    m_shooter.setDefaultCommand(
       new RunCommand(
         () -> {
-          double speed = MathUtil.applyDeadband(m_operatorController.getRightY(), OIConstants.kDriveDeadband);
-          m_shooter.shoot(speed);
-          m_carousel.moveCarousel(speed);
-          m_shooter.baseMotor(speed);
+          double speed = MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband);
+          // m_shooter.shoot(speed);
+          // m_carousel.moveCarousel(speed);
+          // m_shooter.baseMotor(speed);
+          m_shooter.setSpeed(speed);
         },
       m_shooter, m_carousel));
-      */
+      
+
+
       
     
     m_Climber.setDefaultCommand(
       new RunCommand(
-        () -> m_Climber.moveClimber(
-          MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
-        ),
+        () -> //m_Climber.moveClimber(
+          //MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
+          m_Climber.stopMotor(),
+        //),
       m_Climber));
     
   
