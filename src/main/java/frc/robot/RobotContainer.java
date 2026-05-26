@@ -109,6 +109,13 @@ public class RobotContainer {
           MathUtil.applyDeadband(m_operatorController.getRightX(), OIConstants.kDriveDeadband)
         ),
       m_Turret));
+    
+    m_Hood.setDefaultCommand(
+      new RunCommand(
+        () -> m_Hood.moveHood(
+          MathUtil.applyDeadband(m_operatorController.getRightY()*0.45, OIConstants.kDriveDeadband)
+        ),
+      m_Hood));
 
     m_shooter.setDefaultCommand(
       new RunCommand(
@@ -119,7 +126,7 @@ public class RobotContainer {
           // m_shooter.baseMotor(speed);
           m_shooter.setSpeed(speed);
         },
-      m_shooter, m_carousel));
+      m_shooter));
       
 
 
@@ -215,12 +222,12 @@ public class RobotContainer {
     m_operatorController
         .a()
         .whileTrue(new RunCommand(() -> {
-            m_shooter.shoot();
+            //m_shooter.shoot();
             m_carousel.moveCarousel();
             m_shooter.baseMotor();
         }, m_shooter, m_carousel))
         .whileFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
-            m_shooter.stopFlywheels();
+            //m_shooter.stopFlywheels();
             m_carousel.stopCarousel();
             m_shooter.stopFeed();
         }, m_shooter, m_carousel));
