@@ -84,8 +84,8 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> {m_robotDrive.driveTeleop(
-                -MathUtil.applyDeadband(-m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(-m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 fieldRelative);
               },
@@ -117,16 +117,16 @@ public class RobotContainer {
         ),
       m_Hood));
 
-    m_shooter.setDefaultCommand(
-      new RunCommand(
-        () -> {
-          double speed = MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband);
-          // m_shooter.shoot(speed);
-          // m_carousel.moveCarousel(speed);
-          // m_shooter.baseMotor(speed);
-          m_shooter.setSpeed(speed);
-        },
-      m_shooter));
+    // m_shooter.setDefaultCommand(
+    //   new RunCommand(
+    //     () -> {
+    //       double speed = MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband);
+    //       // m_shooter.shoot(speed);
+    //       // m_carousel.moveCarousel(speed);
+    //       // m_shooter.baseMotor(speed);
+    //       m_shooter.setSpeed(speed);
+    //     },
+    //   m_shooter));
       
 
 
@@ -190,7 +190,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                true);
+                !fieldRelative);
 
                 //m_underglow.blink(Color.kWhite);
               },
@@ -222,12 +222,12 @@ public class RobotContainer {
     m_operatorController
         .a()
         .whileTrue(new RunCommand(() -> {
-            //m_shooter.shoot();
+            m_shooter.setSpeed(-0.55);
             m_carousel.moveCarousel();
             m_shooter.baseMotor();
         }, m_shooter, m_carousel))
         .whileFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
-            //m_shooter.stopFlywheels();
+            m_shooter.stopFlywheels();
             m_carousel.stopCarousel();
             m_shooter.stopFeed();
         }, m_shooter, m_carousel));
