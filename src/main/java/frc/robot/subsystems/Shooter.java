@@ -59,7 +59,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setSpeed(double speed) {
-        feedBall.set(speed);
+        flywheelMotor2.set(speed);
     }
 
 }

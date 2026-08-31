@@ -84,8 +84,8 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> {m_robotDrive.driveTeleop(
-                -MathUtil.applyDeadband(-m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(-m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor*invert, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 fieldRelative);
               },
@@ -109,17 +109,24 @@ public class RobotContainer {
           MathUtil.applyDeadband(m_operatorController.getRightX(), OIConstants.kDriveDeadband)
         ),
       m_Turret));
-
-    m_shooter.setDefaultCommand(
+    
+    m_Hood.setDefaultCommand(
       new RunCommand(
-        () -> {
-          double speed = MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband);
-          // m_shooter.shoot(speed);
-          // m_carousel.moveCarousel(speed);
-          // m_shooter.baseMotor(speed);
-          m_shooter.setSpeed(speed);
-        },
-      m_shooter, m_carousel));
+        () -> m_Hood.moveHood(
+          MathUtil.applyDeadband(m_operatorController.getRightY()*0.45, OIConstants.kDriveDeadband)
+        ),
+      m_Hood));
+
+    // m_shooter.setDefaultCommand(
+    //   new RunCommand(
+    //     () -> {
+    //       double speed = MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband);
+    //       // m_shooter.shoot(speed);
+    //       // m_carousel.moveCarousel(speed);
+    //       // m_shooter.baseMotor(speed);
+    //       m_shooter.setSpeed(speed);
+    //     },
+    //   m_shooter));
       
     m_Hood.setDefaultCommand(
       new RunCommand(() -> m_Hood.stopAtLimit(), m_Hood));
@@ -181,7 +188,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getLeftY()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getLeftX()*driveSpeedFactor, OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getRightX()*driveSpeedFactor, OIConstants.kDriveDeadband),
-                true);
+                !fieldRelative);
 
                 //m_underglow.blink(Color.kWhite);
               },
@@ -213,7 +220,7 @@ public class RobotContainer {
     m_operatorController
         .a()
         .whileTrue(new RunCommand(() -> {
-            m_shooter.shoot();
+            m_shooter.setSpeed(-0.55);
             m_carousel.moveCarousel();
             m_shooter.baseMotor();
         }, m_shooter, m_carousel))
