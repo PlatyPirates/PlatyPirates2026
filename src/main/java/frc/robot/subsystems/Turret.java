@@ -27,7 +27,6 @@ public class Turret extends SubsystemBase {
         turretMotor = new SparkMax(Constants.DriveConstants.kTurretMotorCanId, MotorType.kBrushless);
         turretEncoder = turretMotor.getEncoder();
         limitSwitch = new DigitalInput(1);
-        
     }
 
     public void resetEncoder() {
@@ -36,7 +35,7 @@ public class Turret extends SubsystemBase {
     
     //for the homing routine tells us when we hit the limit switch
     public boolean notAtLimit() {
-        return limitSwitch.get();
+        return !limitSwitch.get();
     }
 
     public boolean atLimit() {
@@ -45,7 +44,10 @@ public class Turret extends SubsystemBase {
 
     // methods
     // this one below tells the motor to stop if it gets past a set limit in order to keep the turret from overextending itself
+    // TODO: Look at Climber.moveClimber() to add a limit switch to this logic
     public void moveTurret(double speed) {
+        speed = speed * Constants.SubsystemConstants.kTurretScale;
+
         if ((turretEncoder.getPosition() < Constants.SubsystemConstants.kTurretMax && speed > 0)
         ||
         (turretEncoder.getPosition() > Constants.SubsystemConstants.kTurretMin && speed < 0)) {

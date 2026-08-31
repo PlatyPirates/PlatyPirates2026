@@ -26,9 +26,17 @@ public class Hood extends SubsystemBase {
     
     }
 
+    public void stopAtLimit(){
+        if(notAtLimit()){
+            hoodMotor.set(-0.2);
+        } else {
+            stopHood();
+        }
+    }
+
     // this is for the limits on the hood
     public boolean notAtLimit() {
-        return limitSwitch.get();
+        return !limitSwitch.get();
     }
 
     public boolean atLimit() {

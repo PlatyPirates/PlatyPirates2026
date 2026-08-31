@@ -99,7 +99,7 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(
      new RunCommand(() -> m_intake.stopMotors(), m_intake));
-
+      // TODO: change the default command to leave the intake out by default
     m_carousel.setDefaultCommand(
       new RunCommand(() -> m_carousel.stopCarousel(), m_carousel));
 
@@ -121,16 +121,14 @@ public class RobotContainer {
         },
       m_shooter, m_carousel));
       
-
-
-      
+    m_Hood.setDefaultCommand(
+      new RunCommand(() -> m_Hood.stopAtLimit(), m_Hood));
     
     m_Climber.setDefaultCommand(
       new RunCommand(
-        () -> //m_Climber.moveClimber(
-          //MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
-          m_Climber.stopMotor(),
-        //),
+        () -> m_Climber.moveClimber(
+          MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
+        ),
       m_Climber));
     
   
@@ -288,6 +286,10 @@ public class RobotContainer {
     m_operatorController
         .leftTrigger()
         .whileTrue(new AimTurret(m_Turret));
+
+    m_operatorController
+        .povLeft()
+        .whileTrue(new RunCommand(() -> m_intake.squeeze()));
         
   }
     
@@ -315,15 +317,15 @@ public class RobotContainer {
 
         break;
       case CLIMB:
-          cmd = new AutoClimb(m_Climber, m_robotDrive);
-      break;
+        cmd = new AutoClimb(m_Climber, m_robotDrive);
+        break;
       case BLUE_LEFT:
-    try {
-        cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueLeft")).andThen(new AutoClimb(m_Climber, m_robotDrive));
-    } catch (Exception e) {
-        e.printStackTrace();
-        cmd = new RunCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, true), m_robotDrive);
-    }
+        try {
+            cmd = AutoBuilder.followPath(PathPlannerPath.fromPathFile("BlueLeft")).andThen(new AutoClimb(m_Climber, m_robotDrive));
+        } catch (Exception e) {
+            e.printStackTrace();
+            cmd = new RunCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, true), m_robotDrive);
+        }
     break;
     case BLUE_RIGHT:
         try {
