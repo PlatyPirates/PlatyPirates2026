@@ -55,13 +55,20 @@ public class Climber extends SubsystemBase {
         double position = climbEncoder.getPosition();
         double max = Constants.SubsystemConstants.kClimberMax;
 
-        if ((goingUp && position < max) || (!goingUp && notAtLimit())){
+        // if ((!goingUp && position < max) || (goingUp && notAtLimit())){
+        //     climberMotor.set(speed);
+        // } else {
+        //     climberMotor.set(0.0);
+        // }
+
+        // New Code - It works
+        if ((notAtLimit() || speed < 0) && (position > max || speed > 0)){
             climberMotor.set(speed);
         } else {
             climberMotor.set(0.0);
         }
 
-    } 
+    }
 
     public void stopMotor() {
         climberMotor.set(0.0);

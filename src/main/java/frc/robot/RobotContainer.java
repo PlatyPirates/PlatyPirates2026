@@ -128,8 +128,8 @@ public class RobotContainer {
     //     },
     //   m_shooter));
       
-    m_Hood.setDefaultCommand(
-      new RunCommand(() -> m_Hood.stopAtLimit(), m_Hood));
+    // m_Hood.setDefaultCommand(
+    //   new RunCommand(() -> m_Hood.stopAtLimit(), m_Hood));
     
     m_Climber.setDefaultCommand(
       new RunCommand(

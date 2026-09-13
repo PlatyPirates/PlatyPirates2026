@@ -27,7 +27,7 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;
+    public static final double kMaxSpeedMetersPerSecond = 2; // was 4.8
     public static final double kMaxAngularSpeed = Math.PI; // radians per second
 
     public static final double kDirectionSlewRate = 1.2; // radians per second
@@ -169,8 +169,8 @@ public final class Constants {
     public static final double kCarouselMotorReverse = -0.5;
 
     // Intake
-    public static final double kIntakeArmExtend = -0.2 ;
-    public static final double kIntakeArmRetract = 0.4;
+    public static final double kIntakeArmExtend = -0.15;
+    public static final double kIntakeArmRetract = 0.2;
     public static final double kScooperMotorSpeed = -1.0;
     public static final double kScooperMotorReverse = 1.0;
 
@@ -179,16 +179,16 @@ public final class Constants {
     public static double kFlywheel2Speed = 0.005;
     //public static final double kFlywheel1Reverse = -0.4;
     public static double kFlywheel2Reverse = kFlywheel2Speed;
-    public static final double kFeedBallMotorSpeed = 0.2;
+    public static final double kFeedBallMotorSpeed = 0.3;
     public static final double kFeedBallMotorReverse = -0.2;
 
     //limits for the subsystems
     //Hood limits
-    public static final double kHoodMax = 999.0; // TODO needs tuning
+    public static final double kHoodMax = -22.5; // Max is -23.8 to -24. Don't use those values until PID implemented
     public static final double kHoodMin = 0.0;
 
     // Turret limits
-    public static final double kTurretMax = 999.0; // TODO needs tuning
+    public static final double kTurretMax = 28.0; // actual limit is 29.59. Need to implement brake system to get closer
     public static final double kTurretMin = 0.0; 
     public static final double kTurretP = 0.02; 
     public static final double kTurretScale = 0.2;
@@ -201,7 +201,7 @@ public final class Constants {
     //Climber Constants 
     public static final double kMoveClimber = 0.2; // TODO needs tuning 
     public static final double kReverseClimber = -0.2;
-    public static final double kClimberMax = 0.5;
+    public static final double kClimberMax = -99; // A little more than full extension
     public static final double kClimberMin = 0.0;
 
     //constants for auton

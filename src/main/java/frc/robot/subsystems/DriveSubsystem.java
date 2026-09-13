@@ -279,9 +279,9 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void driveTeleop(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Apply cubic function
-    double xSpeed_cubed = Math.pow(xSpeed, 3);
-    double ySpeed_cubed = Math.pow(ySpeed, 3);
-    double rot_cubed = Math.pow(rot, 3);
+    double xSpeed_cubed = Math.signum(xSpeed)*Math.abs(Math.pow(xSpeed, 1)); // Allows any scalar and exp value to shape input
+    double ySpeed_cubed = Math.signum(ySpeed)*Math.abs(Math.pow(ySpeed, 1)); // Allows any scalar and exp value to shape input
+    double rot_cubed = Math.signum(rot)*Math.abs(Math.pow(rot, 1)); // Allows any scalar and exp value to shape input
 
     drive(xSpeed_cubed, ySpeed_cubed,rot_cubed, fieldRelative);
   }

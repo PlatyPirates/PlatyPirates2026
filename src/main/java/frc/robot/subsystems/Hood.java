@@ -50,9 +50,11 @@ public class Hood extends SubsystemBase {
     // methods
     // this tells the motor to stop if it ever exeeds a set limit to keep it from overextending itself
     public void moveHood(double speed) {
-        // if ((hoodEncoder.getPosition() < Constants.SubsystemConstants.kHoodMax && speed > 0) 
-        // || 
-        //  (hoodEncoder.getPosition() > Constants.SubsystemConstants.kHoodMin && speed < 0.0)) {
+        double position = hoodEncoder.getPosition();
+        double max = Constants.SubsystemConstants.kHoodMax;
+        // if ((hoodEncoder.getPosition() < Constants.SubsystemConstants.kHoodMax && speed < 0 ) 
+        //     || 
+        //     (hoodEncoder.getPosition() > Constants.SubsystemConstants.kHoodMin && speed > 0.0)) {
 
         //     hoodMotor.set(speed);
 
@@ -61,7 +63,7 @@ public class Hood extends SubsystemBase {
         // }
 
         //UPPER LIMIT: -23.5
-        if(!atLimit() || speed < 0.0){
+        if((notAtLimit() || speed < 0.0) && (position > max || speed > 0.0)){
             hoodMotor.set(speed);
         } else {
             hoodMotor.set(0.0);

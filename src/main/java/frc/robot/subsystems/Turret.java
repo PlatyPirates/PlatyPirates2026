@@ -49,8 +49,10 @@ public class Turret extends SubsystemBase {
         speed = speed * Constants.SubsystemConstants.kTurretScale;
 
         if ((turretEncoder.getPosition() < Constants.SubsystemConstants.kTurretMax && speed > 0)
-        ||
-        (turretEncoder.getPosition() > Constants.SubsystemConstants.kTurretMin && speed < 0)) {
+            ||
+            (notAtLimit() && speed < 0)) 
+            // (turretEncoder.getPosition() > Constants.SubsystemConstants.kTurretMin && speed < 0)) 
+        {
 
             turretMotor.set(speed);
 
