@@ -185,10 +185,10 @@ public final class Constants {
 
     //limits for the subsystems
     //PID constants for hood
-    public static final double KHoodP = 0.3;
-    public static final double KHoodI = 0.0;
-    public static final double KHoodD = 0.0;
-    
+    public static final double KHoodP = 0.1;
+    public static final double KHoodI = 0.005;
+    public static final double KHoodD = 0.001;
+
     //Hood limits
     public static final double kHoodMax = -22.5; // Max is -23.8 to -24. Don't use those values until PID implemented
     public static final double kHoodMin = 0.0;

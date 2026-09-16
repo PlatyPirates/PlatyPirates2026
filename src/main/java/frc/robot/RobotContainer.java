@@ -230,16 +230,17 @@ public class RobotContainer {
 
     m_operatorController
         .a()
+        .onTrue(new InstantCommand(() -> {
+          m_Hood.hubMode();
+        }))
+        .debounce(1.0)
         .whileTrue(new RunCommand(() -> {
-            m_shooter.setSpeed(-0.55);
-            m_carousel.moveCarousel();
-            m_shooter.baseMotor();
-        }, m_shooter, m_carousel))
-        .whileFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
-            m_shooter.stopFlywheels();
-            m_carousel.stopCarousel();
-            m_shooter.stopFeed();
-        }, m_shooter, m_carousel));
+          m_Hood.pidHoodPos(-11);
+        }, m_Hood))
+        .onFalse(new RunCommand(() -> {
+          m_Hood.pidHoodPos(0);
+        }, m_Hood));
+
       
 
     m_operatorController
@@ -265,19 +266,31 @@ public class RobotContainer {
 
     m_operatorController
         .y()
-        .whileTrue(new InstantCommand(() -> {
-          m_shooter.reverseFlywheels();
-          m_shooter.reverseFeed();
-        }, m_shooter))
+        .onTrue(new InstantCommand(() -> {
+          m_Hood.fairyMode();
+        }))
+        .debounce(1.0)
+        .whileTrue(new RunCommand(() -> {
+          m_Hood.pidHoodPos(-11); //Technically overridden by values set in Hood.java
+        }, m_Hood))
         .onFalse(new RunCommand(() -> {
-          m_shooter.stopFlywheels();
-          m_shooter.stopFeed();
-        }, m_shooter));
+          m_Hood.pidHoodPos(0);
+        }, m_Hood));
+
+        // Old Previous Y Code
+        // .whileTrue(new InstantCommand(() -> {
+        //   m_shooter.reverseFlywheels();
+        //   m_shooter.reverseFeed();
+        // }, m_shooter))
+        // .onFalse(new RunCommand(() -> {
+        //   m_shooter.stopFlywheels();
+        //   m_shooter.stopFeed();
+        // }, m_shooter));
 
     m_operatorController
         .leftBumper()
         .whileTrue(new RunCommand(() -> {
-          m_intake.spinScooper();
+          m_intake.reverseScooper();
         }, m_intake))
         .onFalse(new RunCommand(() -> {
           m_intake.stopScooper();
@@ -295,23 +308,35 @@ public class RobotContainer {
     m_operatorController
         .rightTrigger()
         .whileTrue(new RunCommand(() -> {
-          m_intake.reverseScooper();
+            m_shooter.setSpeed(-0.55);
+            m_carousel.moveCarousel();
+            m_shooter.baseMotor();
+        }, m_shooter, m_carousel))
+        .onFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
+            m_shooter.stopFlywheels();
+            m_carousel.stopCarousel();
+            m_shooter.stopFeed();
+        }, m_shooter, m_carousel));
+
+    m_operatorController
+        .leftTrigger()
+        .whileTrue(new RunCommand(() -> {
+          m_intake.spinScooper();
         }, m_intake))
         .onFalse(new RunCommand(() -> {
           m_intake.stopScooper();
         }, m_intake));
 
-    m_operatorController
-        .leftTrigger()
-        .whileTrue(new AimTurret(m_Turret));
+        // Previous LeftTrigger Code
+        // .whileTrue(new AimTurret(m_Turret));
 
-        m_operatorController
+    m_operatorController
         .povLeft()
         .whileTrue(new RunCommand(() -> m_intake.squeeze()));
         
-        m_operatorController
-            .povUp()
-            .onTrue(new InstantCommand(() -> m_Climber.toggleClimber()));
+    m_operatorController
+        .povUp()
+        .onTrue(new InstantCommand(() -> m_Climber.toggleClimber()));
   }
     
 

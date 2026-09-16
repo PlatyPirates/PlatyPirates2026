@@ -68,7 +68,7 @@ public class Climber extends SubsystemBase {
      // this tells the motor to stop if it ever exeeds a set limit to keep it from overextending itself
     public void moveClimber(double speed) {
         
-        boolean goingUp = speed > 0;
+        // boolean goingUp = speed > 0;
         double position = climbEncoder.getPosition();
         double max = Constants.SubsystemConstants.kClimberMax;
 

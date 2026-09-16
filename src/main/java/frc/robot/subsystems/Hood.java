@@ -21,6 +21,9 @@ public class Hood extends SubsystemBase {
     private final DigitalInput limitSwitch;
     private final PIDController pidHood;
     private static boolean isHome = false;
+    private static boolean hubMode = true;
+    private static double hubPosition = -18;
+    private static double fairyPosition = -20;
 
     // constructor
     public Hood() {
@@ -59,6 +62,39 @@ public class Hood extends SubsystemBase {
         hoodEncoder.setPosition(0);
     }
 
+    public void hubMode() {
+        hubMode = true;
+    }
+
+    public void fairyMode() {
+        hubMode = false;
+    }
+
+    public void updateHubPosition() {
+        hubPosition = hoodEncoder.getPosition();
+    }
+    
+    public void updateFairyPosition() {
+        fairyPosition = hoodEncoder.getPosition();
+    }
+    
+    public void pidHoodPos(double targetPos) {
+        if (hubMode && targetPos != 0) {
+            targetPos = hubPosition;
+        }
+        else if (targetPos != 0) {
+            targetPos = fairyPosition;
+        }
+        double currPosition = hoodEncoder.getPosition();
+        double maxSpeed = 0.3;
+
+        double speed = MathUtil.clamp(pidHood.calculate(currPosition, targetPos),-maxSpeed, maxSpeed);
+
+        moveHood(speed);
+
+    }
+        
+
     // methods
     // this tells the motor to stop if it ever exeeds a set limit to keep it from overextending itself
     public void moveHood(double speed) {
@@ -84,7 +120,6 @@ public class Hood extends SubsystemBase {
     public void stopHood() {
         hoodMotor.set(0.0);
     }
-    
     //sets the speed for the homing routine. It doesn't have the soft limits because it would break done when trying to home
     public void homeHood() {
         hoodMotor.set(-0.1);
@@ -97,6 +132,7 @@ public class Hood extends SubsystemBase {
         } 
         SmartDashboard.putNumber("Hood Position", hoodEncoder.getPosition());
         SmartDashboard.putBoolean("Hood At Limit", atLimit());
+        SmartDashboard.putBoolean("Shooting Mode", hubMode);
     }
 
 
