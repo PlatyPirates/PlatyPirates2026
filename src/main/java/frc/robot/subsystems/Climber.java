@@ -16,6 +16,7 @@ public class Climber extends SubsystemBase {
     private final SparkMax climberMotor;
     private final DigitalInput limitSwitch;
     private final RelativeEncoder climbEncoder;
+    private static boolean isClimber = false;
 
     //Constructors
     public Climber() {
@@ -45,6 +46,22 @@ public class Climber extends SubsystemBase {
     //for the homing command
     public void homeClimber() {
         climberMotor.set(-0.1);
+    }
+
+    public boolean isClimber() {
+        return isClimber;
+    }
+
+    public void climberOn() {
+        isClimber = true;
+    }
+
+    public void climberOff() {
+        isClimber = false;
+    }
+
+    public void toggleClimber() {
+        isClimber = !isClimber;
     }
 
     //Methods 
@@ -82,6 +99,8 @@ public class Climber extends SubsystemBase {
             resetEncoder();
         }
         SmartDashboard.putNumber("Climber Position", getEncoderPosition());
+        SmartDashboard.putBoolean("Climber Mode", isClimber);
+
     }
 
 

@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
         intakeMotor = new SparkFlex(Constants.DriveConstants.kIntakeArmMotorCanId, SparkLowLevel.MotorType.kBrushless);
         scooperMotor = new SparkMax(Constants.DriveConstants.kIntakeScooperMotorCanId, MotorType.kBrushless);
         
-        pid = new PIDController(0.3, 0.016, 0.2);
+        pid = new PIDController(0.1, 0.3, 0.2);
         pid.setTolerance(0.01);
     }
 

@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -183,9 +184,15 @@ public final class Constants {
     public static final double kFeedBallMotorReverse = -0.2;
 
     //limits for the subsystems
+    //PID constants for hood
+    public static final double KHoodP = 0.3;
+    public static final double KHoodI = 0.0;
+    public static final double KHoodD = 0.0;
+    
     //Hood limits
     public static final double kHoodMax = -22.5; // Max is -23.8 to -24. Don't use those values until PID implemented
     public static final double kHoodMin = 0.0;
+
 
     // Turret limits
     public static final double kTurretMax = 28.0; // actual limit is 29.59. Need to implement brake system to get closer

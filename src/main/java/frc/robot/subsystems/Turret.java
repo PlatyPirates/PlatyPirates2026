@@ -21,6 +21,7 @@ public class Turret extends SubsystemBase {
     private final SparkMax turretMotor;
     private final RelativeEncoder turretEncoder;
     private final DigitalInput limitSwitch;
+    private static boolean isTurretHome = false;
 
     // constructor
     public Turret() {
@@ -46,18 +47,24 @@ public class Turret extends SubsystemBase {
     // this one below tells the motor to stop if it gets past a set limit in order to keep the turret from overextending itself
     // TODO: Look at Climber.moveClimber() to add a limit switch to this logic
     public void moveTurret(double speed) {
-        speed = speed * Constants.SubsystemConstants.kTurretScale;
 
-        if ((turretEncoder.getPosition() < Constants.SubsystemConstants.kTurretMax && speed > 0)
-            ||
-            (notAtLimit() && speed < 0)) 
-            // (turretEncoder.getPosition() > Constants.SubsystemConstants.kTurretMin && speed < 0)) 
-        {
+        if (!isTurretHome) {
+            homeTurret();
+        }
+        else {
+            speed = speed * Constants.SubsystemConstants.kTurretScale;
 
-            turretMotor.set(speed);
+            if ((turretEncoder.getPosition() < Constants.SubsystemConstants.kTurretMax && speed > 0)
+                ||
+                (notAtLimit() && speed < 0)) 
+                // (turretEncoder.getPosition() > Constants.SubsystemConstants.kTurretMin && speed < 0)) 
+            {
 
-        } else {
-            turretMotor.set(0.0);
+                turretMotor.set(speed);
+
+            } else {
+                turretMotor.set(0.0);
+            }
         }
 
     }
@@ -68,7 +75,13 @@ public class Turret extends SubsystemBase {
     
     //sets the speed for the homing routine. Doesn't have soft limits for this reason.
     public void homeTurret() {
-        turretMotor.set(-0.1);
+        if (notAtLimit()) {
+            turretMotor.set(-0.1);
+        }
+        else {
+            turretMotor.set(0.0);
+            isTurretHome = true;
+        }
     }
 
     //shows the position, kp and tx of the turret in the shuffle board.

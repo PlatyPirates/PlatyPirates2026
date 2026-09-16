@@ -20,6 +20,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -112,10 +113,15 @@ public class RobotContainer {
     
     m_Hood.setDefaultCommand(
       new RunCommand(
-        () -> m_Hood.moveHood(
-          MathUtil.applyDeadband(m_operatorController.getRightY()*0.45, OIConstants.kDriveDeadband)
-        ),
-      m_Hood));
+          () -> 
+          {
+            if (!m_Climber.isClimber()) {
+              m_Hood.moveHood(
+              MathUtil.applyDeadband(m_operatorController.getLeftY()*0.45, OIConstants.kDriveDeadband)
+              );
+            }
+          },
+        m_Hood));
 
     // m_shooter.setDefaultCommand(
     //   new RunCommand(
@@ -133,9 +139,14 @@ public class RobotContainer {
     
     m_Climber.setDefaultCommand(
       new RunCommand(
-        () -> m_Climber.moveClimber(
-          MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
-        ),
+        () -> 
+        {
+          if (m_Climber.isClimber()) {
+            m_Climber.moveClimber(
+            MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
+            );
+          }
+        },
       m_Climber));
     
   
@@ -294,10 +305,13 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(new AimTurret(m_Turret));
 
-    m_operatorController
+        m_operatorController
         .povLeft()
         .whileTrue(new RunCommand(() -> m_intake.squeeze()));
         
+        m_operatorController
+            .povUp()
+            .onTrue(new InstantCommand(() -> m_Climber.toggleClimber()));
   }
     
 

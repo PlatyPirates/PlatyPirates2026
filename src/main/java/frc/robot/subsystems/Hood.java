@@ -10,6 +10,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.MathUtil;
 
 public class Hood extends SubsystemBase {
 
@@ -17,20 +19,30 @@ public class Hood extends SubsystemBase {
     private final SparkMax hoodMotor;
     private final RelativeEncoder hoodEncoder;
     private final DigitalInput limitSwitch;
-  
+    private final PIDController pidHood;
+    private static boolean isHome = false;
+
     // constructor
     public Hood() {
         hoodMotor = new SparkMax(Constants.DriveConstants.kHoodMotorCanId, MotorType.kBrushless);
         hoodEncoder = hoodMotor.getEncoder();
         limitSwitch = new DigitalInput(0);
+
+        pidHood = new PIDController(Constants.SubsystemConstants.KHoodP,Constants.SubsystemConstants.KHoodI,Constants.SubsystemConstants.KHoodD);
+        pidHood.setTolerance(0.01);
+        pidHood.setIZone(1.0);
     
     }
 
-    public void stopAtLimit(){
+
+    public void home(){
         if(notAtLimit()){
             hoodMotor.set(0.2);
         } else {
             stopHood();
+            isHome = true;
+
+
         }
     }
 
@@ -52,23 +64,22 @@ public class Hood extends SubsystemBase {
     public void moveHood(double speed) {
         double position = hoodEncoder.getPosition();
         double max = Constants.SubsystemConstants.kHoodMax;
-        // if ((hoodEncoder.getPosition() < Constants.SubsystemConstants.kHoodMax && speed < 0 ) 
-        //     || 
-        //     (hoodEncoder.getPosition() > Constants.SubsystemConstants.kHoodMin && speed > 0.0)) {
+       
 
-        //     hoodMotor.set(speed);
-
-        // } else {
-        //     hoodMotor.set(0.0);
-        // }
-
-        //UPPER LIMIT: -23.5
-        if((notAtLimit() || speed < 0.0) && (position > max || speed > 0.0)){
-            hoodMotor.set(speed);
-        } else {
-            hoodMotor.set(0.0);
+        if (isHome == false){
+            home();
+        } 
+        else{ 
+            //UPPER LIMIT: -23.5
+            if((notAtLimit() || speed < 0.0) && (position > max || speed > 0.0)){
+                hoodMotor.set(speed);
+            }
+            else {
+                hoodMotor.set(0.0);
+            }
         }
     }
+
     
     public void stopHood() {
         hoodMotor.set(0.0);
