@@ -21,7 +21,7 @@ public class Turret extends SubsystemBase {
     private final SparkMax turretMotor;
     private final RelativeEncoder turretEncoder;
     private final DigitalInput limitSwitch;
-    private static boolean isTurretHome = false;
+    private static boolean isTurretHome = true;
 
     // constructor
     public Turret() {
@@ -76,7 +76,7 @@ public class Turret extends SubsystemBase {
     //sets the speed for the homing routine. Doesn't have soft limits for this reason.
     public void homeTurret() {
         if (notAtLimit()) {
-            turretMotor.set(-0.1);
+            turretMotor.set(-0.2);
         }
         else {
             turretMotor.set(0.0);

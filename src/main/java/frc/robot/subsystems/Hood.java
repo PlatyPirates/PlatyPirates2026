@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import org.opencv.core.Mat;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import frc.robot.Constants;
@@ -21,9 +24,11 @@ public class Hood extends SubsystemBase {
     private final DigitalInput limitSwitch;
     private final PIDController pidHood;
     private static boolean isHome = false;
+    private static boolean atTargetPos = false;
     private static boolean hubMode = true;
-    private static double hubPosition = -18;
+    private static double hubPosition = -7;
     private static double fairyPosition = -20;
+    private double adjustmentPosition;
 
     // constructor
     public Hood() {
@@ -70,6 +75,14 @@ public class Hood extends SubsystemBase {
         hubMode = false;
     }
 
+    public void setHubPos(double newHubPos) {
+        hubPosition = newHubPos;
+    }
+
+    public void setFairyPos(double newFairyPos) {
+        fairyPosition = newFairyPos;
+    }
+
     public void updateHubPosition() {
         hubPosition = hoodEncoder.getPosition();
     }
@@ -77,14 +90,48 @@ public class Hood extends SubsystemBase {
     public void updateFairyPosition() {
         fairyPosition = hoodEncoder.getPosition();
     }
+
+    public void beginPresetAdjustment() {
+        adjustmentPosition = hubMode ? hubPosition : fairyPosition;
+        atTargetPos = false;
+    }
+
+    public void adjustPreset(double joystickValue) {
+        if (!atPosition(adjustmentPosition) && !atTargetPos) {
+            pidHoodPos(adjustmentPosition);
+            return;
+        }
+        atTargetPos = true;
+
+        moveHood(joystickValue);
+
+        // adjustmentPosition = MathUtil.clamp(
+        //     adjustmentPosition + joystickValue * 0.5,
+        //     Constants.SubsystemConstants.kHoodMax,
+        //     Constants.SubsystemConstants.kHoodMin
+        //     );
+        // pidHoodPos(adjustmentPosition);
+    }
+
+    public void savePreset() {
+        if (hubMode) {
+            hubPosition = hoodEncoder.getPosition();
+        }
+        else {
+            fairyPosition = hoodEncoder.getPosition();
+        }
+    }
+
+    public boolean atPosition(double targetPosition) {
+        return MathUtil.isNear(targetPosition, hoodEncoder.getPosition(), 0.1);
+    }
     
+    public void hoodShootPos() {
+        double hoodPos = hubMode ? hubPosition : fairyPosition;
+        pidHoodPos(hoodPos);
+    }
+
     public void pidHoodPos(double targetPos) {
-        if (hubMode && targetPos != 0) {
-            targetPos = hubPosition;
-        }
-        else if (targetPos != 0) {
-            targetPos = fairyPosition;
-        }
         double currPosition = hoodEncoder.getPosition();
         double maxSpeed = 0.3;
 
@@ -133,6 +180,8 @@ public class Hood extends SubsystemBase {
         SmartDashboard.putNumber("Hood Position", hoodEncoder.getPosition());
         SmartDashboard.putBoolean("Hood At Limit", atLimit());
         SmartDashboard.putBoolean("Shooting Mode", hubMode);
+        SmartDashboard.putNumber("Hub Hood Pos", hubPosition);
+        SmartDashboard.putNumber("Fairy Hood Pos", fairyPosition);
     }
 
 

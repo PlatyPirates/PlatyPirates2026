@@ -180,7 +180,7 @@ public final class Constants {
     public static double kFlywheel2Speed = 0.005;
     //public static final double kFlywheel1Reverse = -0.4;
     public static double kFlywheel2Reverse = kFlywheel2Speed;
-    public static final double kFeedBallMotorSpeed = 0.3;
+    public static final double kFeedBallMotorSpeed = 0.4;
     public static final double kFeedBallMotorReverse = -0.2;
 
     //limits for the subsystems

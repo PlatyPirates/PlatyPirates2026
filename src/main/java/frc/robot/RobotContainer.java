@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -101,6 +102,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(
      new RunCommand(() -> m_intake.stopMotors(), m_intake));
       // TODO: change the default command to leave the intake out by default
+
     m_carousel.setDefaultCommand(
       new RunCommand(() -> m_carousel.stopCarousel(), m_carousel));
 
@@ -230,16 +232,21 @@ public class RobotContainer {
 
     m_operatorController
         .a()
-        .onTrue(new InstantCommand(() -> {
-          m_Hood.hubMode();
-        }))
-        .debounce(1.0)
+        .onTrue(new InstantCommand(() -> m_Hood.hubMode()));
+    
+    Trigger hubPreset = m_operatorController.a().debounce(1.0);
+    hubPreset
+      .onTrue(new InstantCommand(() -> m_Hood.beginPresetAdjustment(), m_Hood))
         .whileTrue(new RunCommand(() -> {
-          m_Hood.pidHoodPos(-11);
+          m_Hood.adjustPreset(
+            MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
+          );
         }, m_Hood))
-        .onFalse(new RunCommand(() -> {
+        .onFalse(new InstantCommand(() -> m_Hood.savePreset(), m_Hood)
+          .andThen(new RunCommand(() -> {
           m_Hood.pidHoodPos(0);
-        }, m_Hood));
+        }, m_Hood)
+        .until(() -> m_Hood.atPosition(0))));
 
       
 
@@ -266,16 +273,35 @@ public class RobotContainer {
 
     m_operatorController
         .y()
-        .onTrue(new InstantCommand(() -> {
-          m_Hood.fairyMode();
-        }))
-        .debounce(1.0)
+        .onTrue(new InstantCommand(() -> m_Hood.fairyMode()));
+    
+    Trigger fairyPreset = m_operatorController.y().debounce(1.0);
+    fairyPreset
+      .onTrue(new InstantCommand(() -> m_Hood.beginPresetAdjustment(), m_Hood))
         .whileTrue(new RunCommand(() -> {
-          m_Hood.pidHoodPos(-11); //Technically overridden by values set in Hood.java
+          m_Hood.adjustPreset(
+            MathUtil.applyDeadband(m_operatorController.getLeftY(), OIConstants.kDriveDeadband)
+          );
         }, m_Hood))
-        .onFalse(new RunCommand(() -> {
+        .onFalse(new InstantCommand(() -> m_Hood.savePreset(), m_Hood)
+          .andThen(new RunCommand(() -> {
           m_Hood.pidHoodPos(0);
-        }, m_Hood));
+        }, m_Hood)
+        .until(() -> m_Hood.atPosition(0))));
+
+    // Newer previous code
+    // m_operatorController
+    //     .y()
+    //     .onTrue(new InstantCommand(() -> {
+    //       m_Hood.fairyMode();
+    //     }))
+    //     .debounce(1.0)
+    //     .whileTrue(new RunCommand(() -> {
+    //       m_Hood.pidHoodPos(-11); //Technically overridden by values set in Hood.java
+    //     }, m_Hood))
+    //     .onFalse(new RunCommand(() -> {
+    //       m_Hood.pidHoodPos(0);
+    //     }, m_Hood));
 
         // Old Previous Y Code
         // .whileTrue(new InstantCommand(() -> {
@@ -299,20 +325,26 @@ public class RobotContainer {
     m_operatorController
         .rightBumper()
         .whileTrue(new RunCommand(() -> {
+          // m_shooter.reverseFlywheels();
+          m_shooter.reverseFeed();
           m_carousel.reverseCarousel();
-        }, m_carousel))
+        }, m_shooter, m_carousel))
         .onFalse(new RunCommand(() -> {
+          // m_shooter.stopFlywheels();
+          m_shooter.stopFeed();
           m_carousel.stopCarousel();
-        }, m_carousel));
+        }, m_shooter, m_carousel));
 
     m_operatorController
         .rightTrigger()
         .whileTrue(new RunCommand(() -> {
-            m_shooter.setSpeed(-0.55);
+            m_Hood.hoodShootPos();
+            m_shooter.setSpeed(-0.52);
             m_carousel.moveCarousel();
             m_shooter.baseMotor();
         }, m_shooter, m_carousel))
         .onFalse(new RunCommand(() -> { //TODO should this be onFalse?? I'm confused.
+            m_Hood.pidHoodPos(0);
             m_shooter.stopFlywheels();
             m_carousel.stopCarousel();
             m_shooter.stopFeed();
